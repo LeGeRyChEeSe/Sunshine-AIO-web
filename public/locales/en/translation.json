@@ -1,0 +1,115 @@
+{
+  "header": {
+    "home": "Home",
+    "tools": "Tools",
+    "guide": "Installation Guide",
+    "about": "About",
+    "theme": {
+      "light": "Light Mode",
+      "dark": "Dark Mode"
+    }
+  },
+  "hero": {
+    "title": "Sunshine-AIO",
+    "subtitle": "The all-in-one solution to set up your game streaming environment. One-click installation for Sunshine and all necessary components.",
+    "downloadButton": "Download the latest version",
+    "guideButton": "View the installation guide"
+  },
+  "home": {
+    "whyChoose": {
+      "title": "Why choose Sunshine-AIO?",
+      "subtitle": "Get everything you need to set up game streaming in a single installation."
+    },
+    "features": {
+      "allInOne": {
+        "title": "All-in-one solution",
+        "description": "Install all required components in one click. No manual configuration needed."
+      },
+      "quickSetup": {
+        "title": "Quick setup",
+        "description": "Get up and running in minutes instead of hours with our automated installation."
+      },
+      "preConfigured": {
+        "title": "Pre-configured",
+        "description": "Everything is pre-configured for optimal performance right after installation."
+      }
+    },
+    "downloadButton": "Download Sunshine-AIO"
+  },
+  "tools": {
+    "title": "Installation Tools",
+    "serverInstall": "Server Installation",
+    "clientInstall": "Client Installation",
+    "recommended": "Recommended",
+    "viewGithub": "View on GitHub",
+    "visitWebsite": "Visit Website",
+    "download": "Download",
+    "windows10": "Windows 10",
+    "windows11": "Windows 11",
+    "sunshine": {
+      "name": "Sunshine-AIO",
+      "description": "All-in-one solution to set up your game streaming environment. Compatible only with Windows 10 and Windows 11. Recommended for most users!"
+    },
+    "moonlight": {
+      "name": "Moonlight",
+      "description": "Free open-source client for streaming games from your gaming PC. Compatible with Windows, MacOS, Linux, Steam Link devices, Raspberry Pi 4, ChromeOS laptops, tablets, Android devices, iPhones, iPads, iPod touches, AppleTV, single-board computers, Xbox One, Xbox Series S|X, PlayStation Vita with Homebrew, Nintendo Switch with Homebrew, Wii U with Homebrew, and LG webOS TVs."
+    },
+    "sunshine_base": {
+      "name": "Sunshine",
+      "description": "Self-hosted game streaming host for Moonlight."
+    },
+    "virtual_display": {
+      "name": "Virtual Display Driver",
+      "description": "Create virtual displays for remote gaming."
+    },
+    "playnite": {
+      "name": "Playnite",
+      "description": "Video game library manager with support for multiple platforms."
+    },
+    "playnite_watcher": {
+      "name": "Playnite Watcher",
+      "description": "Automatically updates Sunshine's game list based on the Playnite library."
+    }
+  },
+  "guide": {
+    "title": "Installation Guide",
+    "downloadNow": "Download now",
+    "steps": {
+      "download": {
+        "title": "Download Sunshine-AIO",
+        "description": "Download the latest version of Sunshine-AIO from GitHub. Important: Windows Defender or your antivirus may flag the file as suspicious. This is a false positive. You can safely bypass this warning by clicking 'More info' and then 'Run anyway'. If the file remains blocked, you may need to either add an exclusion in your antivirus settings for this file or temporarily disable your antivirus during the download and installation process."
+      },
+      "run": {
+        "title": "Run the application",
+        "description": "Right-click on Sunshine-AIO.exe and select 'Run as administrator.' This is a standalone executable file containing everything needed for the installation—it is not an installer but rather an all-in-one tool."
+      },
+      "install": {
+        "title": "Start the installation",
+        "description": "When the application starts, type '1' and press Enter to begin the full installation process. This will automatically install and configure all the necessary components for your game streaming setup."
+      }
+    },
+    "complete": {
+      "title": "Installation Complete!",
+      "description": "After following these steps, Sunshine-AIO will be fully installed and configured on your system. You can now start streaming your games with Moonlight!",
+      "ready": "Ready to use!"
+    }
+  },
+  "about": {
+    "title": "About Sunshine-AIO",
+    "overview": {
+      "title": "Project Overview",
+      "description": "Sunshine-AIO is an all-in-one solution for setting up your game streaming environment. It simplifies the installation and configuration process for multiple tools required for game streaming, making it accessible to everyone."
+    },
+    "collaboration": {
+      "title": "Created in collaboration",
+      "description": "This website was created in collaboration between:",
+      "roles": {
+        "creator": "Project Creator",
+        "website": "Website Development"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Sunshine-AIO. All rights reserved."
+  }
+}
