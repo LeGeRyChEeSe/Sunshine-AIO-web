@@ -5,10 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "start": "npm run dev"
+    "preview": "vite preview"
   },
   "dependencies": {
     "i18next": "^23.10.1",
