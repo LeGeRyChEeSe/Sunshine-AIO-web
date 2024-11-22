@@ -62,9 +62,21 @@ export default function Contact() {
     setFiles(selectedFiles);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitted(true);
+    const form = e.target as HTMLFormElement;
+    
+    try {
+      const formData = new FormData(form);
+      await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData as any).toString(),
+      });
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   };
 
   if (submitted) {
@@ -99,11 +111,16 @@ export default function Contact() {
             name="contact"
             method="POST"
             data-netlify="true"
-            encType="multipart/form-data"
+            netlify-honeypot="bot-field"
             onSubmit={handleSubmit}
             className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg"
           >
             <input type="hidden" name="form-name" value="contact" />
+            <p className="hidden">
+              <label>
+                Don't fill this out if you're human: <input name="bot-field" />
+              </label>
+            </p>
             
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
               {t('contact.title')}
