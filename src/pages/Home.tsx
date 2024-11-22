@@ -1,6 +1,5 @@
-import React from 'react';
 import Hero from '../components/Hero';
-import { ArrowRight, Download, Shield, Zap, Settings } from 'lucide-react';
+import { Download, Shield, Zap, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function Home() {
@@ -9,7 +8,7 @@ export default function Home() {
   return (
     <div>
       <Hero />
-      
+
       <section className="py-20 bg-white dark:bg-gray-800">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">

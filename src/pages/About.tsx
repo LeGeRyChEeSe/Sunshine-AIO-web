@@ -1,4 +1,3 @@
-import React from 'react';
 import { Github } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -6,14 +5,14 @@ export default function About() {
   const { t } = useTranslation();
 
   return (
-    <div className="py-12 bg-gray-50 dark:bg-gray-900">
+    <div className="py-12 bg-gradient-to-br from-sunshine-pink/10 to-sunshine-blue/10 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
             {t('about.title')}
           </h1>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 mb-8">
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl p-8 mb-8">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
               {t('about.overview.title')}
             </h2>
@@ -26,7 +25,7 @@ export default function About() {
                 href="https://github.com/LeGeRyChEeSe"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-violet-600 to-blue-600 text-white rounded-full font-semibold hover:from-violet-700 hover:to-blue-700 transition"
+                className="inline-flex items-center px-4 py-2 bg-gradient-sunshine text-white rounded-full font-semibold hover:opacity-90 transition"
               >
                 <Github className="h-5 w-5 mr-2" />
                 LeGeRyChEeSe
@@ -34,13 +33,11 @@ export default function About() {
             </div>
           </div>
 
-          <div className="bg-gradient-to-r from-violet-500 to-blue-500 dark:from-violet-800 dark:to-blue-800 rounded-xl p-8 text-white">
+          <div className="bg-gradient-sunshine rounded-xl p-8 text-white backdrop-blur-sm">
             <h2 className="text-xl font-semibold mb-4">
               {t('about.collaboration.title')}
             </h2>
-            <p className="mb-4">
-              {t('about.collaboration.description')}
-            </p>
+            <p className="mb-4">{t('about.collaboration.description')}</p>
             <ul className="list-disc list-inside space-y-2">
               <li>
                 <a
@@ -51,7 +48,8 @@ export default function About() {
                 >
                   LeGeRyChEeSe
                 </a>
-                {' - '}{t('about.collaboration.roles.creator')}
+                {' - '}
+                {t('about.collaboration.roles.creator')}
               </li>
               <li>
                 <a
@@ -62,7 +60,8 @@ export default function About() {
                 >
                   Bolt.new
                 </a>
-                {' - '}{t('about.collaboration.roles.website')}
+                {' - '}
+                {t('about.collaboration.roles.website')}
               </li>
             </ul>
           </div>

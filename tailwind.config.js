@@ -22,11 +22,12 @@ export default {
           purple: '#8e54e9',
           blue: '#4facfe',
           cyan: '#00f2fe',
-        }
+        },
       },
       backgroundImage: {
-        'gradient-sunshine': 'linear-gradient(135deg, #c471ed 0%, #8e54e9 50%, #4facfe 100%)',
-      }
+        'gradient-sunshine':
+          'linear-gradient(135deg, #c471ed 0%, #8e54e9 50%, #4facfe 100%)',
+      },
     },
   },
   plugins: [],

@@ -21,23 +21,39 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-white hover:text-primary-100 transition">
+            <Link
+              to="/"
+              className="text-white hover:text-primary-100 transition"
+            >
               {t('header.home')}
             </Link>
-            <Link to="/tools" className="text-white hover:text-primary-100 transition">
+            <Link
+              to="/tools"
+              className="text-white hover:text-primary-100 transition"
+            >
               {t('header.tools')}
             </Link>
-            <Link to="/guide" className="text-white hover:text-primary-100 transition">
+            <Link
+              to="/guide"
+              className="text-white hover:text-primary-100 transition"
+            >
               {t('header.guide')}
             </Link>
-            <Link to="/about" className="text-white hover:text-primary-100 transition">
+            <Link
+              to="/about"
+              className="text-white hover:text-primary-100 transition"
+            >
               {t('header.about')}
             </Link>
             <LanguageSelector />
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full hover:bg-white/10 transition"
-              aria-label={theme === 'dark' ? t('header.theme.light') : t('header.theme.dark')}
+              aria-label={
+                theme === 'dark'
+                  ? t('header.theme.light')
+                  : t('header.theme.dark')
+              }
             >
               {theme === 'dark' ? (
                 <Sun className="h-6 w-6 text-white" />
@@ -51,25 +67,41 @@ export default function Header() {
           <button
             className="md:hidden p-2 text-white"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
           >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {isMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 space-y-4">
-            <Link to="/" className="block text-white hover:text-primary-100 transition">
+            <Link
+              to="/"
+              className="block text-white hover:text-primary-100 transition"
+            >
               {t('header.home')}
             </Link>
-            <Link to="/tools" className="block text-white hover:text-primary-100 transition">
+            <Link
+              to="/tools"
+              className="block text-white hover:text-primary-100 transition"
+            >
               {t('header.tools')}
             </Link>
-            <Link to="/guide" className="block text-white hover:text-primary-100 transition">
+            <Link
+              to="/guide"
+              className="block text-white hover:text-primary-100 transition"
+            >
               {t('header.guide')}
             </Link>
-            <Link to="/about" className="block text-white hover:text-primary-100 transition">
+            <Link
+              to="/about"
+              className="block text-white hover:text-primary-100 transition"
+            >
               {t('header.about')}
             </Link>
             <div className="flex items-center space-x-4">
@@ -78,7 +110,9 @@ export default function Header() {
                 onClick={toggleTheme}
                 className="p-2 text-white hover:text-primary-100 transition"
               >
-                {theme === 'dark' ? t('header.theme.light') : t('header.theme.dark')}
+                {theme === 'dark'
+                  ? t('header.theme.light')
+                  : t('header.theme.dark')}
               </button>
             </div>
           </div>

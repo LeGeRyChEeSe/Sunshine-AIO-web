@@ -1,4 +1,3 @@
-import React from 'react';
 import { ArrowRight, Download } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

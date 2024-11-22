@@ -1,4 +1,3 @@
-import React from 'react';
 import { Download, ExternalLink } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +6,8 @@ const tools = [
     id: 'sunshine-aio',
     translationKey: 'sunshine',
     github: 'https://github.com/LeGeRyChEeSe/Sunshine-AIO',
-    downloadUrl: 'https://github.com/LeGeRyChEeSe/Sunshine-AIO/releases/latest/download/Sunshine-AIO.exe',
+    downloadUrl:
+      'https://github.com/LeGeRyChEeSe/Sunshine-AIO/releases/latest/download/Sunshine-AIO.exe',
     recommended: true,
     type: 'server',
     size: 'large',
@@ -24,27 +24,32 @@ const tools = [
     id: 'sunshine',
     translationKey: 'sunshine_base',
     github: 'https://github.com/LizardByte/Sunshine',
-    downloadUrl: 'https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-installer.exe',
+    downloadUrl:
+      'https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-installer.exe',
   },
   {
     id: 'virtual-display',
     translationKey: 'virtual_display',
     github: 'https://github.com/itsmikethetech/Virtual-Display-Driver',
     isDisplayDriver: true,
-    win10Url: 'https://github.com/itsmikethetech/Virtual-Display-Driver/releases/tag/23.10.20.2',
-    win11Url: 'https://github.com/itsmikethetech/Virtual-Display-Driver/releases/tag/23.12.2HDR',
+    win10Url:
+      'https://github.com/itsmikethetech/Virtual-Display-Driver/releases/tag/23.10.20.2',
+    win11Url:
+      'https://github.com/itsmikethetech/Virtual-Display-Driver/releases/tag/23.12.2HDR',
   },
   {
     id: 'playnite',
     translationKey: 'playnite',
     github: 'https://github.com/JosefNemec/Playnite',
-    downloadUrl: 'https://github.com/JosefNemec/Playnite/releases/latest/download/Playnite.exe',
+    downloadUrl:
+      'https://github.com/JosefNemec/Playnite/releases/latest/download/Playnite.exe',
   },
   {
     id: 'playnite-watcher',
     translationKey: 'playnite_watcher',
     github: 'https://github.com/Nonary/PlayNiteWatcher',
-    downloadUrl: 'https://github.com/Nonary/PlayNiteWatcher/releases/latest/download/PlayNiteWatcher.zip',
+    downloadUrl:
+      'https://github.com/Nonary/PlayNiteWatcher/releases/latest/download/PlayNiteWatcher.zip',
   },
 ];
 
@@ -73,8 +78,16 @@ export default function Tools() {
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
-                    <h2 className={`text-xl font-semibold ${tool.recommended ? 'text-white' : 'text-gray-900 dark:text-white'}`}>
-                      {tool.translationKey ? t(`tools.${tool.translationKey}.name`) : tool.name}
+                    <h2
+                      className={`text-xl font-semibold ${
+                        tool.recommended
+                          ? 'text-white'
+                          : 'text-gray-900 dark:text-white'
+                      }`}
+                    >
+                      {tool.translationKey
+                        ? t(`tools.${tool.translationKey}.name`)
+                        : tool.name}
                     </h2>
                     {tool.recommended && (
                       <span className="px-2 py-1 text-sm bg-white/20 rounded-full">
@@ -82,17 +95,31 @@ export default function Tools() {
                       </span>
                     )}
                     {tool.type && (
-                      <span className={`px-2 py-1 text-sm rounded-full ${
-                        tool.type === 'server' 
-                          ? 'bg-violet-800/30 border border-violet-400/30' 
-                          : 'bg-blue-800/30 border border-blue-400/30'
-                      }`}>
-                        {t(tool.type === 'server' ? 'tools.serverInstall' : 'tools.clientInstall')}
+                      <span
+                        className={`px-2 py-1 text-sm rounded-full ${
+                          tool.type === 'server'
+                            ? 'bg-violet-800/30 border border-violet-400/30'
+                            : 'bg-blue-800/30 border border-blue-400/30'
+                        }`}
+                      >
+                        {t(
+                          tool.type === 'server'
+                            ? 'tools.serverInstall'
+                            : 'tools.clientInstall'
+                        )}
                       </span>
                     )}
                   </div>
-                  <p className={`mt-2 ${tool.recommended ? 'text-white/90' : 'text-gray-600 dark:text-gray-300'}`}>
-                    {tool.translationKey ? t(`tools.${tool.translationKey}.description`) : tool.description}
+                  <p
+                    className={`mt-2 ${
+                      tool.recommended
+                        ? 'text-white/90'
+                        : 'text-gray-600 dark:text-gray-300'
+                    }`}
+                  >
+                    {tool.translationKey
+                      ? t(`tools.${tool.translationKey}.description`)
+                      : tool.description}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-4">
                     {tool.github && (
@@ -144,18 +171,20 @@ export default function Tools() {
                         {t('tools.windows11')}
                       </a>
                     </div>
-                  ) : tool.downloadUrl && (
-                    <a
-                      href={tool.downloadUrl}
-                      className={`inline-flex items-center px-6 py-2 rounded-full font-semibold transition ${
-                        tool.recommended
-                          ? 'bg-white text-primary-600 hover:bg-primary-50'
-                          : 'bg-primary-600 text-white hover:bg-primary-700'
-                      }`}
-                    >
-                      <Download className="h-5 w-5 mr-2" />
-                      {t('tools.download')}
-                    </a>
+                  ) : (
+                    tool.downloadUrl && (
+                      <a
+                        href={tool.downloadUrl}
+                        className={`inline-flex items-center px-6 py-2 rounded-full font-semibold transition ${
+                          tool.recommended
+                            ? 'bg-white text-primary-600 hover:bg-primary-50'
+                            : 'bg-primary-600 text-white hover:bg-primary-700'
+                        }`}
+                      >
+                        <Download className="h-5 w-5 mr-2" />
+                        {t('tools.download')}
+                      </a>
+                    )
                   )}
                 </div>
               </div>
