@@ -17,14 +17,14 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <a
               href="https://github.com/LeGeRyChEeSe/Sunshine-AIO/releases/latest/download/Sunshine-AIO.exe"
-              className="inline-flex items-center px-8 py-3 bg-white text-sunshine-purple rounded-full font-semibold hover:bg-blue-50 transition shadow-lg"
+              className="w-full sm:w-auto px-8 py-3 bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg"
             >
-              <Download className="mr-2 h-5 w-5" />
+              <Download className="inline-block mr-2 h-5 w-5" />
               {t('hero.downloadButton')}
             </a>
             <a
               href="/guide"
-              className="inline-flex items-center px-8 py-3 bg-transparent border-2 border-white text-white rounded-full font-semibold hover:bg-white/10 transition"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3 bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition"
             >
               {t('hero.guideButton')}
               <ArrowRight className="ml-2 h-5 w-5" />

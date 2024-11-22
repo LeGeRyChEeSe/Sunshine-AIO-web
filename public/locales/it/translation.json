@@ -111,5 +111,42 @@
   },
   "footer": {
     "copyright": "© 2024 Sunshine-AIO. Tutti i diritti riservati."
+  },
+  "contact": {
+    "helpButton": "Hai bisogno di aiuto?",
+    "title": "Contatta il supporto",
+    "form": {
+      "name": "Il tuo nome",
+      "email": "Indirizzo email",
+      "category": "Categoria del problema",
+      "selectCategory": "Seleziona una categoria",
+      "categories": {
+        "tool-issue": "Problema con uno strumento",
+        "installation": "Problema di installazione",
+        "configuration": "Aiuto con la configurazione",
+        "performance": "Problema di prestazioni",
+        "compatibility": "Problema di compatibilità",
+        "feature-request": "Richiesta funzionalità",
+        "website": "Problema con il sito web",
+        "other": "Altro"
+      },
+      "tool": "Strumento correlato",
+      "selectTool": "Seleziona uno strumento",
+      "message": "Il tuo messaggio",
+      "attachments": "Allegati (Opzionale)",
+      "attachmentHelp": "Puoi caricare fino a 3 file (immagini o video, max 5MB ciascuno)",
+      "selectedFiles": "{{count}} file selezionati",
+      "submit": "Invia messaggio",
+      "errors": {
+        "tooManyFiles": "Massimo {{max}} file consentiti",
+        "fileTooBig": "I file devono essere più piccoli di {{size}}",
+        "invalidType": "Sono consentiti solo immagini (JPEG, PNG, GIF) e video (MP4, WebM)"
+      }
+    },
+    "thankYou": {
+      "title": "Grazie!",
+      "message": "Abbiamo ricevuto il tuo messaggio e ti risponderemo il prima possibile.",
+      "backHome": "Torna alla home"
+    }
   }
 }

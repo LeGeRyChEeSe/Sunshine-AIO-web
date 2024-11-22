@@ -18,15 +18,14 @@ export default {
           900: '#4c1d95',
         },
         sunshine: {
-          pink: '#c471ed',
-          purple: '#8e54e9',
-          blue: '#4facfe',
-          cyan: '#00f2fe',
+          violet: '#4c1d95',
+          indigo: '#312e81',
+          blue: '#1e3a8a',
         },
       },
       backgroundImage: {
         'gradient-sunshine':
-          'linear-gradient(135deg, #c471ed 0%, #8e54e9 50%, #4facfe 100%)',
+          'linear-gradient(135deg, #4c1d95 0%, #312e81 50%, #1e3a8a 100%)',
       },
     },
   },

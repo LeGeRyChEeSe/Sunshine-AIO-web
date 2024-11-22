@@ -5,6 +5,8 @@ import Home from './pages/Home';
 import Tools from './pages/Tools';
 import Guide from './pages/Guide';
 import About from './pages/About';
+import Contact from './pages/Contact';
+import FloatingHelpButton from './components/FloatingHelpButton';
 
 function App() {
   return (
@@ -17,8 +19,10 @@ function App() {
             <Route path="/tools" element={<Tools />} />
             <Route path="/guide" element={<Guide />} />
             <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>
+        <FloatingHelpButton />
         <Footer />
       </div>
     </Router>
