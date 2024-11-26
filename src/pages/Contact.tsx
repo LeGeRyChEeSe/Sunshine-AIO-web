@@ -62,16 +62,42 @@ export default function Contact() {
     setFiles(selectedFiles);
   };
 
+  const encode = (data: { [key: string]: string | File[] }) => {
+    const formData = new FormData();
+    
+    Object.keys(data).forEach(key => {
+      if (key === 'attachments' && Array.isArray(data[key])) {
+        const files = data[key] as File[];
+        files.forEach((file, index) => {
+          formData.append(`attachments-${index}`, file);
+        });
+      } else {
+        formData.append(key, data[key] as string);
+      }
+    });
+    
+    return formData;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
     
+    const data = {
+      'form-name': 'contact',
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      category: formData.get('category') as string,
+      tool: formData.get('tool') as string,
+      message: formData.get('message') as string,
+      attachments: files,
+    };
+
     try {
-      const formData = new FormData(form);
       await fetch('/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(formData as any).toString(),
+        body: encode(data),
       });
       setSubmitted(true);
     } catch (error) {
@@ -111,6 +137,7 @@ export default function Contact() {
             name="contact"
             method="POST"
             data-netlify="true"
+            encType="multipart/form-data"
             netlify-honeypot="bot-field"
             onSubmit={handleSubmit}
             className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg"
