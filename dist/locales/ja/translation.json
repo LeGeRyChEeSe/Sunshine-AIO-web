@@ -1,0 +1,152 @@
+{
+  "header": {
+    "home": "ホーム",
+    "tools": "ツール",
+    "guide": "インストールガイド",
+    "about": "概要",
+    "theme": {
+      "light": "ライトモード",
+      "dark": "ダークモード"
+    }
+  },
+  "hero": {
+    "title": "Sunshine-AIO",
+    "subtitle": "ゲームストリーミング環境設定のオールインワンソリューション。Sunshine と必要なコンポーネントをワンクリックでインストール。",
+    "downloadButton": "最新版をダウンロード",
+    "guideButton": "インストールガイドを見る"
+  },
+  "home": {
+    "whyChoose": {
+      "title": "なぜ Sunshine-AIO を選ぶのか？",
+      "subtitle": "シンプルなインストールでゲームストリーミングの設定に必要なものをすべて入手できます。"
+    },
+    "features": {
+      "allInOne": {
+        "title": "オールインワンソリューション",
+        "description": "必要なコンポーネントをワンクリックでインストール。手動設定は不要です。"
+      },
+      "quickSetup": {
+        "title": "クイックセットアップ",
+        "description": "自動化されたインストールにより、数時間ではなく数分で準備完了。"
+      },
+      "preConfigured": {
+        "title": "事前設定済み",
+        "description": "すべてが最適なパフォーマンスのために事前設定されています。"
+      }
+    },
+    "downloadButton": "Sunshine-AIO をダウンロード"
+  },
+  "tools": {
+    "title": "インストールツール",
+    "serverInstall": "サーバーインストール",
+    "clientInstall": "クライアントインストール",
+    "recommended": "推奨",
+    "viewGithub": "GitHub で見る",
+    "visitWebsite": "ウェブサイトを訪問",
+    "download": "ダウンロード",
+    "windows10": "Windows 10",
+    "windows11": "Windows 11",
+    "sunshine": {
+      "name": "Sunshine-AIO",
+      "description": "ゲームストリーミング環境設定のオールインワンソリューション。Windows 10 と Windows 11 のみ対応。ほとんどのユーザーに推奨！"
+    },
+    "moonlight": {
+      "name": "Moonlight",
+      "description": "ゲーミング PC からゲームをストリーミングするための無料オープンソースクライアント。Windows、MacOS、Linux、Steam Link デバイス、Raspberry Pi 4、ChromeOS ノートパソコン、タブレット、Android デバイス、iPhone、iPad、iPod touch、AppleTV、シングルボードコンピュータ、Xbox One、Xbox Series S|X、Homebrew 対応 PlayStation Vita、Homebrew 対応 Nintendo Switch、Homebrew 対応 Wii U、LG webOS TV に対応。"
+    },
+    "sunshine_base": {
+      "name": "Sunshine",
+      "description": "Moonlight 用のセルフホスト型ゲームストリームホスト。"
+    },
+    "virtual_display": {
+      "name": "Virtual Display Driver",
+      "description": "リモートゲーミング用の仮想ディスプレイを作成。"
+    },
+    "playnite": {
+      "name": "Playnite",
+      "description": "複数のプラットフォームをサポートするビデオゲームライブラリマネージャー。"
+    },
+    "playnite_watcher": {
+      "name": "Playnite Watcher",
+      "description": "Playnite ライブラリに基づいて Sunshine のゲームリストを自動更新。"
+    }
+  },
+  "guide": {
+    "title": "インストールガイド",
+    "downloadNow": "今すぐダウンロード",
+    "steps": {
+      "download": {
+        "title": "Sunshine-AIO をダウンロード",
+        "description": "GitHub から Sunshine-AIO の最新版をダウンロードします。重要：Windows Defender やウイルス対策ソフトがファイルを不審として検出する場合があります。これは誤検出です。「詳細情報」をクリックし、「実行」を選択することで安全に警告をバイパスできます。ファイルがまだブロックされている場合は、ウイルス対策ソフトの設定でこのファイルの除外を追加するか、ダウンロードとインストール中にウイルス対策ソフトを一時的に無効にする必要があります。"
+      },
+      "run": {
+        "title": "アプリケーションを実行",
+        "description": "Sunshine-AIO.exe を右クリックし、「管理者として実行」を選択します。これはインストールに必要なすべてを含む単独の実行ファイルです - インストーラーではなく、オールインワンツールです。"
+      },
+      "install": {
+        "title": "インストールを開始",
+        "description": "アプリケーションが起動したら、「1」を入力してエンターキーを押し、完全なインストールプロセスを開始します。これにより、ゲームストリーミング設定に必要なすべてのコンポーネントが自動的にインストールおよび設定されます。"
+      }
+    },
+    "complete": {
+      "title": "インストール完了！",
+      "description": "これらの手順を完了すると、Sunshine-AIO がシステムに完全にインストールおよび設定されます。これで Moonlight を使用してゲームのストリーミングを開始できます！",
+      "ready": "使用準備完了！"
+    }
+  },
+  "about": {
+    "title": "Sunshine-AIO について",
+    "overview": {
+      "title": "プロジェクト概要",
+      "description": "Sunshine-AIO は、ゲームストリーミング環境設定のオールインワンソリューションです。ゲームストリーミングに必要な複数のツールのインストールと設定プロセスを簡素化し、誰でも利用できるようにします。"
+    },
+    "collaboration": {
+      "title": "共同制作",
+      "description": "このウェブサイトは以下の協力により制作されました：",
+      "roles": {
+        "creator": "プロジェクト作成者",
+        "website": "ウェブサイト開発"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Sunshine-AIO。全権利所有。"
+  },
+  "contact": {
+    "helpButton": "サポートが必要ですか？",
+    "title": "サポートに連絡",
+    "form": {
+      "name": "お名前",
+      "email": "メールアドレス",
+      "category": "問題のカテゴリー",
+      "selectCategory": "カテゴリーを選択",
+      "categories": {
+        "tool-issue": "ツールの問題",
+        "installation": "インストールの問題",
+        "configuration": "設定のサポート",
+        "performance": "パフォーマンスの問題",
+        "compatibility": "互換性の問題",
+        "feature-request": "機能リクエスト",
+        "website": "ウェブサイトの問題",
+        "other": "その他"
+      },
+      "tool": "関連ツール",
+      "selectTool": "ツールを選択",
+      "message": "メッセージ",
+      "attachments": "添付ファイル（任意）",
+      "attachmentHelp": "最大3つのファイル（画像または動画、各5MBまで）をアップロードできます",
+      "selectedFiles": "{{count}}個のファイルが選択されました",
+      "submit": "メッセージを送信",
+      "errors": {
+        "tooManyFiles": "最大{{max}}個のファイルまで許可されています",
+        "fileTooBig": "ファイルは{{size}}未満である必要があります",
+        "invalidType": "画像（JPEG、PNG、GIF）と動画（MP4、WebM）のみが許可されています"
+      }
+    },
+    "thankYou": {
+      "title": "ありがとうございます！",
+      "message": "メッセージを受け付けました。できるだけ早くご返信いたします。",
+      "backHome": "ホームに戻る"
+    }
+  }
+}
