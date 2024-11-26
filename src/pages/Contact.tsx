@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { AlertCircle, Home } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { encode } from '../utils/form';
 
 const tools = [
   { value: 'sunshine-aio', label: 'Sunshine-AIO' },
@@ -33,6 +34,8 @@ export default function Contact() {
   const [category, setCategory] = useState('');
   const [fileError, setFileError] = useState('');
   const [files, setFiles] = useState<File[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
@@ -64,30 +67,43 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    const formData = new FormData(e.target as HTMLFormElement);
-    formData.append('form-name', 'contact');
-
-    // Add files to form data
-    if (files.length > 0) {
-      files.forEach((file, index) => {
-        formData.append(`attachments`, file);
-      });
-    }
+    setSubmitting(true);
+    setError('');
 
     try {
-      const response = await fetch('/', {
-        method: 'POST',
-        body: formData,
+      const form = e.target as HTMLFormElement;
+      const formData = new FormData(form);
+      
+      // Add form name
+      formData.append('form-name', 'contact');
+
+      // Convert FormData to object for encoding
+      const formObject: Record<string, string | File | File[]> = {};
+      formData.forEach((value, key) => {
+        formObject[key] = value;
       });
 
-      if (response.ok) {
-        setSubmitted(true);
-      } else {
+      // Add files if present
+      if (files.length > 0) {
+        formObject.attachments = files;
+      }
+
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encode(formObject),
+      });
+
+      if (!response.ok) {
         throw new Error('Form submission failed');
       }
-    } catch (error) {
-      console.error('Error submitting form:', error);
+
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Error submitting form:', err);
+      setError('Failed to submit form. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -124,7 +140,6 @@ export default function Contact() {
             method="POST"
             data-netlify="true"
             data-netlify-honeypot="bot-field"
-            encType="multipart/form-data"
             onSubmit={handleSubmit}
             className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg"
           >
@@ -136,6 +151,15 @@ export default function Contact() {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
               {t('contact.title')}
             </h1>
+
+            {error && (
+              <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400">
+                <div className="flex items-center">
+                  <AlertCircle className="h-5 w-5 mr-2" />
+                  {error}
+                </div>
+              </div>
+            )}
 
             <div className="space-y-6">
               <div>
@@ -251,9 +275,10 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full px-6 py-3 bg-gradient-sunshine text-white rounded-lg font-semibold hover:opacity-90 transition"
+                disabled={submitting}
+                className="w-full px-6 py-3 bg-gradient-sunshine text-white rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {t('contact.form.submit')}
+                {submitting ? 'Sending...' : t('contact.form.submit')}
               </button>
             </div>
           </form>
