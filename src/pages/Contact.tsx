@@ -62,44 +62,30 @@ export default function Contact() {
     setFiles(selectedFiles);
   };
 
-  const encode = (data: { [key: string]: string | File[] }) => {
-    const formData = new FormData();
-    
-    Object.keys(data).forEach(key => {
-      if (key === 'attachments' && Array.isArray(data[key])) {
-        const files = data[key] as File[];
-        files.forEach((file, index) => {
-          formData.append(`attachments-${index}`, file);
-        });
-      } else {
-        formData.append(key, data[key] as string);
-      }
-    });
-    
-    return formData;
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const formData = new FormData(form);
     
-    const data = {
-      'form-name': 'contact',
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      category: formData.get('category') as string,
-      tool: formData.get('tool') as string,
-      message: formData.get('message') as string,
-      attachments: files,
-    };
+    const formData = new FormData(e.target as HTMLFormElement);
+    formData.append('form-name', 'contact');
+
+    // Add files to form data
+    if (files.length > 0) {
+      files.forEach((file, index) => {
+        formData.append(`attachments`, file);
+      });
+    }
 
     try {
-      await fetch('/', {
+      const response = await fetch('/', {
         method: 'POST',
-        body: encode(data),
+        body: formData,
       });
-      setSubmitted(true);
+
+      if (response.ok) {
+        setSubmitted(true);
+      } else {
+        throw new Error('Form submission failed');
+      }
     } catch (error) {
       console.error('Error submitting form:', error);
     }
@@ -137,17 +123,15 @@ export default function Contact() {
             name="contact"
             method="POST"
             data-netlify="true"
+            data-netlify-honeypot="bot-field"
             encType="multipart/form-data"
-            netlify-honeypot="bot-field"
             onSubmit={handleSubmit}
             className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg"
           >
             <input type="hidden" name="form-name" value="contact" />
-            <p className="hidden">
-              <label>
-                Don't fill this out if you're human: <input name="bot-field" />
-              </label>
-            </p>
+            <div hidden>
+              <input name="bot-field" />
+            </div>
 
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
               {t('contact.title')}
