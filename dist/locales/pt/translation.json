@@ -1,0 +1,152 @@
+{
+  "header": {
+    "home": "Início",
+    "tools": "Ferramentas",
+    "guide": "Guia de instalação",
+    "about": "Sobre",
+    "theme": {
+      "light": "Modo claro",
+      "dark": "Modo escuro"
+    }
+  },
+  "hero": {
+    "title": "Sunshine-AIO",
+    "subtitle": "A solução tudo-em-um para configurar seu ambiente de streaming de jogos. Instalação com um clique para o Sunshine e todos os componentes necessários.",
+    "downloadButton": "Baixar última versão",
+    "guideButton": "Ver guia de instalação"
+  },
+  "home": {
+    "whyChoose": {
+      "title": "Por que escolher o Sunshine-AIO?",
+      "subtitle": "Obtenha tudo que você precisa para configurar o streaming de jogos em uma única instalação."
+    },
+    "features": {
+      "allInOne": {
+        "title": "Solução tudo-em-um",
+        "description": "Instale todos os componentes necessários com um único clique. Sem configuração manual necessária."
+      },
+      "quickSetup": {
+        "title": "Configuração rápida",
+        "description": "Comece em minutos em vez de horas com nossa instalação automatizada."
+      },
+      "preConfigured": {
+        "title": "Pré-configurado",
+        "description": "Tudo está pré-configurado para desempenho ideal desde o início."
+      }
+    },
+    "downloadButton": "Baixar Sunshine-AIO"
+  },
+  "tools": {
+    "title": "Ferramentas de instalação",
+    "serverInstall": "Instalação do Servidor",
+    "clientInstall": "Instalação do Cliente",
+    "recommended": "Recomendado",
+    "viewGithub": "Ver no GitHub",
+    "visitWebsite": "Visitar site",
+    "download": "Baixar",
+    "windows10": "Windows 10",
+    "windows11": "Windows 11",
+    "sunshine": {
+      "name": "Sunshine-AIO",
+      "description": "Solução tudo-em-um para configurar seu ambiente de streaming de jogos. Compatível apenas com Windows 10 e Windows 11. Recomendado para a maioria dos usuários!"
+    },
+    "moonlight": {
+      "name": "Moonlight",
+      "description": "Cliente de código aberto gratuito para streaming de jogos do seu PC gamer. Compatível com Windows, MacOS, Linux, dispositivos Steam Link, Raspberry Pi 4, laptops ChromeOS, tablets, dispositivos Android, iPhone, iPad, iPod touch, AppleTV, computadores single-board, Xbox One, Xbox Series S|X, PlayStation Vita com Homebrew, Nintendo Switch com Homebrew, Wii U com Homebrew e TV LG webOS."
+    },
+    "sunshine_base": {
+      "name": "Sunshine",
+      "description": "Host de streaming de jogos auto-hospedado para Moonlight."
+    },
+    "virtual_display": {
+      "name": "Virtual Display Driver",
+      "description": "Criar displays virtuais para jogos remotos."
+    },
+    "playnite": {
+      "name": "Playnite",
+      "description": "Gerenciador de biblioteca de jogos com suporte para múltiplas plataformas."
+    },
+    "playnite_watcher": {
+      "name": "Playnite Watcher",
+      "description": "Atualiza automaticamente a lista de jogos do Sunshine com base na biblioteca do Playnite."
+    }
+  },
+  "guide": {
+    "title": "Guia de instalação",
+    "downloadNow": "Baixar agora",
+    "steps": {
+      "download": {
+        "title": "Baixar Sunshine-AIO",
+        "description": "Baixe a última versão do Sunshine-AIO do GitHub. Importante: O Windows Defender ou seu antivírus pode marcar o arquivo como suspeito. Isso é um falso positivo. Você pode ignorar este aviso com segurança clicando em \"Mais informações\" e depois em \"Executar assim mesmo\". Se o arquivo ainda estiver bloqueado, você precisará adicionar uma exclusão nas configurações do seu antivírus para este arquivo ou desativar temporariamente seu antivírus durante o processo de download e instalação."
+      },
+      "run": {
+        "title": "Executar o aplicativo",
+        "description": "Clique com o botão direito em Sunshine-AIO.exe e selecione \"Executar como administrador\". Este é um arquivo executável independente que contém tudo necessário para a instalação - não é um instalador, mas sim uma ferramenta tudo-em-um."
+      },
+      "install": {
+        "title": "Iniciar instalação",
+        "description": "Quando o aplicativo iniciar, digite \"1\" e pressione Enter para começar o processo de instalação completo. Isso instalará e configurará automaticamente todos os componentes necessários para sua configuração de streaming de jogos."
+      }
+    },
+    "complete": {
+      "title": "Instalação completa!",
+      "description": "Após seguir estes passos, o Sunshine-AIO estará completamente instalado e configurado em seu sistema. Você pode começar a fazer streaming de seus jogos usando o Moonlight!",
+      "ready": "Pronto para usar!"
+    }
+  },
+  "about": {
+    "title": "Sobre o Sunshine-AIO",
+    "overview": {
+      "title": "Visão geral do projeto",
+      "description": "O Sunshine-AIO é uma solução tudo-em-um para configurar seu ambiente de streaming de jogos. Ele simplifica o processo de instalação e configuração de várias ferramentas necessárias para o streaming de jogos, tornando-o acessível a todos."
+    },
+    "collaboration": {
+      "title": "Criado em colaboração",
+      "description": "Este site foi criado em colaboração entre:",
+      "roles": {
+        "creator": "Criador do projeto",
+        "website": "Desenvolvimento do site"
+      }
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 Sunshine-AIO. Todos os direitos reservados."
+  },
+  "contact": {
+    "helpButton": "Precisa de ajuda?",
+    "title": "Contatar Suporte",
+    "form": {
+      "name": "Seu Nome",
+      "email": "Endereço de Email",
+      "category": "Categoria do Problema",
+      "selectCategory": "Selecione uma categoria",
+      "categories": {
+        "tool-issue": "Problema com Ferramenta",
+        "installation": "Problema de Instalação",
+        "configuration": "Ajuda com Configuração",
+        "performance": "Problema de Desempenho",
+        "compatibility": "Problema de Compatibilidade",
+        "feature-request": "Solicitação de Recurso",
+        "website": "Problema com o Site",
+        "other": "Outro"
+      },
+      "tool": "Ferramenta Relacionada",
+      "selectTool": "Selecione uma ferramenta",
+      "message": "Sua Mensagem",
+      "attachments": "Anexos (Opcional)",
+      "attachmentHelp": "Você pode enviar até 3 arquivos (imagens ou vídeos, máx 5MB cada)",
+      "selectedFiles": "{{count}} arquivo(s) selecionado(s)",
+      "submit": "Enviar Mensagem",
+      "errors": {
+        "tooManyFiles": "Máximo de {{max}} arquivos permitidos",
+        "fileTooBig": "Arquivos devem ser menores que {{size}}",
+        "invalidType": "Apenas imagens (JPEG, PNG, GIF) e vídeos (MP4, WebM) são permitidos"
+      }
+    },
+    "thankYou": {
+      "title": "Obrigado!",
+      "message": "Recebemos sua mensagem e retornaremos o mais breve possível.",
+      "backHome": "Voltar para o Início"
+    }
+  }
+}
