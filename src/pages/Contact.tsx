@@ -3,6 +3,26 @@ import { useState } from 'react';
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+
+    try {
+      const response = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData as any).toString()
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+    }
+  };
+
   if (submitted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-sunshine-violet/10 to-sunshine-blue/10 dark:from-gray-900 dark:to-gray-800 py-12">
@@ -27,8 +47,9 @@ export default function Contact() {
           <form
             name="contact"
             method="POST"
-            netlify="true"
-            netlify-honeypot="bot-field"
+            data-netlify="true"
+            data-netlify-honeypot="bot-field"
+            onSubmit={handleSubmit}
             className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg"
           >
             <input type="hidden" name="form-name" value="contact" />
