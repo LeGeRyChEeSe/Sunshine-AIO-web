@@ -7,6 +7,26 @@
   to = "/index.html"
   status = 200
 
+[[redirects]]
+  from = "/locales/en/contact"
+  to = "/locales/en/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/locales/fr/contact"
+  to = "/locales/fr/contact.html"
+  status = 200
+
+[[redirects]]
+  from = "/locales/en/success"
+  to = "/locales/en/success.html"
+  status = 200
+
+[[redirects]]
+  from = "/locales/fr/success"
+  to = "/locales/fr/success.html"
+  status = 200
+
 [functions]
   directory = "netlify/functions"
 
