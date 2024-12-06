@@ -7,7 +7,7 @@ const tools = [
     translationKey: 'sunshine',
     github: 'https://github.com/LeGeRyChEeSe/Sunshine-AIO',
     downloadUrl:
-      'https://github.com/LeGeRyChEeSe/Sunshine-AIO/releases/latest/download/Sunshine-AIO.exe',
+      'https://github.com/LeGeRyChEeSe/Sunshine-AIO/releases/latest',
     recommended: true,
     type: 'server',
     size: 'large',
