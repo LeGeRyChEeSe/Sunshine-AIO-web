@@ -10,7 +10,7 @@ export default function Guide() {
       description: t('guide.steps.download.description'),
       image: '/images/sunshine-download.png',
       downloadUrl:
-        'https://github.com/LeGeRyChEeSe/Sunshine-AIO/releases/latest/download/Sunshine-AIO.exe',
+        'https://github.com/LeGeRyChEeSe/Sunshine-AIO/releases/latest',
     },
     {
       title: t('guide.steps.run.title'),
