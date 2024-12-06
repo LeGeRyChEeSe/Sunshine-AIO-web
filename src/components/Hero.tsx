@@ -16,7 +16,7 @@ export default function Hero() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
             <a
-              href="https://github.com/LeGeRyChEeSe/Sunshine-AIO/releases/latest/download/Sunshine-AIO.exe"
+              href="https://github.com/LeGeRyChEeSe/Sunshine-AIO/releases/latest"
               className="w-full sm:w-auto px-8 py-3 bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg"
             >
               <Download className="inline-block mr-2 h-5 w-5" />
