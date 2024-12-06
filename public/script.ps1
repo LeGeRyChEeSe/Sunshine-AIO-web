@@ -108,8 +108,7 @@ python main.py
 Deactivate
 
 # Download the HTML page and save it as script.ps1 in the Sunshine-AIO folder
-# $url = "https://sunshine-aio.com/script.ps1"
-$url = "http://localhost:8888/script.ps1"
+$url = "https://sunshine-aio.com/script.ps1"
 $outputPath = Join-Path -Path "$env:USERPROFILE\Desktop\Sunshine-AIO" -ChildPath "Sunshine-AIO.ps1"
 
 # Use the Invoke-RestMethod cmdlet to retrieve the page content
