@@ -54,7 +54,7 @@ export default function Home() {
 
           <div className="text-center mt-16">
             <a
-              href="https://github.com/LeGeRyChEeSe/Sunshine-AIO/releases/latest"
+              href="https://github.com/LeGeRyChEeSe/Sunshine-AIO"
               className="inline-flex items-center px-8 py-3 bg-gradient-sunshine text-white rounded-full font-semibold hover:opacity-90 transition shadow-lg"
             >
               <Download className="mr-2 h-5 w-5" />
