@@ -41,7 +41,7 @@ function CheckAndInstallPython {
 
     # Run the installation script from the temporary directory
     Write-Output "Running the Python installation script..."
-    Start-Process -FilePath $tempFile -ArgumentList "/quiet PrependPath=0 AddToPath=0 InstallUserPartitionKey=""" -Wait
+    Start-Process -FilePath $tempFile -ArgumentList "/quiet PrependPath=0 AddToPath=1 InstallUserPartitionKey=""" -Wait
 
     # Delete the downloaded file from the temporary directory
     Remove-Item $tempFile -Force
