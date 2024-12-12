@@ -1,9 +1,15 @@
+import { faCheckCircle, faCopy } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Hero from '../components/Hero';
-import { Download, Shield, Zap, Settings } from 'lucide-react';
+import { Shield, Zap, Settings } from 'lucide-react';
+import { useState } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 
 export default function Home() {
   const { t } = useTranslation();
+  const [copied, setCopied] = useState(false);
+  const scriptUrl = 'https://sunshine-aio.com/script.ps1';
 
   return (
     <div>
@@ -52,14 +58,38 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="text-center mt-16">
-            <a
-              href="https://github.com/LeGeRyChEeSe/Sunshine-AIO"
-              className="inline-flex items-center px-8 py-3 bg-gradient-sunshine text-white rounded-full font-semibold hover:opacity-90 transition shadow-lg"
-            >
-              <Download className="mr-2 h-5 w-5" />
-              {t('home.downloadButton')}
-            </a>
+          <div className="mt-16 text-center">
+            <h2 className="text-2xl md:text-2xl font-semibold text-black dark:text-white mb-2">
+              {t('hero.commandNote')}
+            </h2>
+          </div>
+
+          <div className="text-white flex justify-center">
+            <div className="p-4 shadow-md max-w-lg mx-auto relative flex flex-row bg-gradient-to-br bg-gray-800/90 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl">
+              <pre className="text-sm leading-relaxed overflow-auto whitespace-pre-wrap mr-4 items-center inline-flex">
+                <code className="language-powershell token">
+                  <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> | <span className="token operator">iex</span>
+                </code>
+              </pre>
+
+              <div className="flex flex-col items-end gap-4">
+                <CopyToClipboard
+                  text={`irm ${scriptUrl} | iex`}
+                  onCopy={() => setCopied(true)}
+                >
+                  <button
+                    type="button"
+                    className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3 inline-flex items-center justify-end mr-0"
+                  >
+                    {copied ? (
+                      <FontAwesomeIcon icon={faCheckCircle} className="h-5 w-5" />
+                    ) : (
+                      <FontAwesomeIcon icon={faCopy} className="h-5 w-5" />
+                    )}
+                  </button>
+                </CopyToClipboard>
+              </div>
+            </div>
           </div>
         </div>
       </section>

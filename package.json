@@ -10,6 +10,9 @@
     "build:styles": "postcss src/index.css -o public/styles.css"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.1",
+    "@fortawesome/free-solid-svg-icons": "^6.7.1",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@netlify/functions": "^2.8.2",
     "fs": "^0.0.1-security",
     "i18next": "^23.10.1",
@@ -17,6 +20,7 @@
     "i18next-http-backend": "^2.5.0",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.3.1",
     "react-i18next": "^14.1.0",
     "react-router-dom": "^6.22.3"
@@ -24,6 +28,7 @@
   "devDependencies": {
     "@eslint/js": "^9.9.1",
     "@types/react": "^18.3.5",
+    "@types/react-copy-to-clipboard": "^5.0.7",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.18",

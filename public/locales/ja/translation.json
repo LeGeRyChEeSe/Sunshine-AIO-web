@@ -2,150 +2,145 @@
   "header": {
     "home": "ホーム",
     "tools": "ツール",
-    "guide": "インストールガイド",
-    "about": "概要",
+    "guide": "ガイドのインストール",
+    "about": "关于",
     "theme": {
       "light": "ライトモード",
       "dark": "ダークモード"
     }
   },
   "hero": {
-    "title": "Sunshine-AIO",
-    "subtitle": "ゲームストリーミング環境設定のオールインワンソリューション。Sunshine と必要なコンポーネントをワンクリックでインストール。",
-    "downloadButton": "最新版をダウンロード",
-    "guideButton": "インストールガイドを見る"
+    "title": "ソーンスウェーダIO",
+    "subtitle": "ゲームストリーミングの環境を設定するための一元的な解決法。シンプルなパワースhellコマンドでインストール。",
+    "guideButton": "ガイドのインストールを見る",
+    "commandNote": "サーバーのインストールとクライアントのインストールを一発で実行できます。必要な設定手順は不要です。"
   },
   "home": {
     "whyChoose": {
-      "title": "なぜ Sunshine-AIO を選ぶのか？",
-      "subtitle": "シンプルなインストールでゲームストリーミングの設定に必要なものをすべて入手できます。"
+      "title": "なぜ選ぶソーンスウェーダIO?",
+      "subtitle": "ゲームストリーミング環境を設定するためのすべてのツールを一括してインストールできます。"
     },
     "features": {
       "allInOne": {
-        "title": "オールインワンソリューション",
-        "description": "必要なコンポーネントをワンクリックでインストール。手動設定は不要です。"
+        "title": "全てを一括して",
+        "description": "MoonlightとSunshine-AIO、Virtual Display Driver、Playnite、Playnite Watcher、sunshine_base、moonlightのすべてをインストールできます。必要な設定手順は不要です。"
       },
       "quickSetup": {
-        "title": "クイックセットアップ",
-        "description": "自動化されたインストールにより、数時間ではなく数分で準備完了。"
+        "title": "簡単なセットアップ",
+        "description": "ソーンスウェーダIOを一発で実行することで、ゲームストリーミングが可能な状態になります。簡単に操作することが可能となります。"
       },
       "preConfigured": {
-        "title": "事前設定済み",
-        "description": "すべてが最適なパフォーマンスのために事前設定されています。"
+        "title": "プレコンフィギュレーション",
+        "description": "Sunshine-AIOはMoonlightのプレコンフィギュレーションをサポートしています。 Moonlightはゲームストリーミングを可能にするための多くの機能を備えており、Sunshine-AIOもそれらの機能を利用することができます。"
       }
-    },
-    "downloadButton": "Sunshine-AIO をダウンロード"
+    }
   },
   "tools": {
     "title": "インストールツール",
     "serverInstall": "サーバーインストール",
     "clientInstall": "クライアントインストール",
     "recommended": "推奨",
-    "viewGithub": "GitHub で見る",
-    "visitWebsite": "ウェブサイトを訪問",
+    "viewGithub": "GitHub上を確認する",
+    "visitWebsite": "ウェブサイトを開く",
     "download": "ダウンロード",
     "windows10": "Windows 10",
     "windows11": "Windows 11",
     "sunshine": {
-      "name": "Sunshine-AIO",
-      "description": "ゲームストリーミング環境設定のオールインワンソリューション。Windows 10 と Windows 11 のみ対応。ほとんどのユーザーに推奨！"
+      "name": "ソーンスウェーダIO",
+      "description": "ゲームストリーミングの環境を設定するための一元的な解決法。 MoonlightとSunshine-AIO、Virtual Display Driver、Playnite、Playnite Watcher、sunshine_base、moonlightのすべてがインストールできる状態になります。必要な設定手順は不要です。"
     },
     "moonlight": {
       "name": "Moonlight",
-      "description": "ゲーミング PC からゲームをストリーミングするための無料オープンソースクライアント。Windows、MacOS、Linux、Steam Link デバイス、Raspberry Pi 4、ChromeOS ノートパソコン、タブレット、Android デバイス、iPhone、iPad、iPod touch、AppleTV、シングルボードコンピュータ、Xbox One、Xbox Series S|X、Homebrew 対応 PlayStation Vita、Homebrew 対応 Nintendo Switch、Homebrew 対応 Wii U、LG webOS TV に対応。"
+      "description": "ゲームストリーミングを可能にするためのオープンソースのクライアントです。Windows、MacOS、Linux、Steam Link、Raspberry Pi 4、Chrome OS、tablettes、iOS, iPad、iPod touch、AppleTV、マルチコアマシン、Xbox One、Xbox Series S|X、PlayStation Vita、Homebrew、Nintendo Switch、Wii U、HomebrewとTV LG webOSのいずれかがサポートされています。"
     },
     "sunshine_base": {
       "name": "Sunshine",
-      "description": "Moonlight 用のセルフホスト型ゲームストリームホスト。"
+      "description": "Moonlightをホストするための自立したインスタンスです。"
     },
     "virtual_display": {
-      "name": "Virtual Display Driver",
-      "description": "リモートゲーミング用の仮想ディスプレイを作成。"
+      "name": "仮想ディスプレイドライバ",
+      "description": "ゲームを遠程で視聴するための仮想ディスプレイを作成できます。"
     },
     "playnite": {
       "name": "Playnite",
-      "description": "複数のプラットフォームをサポートするビデオゲームライブラリマネージャー。"
+      "description": "ゲームのリスト管理とサブスクリプション管理ツールです。多くのプラットフォームがサポートされています。"
     },
     "playnite_watcher": {
       "name": "Playnite Watcher",
-      "description": "Playnite ライブラリに基づいて Sunshine のゲームリストを自動更新。"
+      "description": "Sunshineを定期的に更新するためにMoonlightのリストを監視します。"
     }
   },
   "guide": {
     "title": "インストールガイド",
-    "downloadNow": "今すぐダウンロード",
     "steps": {
       "download": {
-        "title": "Sunshine-AIO をダウンロード",
-        "description": "GitHub から Sunshine-AIO の最新版をダウンロードします。重要：Windows Defender やウイルス対策ソフトがファイルを不審として検出する場合があります。これは誤検出です。「詳細情報」をクリックし、「実行」を選択することで安全に警告をバイパスできます。ファイルがまだブロックされている場合は、ウイルス対策ソフトの設定でこのファイルの除外を追加するか、ダウンロードとインストール中にウイルス対策ソフトを一時的に無効にする必要があります。"
-      },
-      "run": {
-        "title": "アプリケーションを実行",
-        "description": "Sunshine-AIO.exe を右クリックし、「管理者として実行」を選択します。これはインストールに必要なすべてを含む単独の実行ファイルです - インストーラーではなく、オールインワンツールです。"
+        "title": "ソーンスウェーダIOをインストールする",
+        "description": "PowerShellコマンドを使ってソーンスウェーダIOをダウンロードし、インストールします。",
+        "note": "Dライブに'Sunshine-AIO'というフォルダが作られることを確認してください。"
       },
       "install": {
-        "title": "インストールを開始",
-        "description": "アプリケーションが起動したら、「1」を入力してエンターキーを押し、完全なインストールプロセスを開始します。これにより、ゲームストリーミング設定に必要なすべてのコンポーネントが自動的にインストールおよび設定されます。"
+        "title": "インストールの開始",
+        "description": "ソーンスウェーダIOを起動し、1とEnterキーを押して完全なセットアップを開始します。必要な設定手順は不要です。"
       }
     },
     "complete": {
-      "title": "インストール完了！",
-      "description": "これらの手順を完了すると、Sunshine-AIO がシステムに完全にインストールおよび設定されます。これで Moonlight を使用してゲームのストリーミングを開始できます！",
-      "ready": "使用準備完了！"
+      "title": "インストール完了 !",
+      "description": "ソーンスウェーダIOのインストールが完了しました。MoonlightとSunshine-AIO、Virtual Display Driver、Playnite、Playnite Watcher、sunshine_base、moonlightのすべてが準備されている状態になります。必要な設定手順は不要です。",
+      "ready": "使用できる !"
     }
   },
   "about": {
-    "title": "Sunshine-AIO について",
+    "title": "ソーンスウェーダIOについて",
     "overview": {
-      "title": "プロジェクト概要",
-      "description": "Sunshine-AIO は、ゲームストリーミング環境設定のオールインワンソリューションです。ゲームストリーミングに必要な複数のツールのインストールと設定プロセスを簡素化し、誰でも利用できるようにします。"
+      "title": "プロジェクトの概要",
+      "description": "ソーンスウェーダIOはゲームストリーミングの環境を設定するための一元的な解決法です。 MoonlightとSunshine-AIO、Virtual Display Driver、Playnite、Playnite Watcher、sunshine_base、moonlightのすべてがインストールできる状態になります。"
     },
     "collaboration": {
-      "title": "共同制作",
-      "description": "このウェブサイトは以下の協力により制作されました：",
+      "title": "プロジェクトの作成者",
+      "description": "このウェブサイトはソーンスウェーダIOプロジェクトを作成した人々と連携しています。",
       "roles": {
-        "creator": "プロジェクト作成者",
-        "website": "ウェブサイト開発"
+        "creator": "プロジェクトの作成者",
+        "website": "ウェブサイトの開発者"
       }
     }
   },
   "footer": {
-    "copyright": "© 2024 Sunshine-AIO。全権利所有。"
+    "copyright": "© 2024ソーンスウェーダIO。全著作権所有します。"
   },
   "contact": {
-    "helpButton": "サポートが必要ですか？",
-    "title": "サポートに連絡",
+    "helpButton": "サポートが必要ですか?",
+    "title": "連絡先",
     "form": {
       "name": "お名前",
       "email": "メールアドレス",
-      "category": "問題のカテゴリー",
-      "selectCategory": "カテゴリーを選択",
+      "category": "問題のカテゴリ",
+      "selectCategory": "問題のカテゴリを選択してください。",
       "categories": {
         "tool-issue": "ツールの問題",
         "installation": "インストールの問題",
-        "configuration": "設定のサポート",
-        "performance": "パフォーマンスの問題",
+        "configuration": "設定に関する問題",
+        "performance": "性能の問題",
         "compatibility": "互換性の問題",
-        "feature-request": "機能リクエスト",
+        "feature-request": "機能の提案",
         "website": "ウェブサイトの問題",
         "other": "その他"
       },
-      "tool": "関連ツール",
-      "selectTool": "ツールを選択",
-      "message": "メッセージ",
-      "attachments": "添付ファイル（任意）",
-      "attachmentHelp": "最大3つのファイル（画像または動画、各5MBまで）をアップロードできます",
-      "selectedFiles": "{{count}}個のファイルが選択されました",
-      "submit": "メッセージを送信",
+      "tool": "対象のツール",
+      "selectTool": "対象のツールを選択してください。",
+      "message": "お問い合わせ内容",
+      "attachments": "添付ファイル（オプション）",
+      "attachmentHelp": "最大3つのファイルをアップロードできます。画像（JPEG、PNG、GIF）やビデオ（MP4、WebM）のみが対象です。",
+      "selectedFiles": "{{count}}ファイル選択しました。",
+      "submit": "メッセージ送信",
       "errors": {
-        "tooManyFiles": "最大{{max}}個のファイルまで許可されています",
-        "fileTooBig": "ファイルは{{size}}未満である必要があります",
-        "invalidType": "画像（JPEG、PNG、GIF）と動画（MP4、WebM）のみが許可されています"
+        "tooManyFiles": "最大{{max}}ファイル許可されています。",
+        "fileTooBig": "アップロードするファイルは5MB以下である必要があります。",
+        "invalidType": "画像（JPEG、PNG、GIF）またはビデオ（MP4、WebM）のみが対象です。"
       }
     },
     "thankYou": {
       "title": "ありがとうございます！",
-      "message": "メッセージを受け付けました。できるだけ早くご返信いたします。",
+      "message": "あなたのメッセージを受けています。即時に対応します。",
       "backHome": "ホームに戻る"
     }
   }

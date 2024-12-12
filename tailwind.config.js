@@ -1,7 +1,8 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  mode: 'jit',
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
@@ -29,6 +30,5 @@ module.exports = {
       },
     },
   },
-  variants: {},
   plugins: [],
 };

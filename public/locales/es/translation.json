@@ -11,101 +11,96 @@
   },
   "hero": {
     "title": "Sunshine-AIO",
-    "subtitle": "La solución todo en uno para configurar tu entorno de streaming de juegos. Instalación con un solo clic para Sunshine y todos los componentes necesarios.",
-    "downloadButton": "Descargar última versión",
-    "guideButton": "Ver guía de instalación"
+    "subtitle": "La solución todo-en-uno para configurar su entorno de transmisión de juegos. Instalación en un clic para Sunshine y todos los componentes necesarios.",
+    "guideButton": "Ver la guía de instalación",
+    "commandNote": "Instalación sencilla a través de PowerShell"
   },
   "home": {
     "whyChoose": {
       "title": "¿Por qué elegir Sunshine-AIO?",
-      "subtitle": "Obtén todo lo que necesitas para configurar el streaming de juegos en una sola instalación."
+      "subtitle": "Obtenga todo lo que necesita para configurar la transmisión de juegos en una sola instalación."
     },
     "features": {
       "allInOne": {
-        "title": "Solución todo en uno",
-        "description": "Instala todos los componentes necesarios con un solo clic. Sin configuración manual necesaria."
+        "title": "Solución todo-en-uno",
+        "description": "Instale todos los componentes necesarios con un solo clic. No es necesario configurar manualmente nada."
       },
       "quickSetup": {
-        "title": "Configuración rápida",
-        "description": "Ponte en marcha en minutos en lugar de horas con nuestra instalación automatizada."
+        "title": "Instalación rápida",
+        "description": "Esté funcionando en minutos en lugar de horas gracias a nuestra instalación automática."
       },
       "preConfigured": {
         "title": "Preconfigurado",
-        "description": "Todo está preconfigurado para un rendimiento óptimo desde el primer momento."
+        "description": "Todo está preconfigurado para una ejecución óptima desde el inicio."
       }
-    },
-    "downloadButton": "Descargar Sunshine-AIO"
+    }
   },
   "tools": {
     "title": "Herramientas de instalación",
-    "serverInstall": "Instalación Servidor",
-    "clientInstall": "Instalación Cliente",
+    "serverInstall": "Instalación del servidor",
+    "clientInstall": "Instalación del cliente",
     "recommended": "Recomendado",
     "viewGithub": "Ver en GitHub",
-    "visitWebsite": "Visitar sitio web",
+    "visitWebsite": "Visitar el sitio web",
     "download": "Descargar",
     "windows10": "Windows 10",
     "windows11": "Windows 11",
     "sunshine": {
       "name": "Sunshine-AIO",
-      "description": "Solución todo en uno para configurar tu entorno de streaming de juegos. Compatible solo con Windows 10 y Windows 11. ¡Recomendado para la mayoría de los usuarios!"
+      "description": "Solución todo-en-uno para configurar su entorno de transmisión de juegos. Compatible solo con Windows 10 y Windows 11. Recomendado para la mayoría de los usuarios."
     },
     "moonlight": {
       "name": "Moonlight",
-      "description": "Cliente de código abierto gratuito para transmitir juegos desde tu PC gaming. Compatible con Windows, MacOS, Linux, dispositivos Steam Link, Raspberry Pi 4, portátiles ChromeOS, tabletas, dispositivos Android, iPhone, iPad, iPod touch, AppleTV, ordenadores de placa única, Xbox One, Xbox Series S|X, PlayStation Vita con Homebrew, Nintendo Switch con Homebrew, Wii U con Homebrew y TV LG webOS."
+      "description": "Cliente gratuito de código abierto para transmitir juegos desde su PC de juego. Compatible con Windows, MacOS, Linux, dispositivos Steam Link, Raspberry Pi 4, ordenadores portátiles ChromeOS, tabletas, dispositivos Android, iPhone, iPad, iPod touch, AppleTV, computadoras mono-carta, Xbox One, Xbox Series S|X, PlayStation Vita con Homebrew, Nintendo Switch con Homebrew y Wii U con Homebrew."
     },
     "sunshine_base": {
       "name": "Sunshine",
-      "description": "Host de streaming de juegos autoalojado para Moonlight."
+      "description": "Anfitrión de transmisión de juegos auto-hospedado para Moonlight."
     },
     "virtual_display": {
-      "name": "Virtual Display Driver",
-      "description": "Crear pantallas virtuales para juegos remotos."
+      "name": "Controlador de pantalla virtual",
+      "description": "Crea pantallas virtuales para el juego a distancia."
     },
     "playnite": {
       "name": "Playnite",
-      "description": "Gestor de biblioteca de videojuegos con soporte para múltiples plataformas."
+      "description": "Gestor de biblioteca de videojuegos con soporte para varias plataformas."
     },
     "playnite_watcher": {
-      "name": "Playnite Watcher",
-      "description": "Actualiza automáticamente la lista de juegos de Sunshine basándose en la biblioteca de Playnite."
+      "name": "Observador de Playnite",
+      "description": "Actualiza automáticamente la lista de juegos de Sunshine según la biblioteca de Playnite."
     }
   },
   "guide": {
     "title": "Guía de instalación",
-    "downloadNow": "Descargar ahora",
     "steps": {
       "download": {
-        "title": "Descargar Sunshine-AIO",
-        "description": "Descarga la última versión de Sunshine-AIO desde GitHub. Importante: Windows Defender o tu antivirus pueden marcar el archivo como sospechoso. Esto es un falso positivo. Puedes omitir esta advertencia de forma segura haciendo clic en \"Más información\" y luego en \"Ejecutar de todos modos\". Si el archivo sigue bloqueado, deberás agregar una exclusión en la configuración de tu antivirus para este archivo o desactivar temporalmente tu antivirus durante el proceso de descarga e instalación."
-      },
-      "run": {
-        "title": "Ejecutar la aplicación",
-        "description": "Haz clic derecho en Sunshine-AIO.exe y selecciona \"Ejecutar como administrador\". Este es un archivo ejecutable independiente que contiene todo lo necesario para la instalación, no es un instalador sino una herramienta todo en uno."
+        "title": "Instalar Sunshine-AIO",
+        "description": "Inicie un Terminal (no CMD) o PowerShell directamente desde su computadora y ejecute esta comando para instalar Sunshine-AIO:",
+        "note": "Nota: Un directorio 'Sunshine-AIO' se creará en su escritorio con los herramientas necesarias para el buen funcionamiento del programa."
       },
       "install": {
-        "title": "Iniciar instalación",
-        "description": "Cuando se inicie la aplicación, escribe \"1\" y presiona Enter para comenzar el proceso de instalación completo. Esto instalará y configurará automáticamente todos los componentes necesarios para tu configuración de streaming de juegos."
+        "title": "Iniciar la instalación",
+        "description": "Cuando la aplicación inicie, escriba \"1\" y presione Enter para comenzar el proceso de instalación completa. Esto instalará y configurará automáticamente todos los componentes necesarios para su configuración de transmisión de juegos."
       }
     },
     "complete": {
-      "title": "¡Instalación completa!",
-      "description": "Después de seguir estos pasos, Sunshine-AIO estará completamente instalado y configurado en tu sistema. ¡Ahora puedes comenzar a transmitir tus juegos usando Moonlight!",
-      "ready": "¡Listo para usar!"
+      "title": "¡La instalación ha terminado!",
+      "description": "Después de seguir estos pasos, Sunshine-AIO estará completamente instalado y configurado en su sistema. Ahora puede comenzar a transmitir sus juegos con Moonlight!",
+      "ready": "Listo para usar!"
     }
   },
   "about": {
     "title": "Acerca de Sunshine-AIO",
     "overview": {
-      "title": "Descripción del proyecto",
-      "description": "Sunshine-AIO es una solución todo en uno para configurar tu entorno de streaming de juegos. Simplifica el proceso de instalación y configuración de múltiples herramientas necesarias para el streaming de juegos, haciéndolo accesible para todos."
+      "title": "Resumen del proyecto",
+      "description": "Sunshine-AIO es una solución todo-en-uno para configurar su entorno de transmisión de juegos. Simplifica el proceso de instalación y configuración de varios herramientas necesarias para la transmisión de juegos, haciéndolo accesible a todos."
     },
     "collaboration": {
       "title": "Creado en colaboración",
-      "description": "Este sitio web fue creado en colaboración entre:",
+      "description": "Este sitio web ha sido creado en colaboración entre:",
       "roles": {
         "creator": "Creador del proyecto",
-        "website": "Desarrollo del sitio web"
+        "website": "Desarrollo de sitio web"
       }
     }
   },
@@ -113,40 +108,40 @@
     "copyright": "© 2024 Sunshine-AIO. Todos los derechos reservados."
   },
   "contact": {
-    "helpButton": "¿Necesitas ayuda?",
-    "title": "Contactar soporte",
+    "helpButton": "¿Necesita ayuda?",
+    "title": "Contactar con el soporte",
     "form": {
-      "name": "Tu nombre",
-      "email": "Dirección de correo",
+      "name": "Nombre",
+      "email": "Correo electrónico",
       "category": "Categoría del problema",
-      "selectCategory": "Selecciona una categoría",
+      "selectCategory": "Seleccione una categoría",
       "categories": {
-        "tool-issue": "Problema con una herramienta",
+        "tool-issue": "Problema con herramienta",
         "installation": "Problema de instalación",
-        "configuration": "Ayuda con la configuración",
+        "configuration": "Ayuda para la configuración",
         "performance": "Problema de rendimiento",
         "compatibility": "Problema de compatibilidad",
         "feature-request": "Solicitud de función",
-        "website": "Problema con el sitio web",
+        "website": "Problema con sitio web",
         "other": "Otro"
       },
-      "tool": "Herramienta relacionada",
-      "selectTool": "Selecciona una herramienta",
-      "message": "Tu mensaje",
-      "attachments": "Archivos adjuntos (Opcional)",
-      "attachmentHelp": "Puedes subir hasta 3 archivos (imágenes o videos, máx 5MB cada uno)",
+      "tool": "Herramienta afectada",
+      "selectTool": "Seleccione una herramienta",
+      "message": "Mensaje",
+      "attachments": "Adjuntos (opcional)",
+      "attachmentHelp": "Puede adjuntar hasta 3 archivos (imágenes o videos, máximo 5MB cada uno)",
       "selectedFiles": "{{count}} archivo(s) seleccionado(s)",
       "submit": "Enviar mensaje",
       "errors": {
-        "tooManyFiles": "Máximo {{max}} archivos permitidos",
-        "fileTooBig": "Los archivos deben ser menores de {{size}}",
+        "tooManyFiles": "Se autorizan {{max}} archivos máximo",
+        "fileTooBig": "Los archivos deben ser inferiores a {{size}}",
         "invalidType": "Solo se permiten imágenes (JPEG, PNG, GIF) y videos (MP4, WebM)"
       }
     },
     "thankYou": {
       "title": "¡Gracias!",
-      "message": "Hemos recibido tu mensaje y te responderemos lo antes posible.",
-      "backHome": "Volver al inicio"
+      "message": "Hemos recibido su mensaje con éxito y responderemos en breve.",
+      "backHome": "Volver a inicio"
     }
   }
 }

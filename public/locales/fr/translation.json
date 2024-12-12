@@ -12,8 +12,8 @@
   "hero": {
     "title": "Sunshine-AIO",
     "subtitle": "La solution tout-en-un pour configurer votre environnement de streaming de jeux. Installation en un clic pour Sunshine et tous les composants nécessaires.",
-    "downloadButton": "Télécharger la dernière version",
-    "guideButton": "Voir le guide d'installation"
+    "guideButton": "Voir le guide d'installation",
+    "commandNote": "Installation simple via PowerShell"
   },
   "home": {
     "whyChoose": {
@@ -33,8 +33,7 @@
         "title": "Pré-configuré",
         "description": "Tout est pré-configuré pour des performances optimales dès l'installation."
       }
-    },
-    "downloadButton": "Télécharger Sunshine-AIO"
+    }
   },
   "tools": {
     "title": "Outils d'installation",
@@ -73,15 +72,11 @@
   },
   "guide": {
     "title": "Guide d'installation",
-    "downloadNow": "Télécharger maintenant",
     "steps": {
       "download": {
-        "title": "Télécharger Sunshine-AIO",
-        "description": "Téléchargez la dernière version de Sunshine-AIO depuis GitHub. Important : Windows Defender ou votre antivirus peut marquer le fichier comme suspect. C'est un faux positif. Vous pouvez ignorer cet avertissement en toute sécurité en cliquant sur \"Plus d'informations\" puis sur \"Exécuter quand même\". Si le fichier est toujours bloqué, vous devrez soit ajouter une exclusion dans les paramètres de votre antivirus pour ce fichier, soit désactiver temporairement votre antivirus pendant le processus de téléchargement et d'installation."
-      },
-      "run": {
-        "title": "Exécuter l'application",
-        "description": "Faites un clic droit sur Sunshine-AIO.exe et sélectionnez \"Exécuter en tant qu'administrateur\". Il s'agit d'un fichier exécutable autonome qui contient tout le nécessaire pour l'installation - ce n'est pas un installateur mais plutôt un outil tout-en-un."
+        "title": "Installer Sunshine-AIO",
+        "description": "Démarrez un Terminal (pas CMD) ou PowerShell directement depuis votre ordinateur et exécutez cette commande pour installer Sunshine-AIO:",
+        "note": "Note: Un dossier 'Sunshine-AIO' sera créé sur votre bureau contenant les outils nécessaires au bon fonctionnement du programme."
       },
       "install": {
         "title": "Démarrer l'installation",

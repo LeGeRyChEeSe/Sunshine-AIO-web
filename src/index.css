@@ -33,3 +33,24 @@ body {
 .hover\:bg-gradient-sunshine:hover {
   background: linear-gradient(135deg, #4c1d95 0%, #312e81 50%, #1e3a8a 100%);
 }
+
+.token {
+  @apply text-sm leading-relaxed overflow-hidden whitespace-pre-wrap;
+  white-space: nowrap;
+}
+
+.token.keyword {
+  @apply font-bold text-purple-600;
+}
+
+.token.string {
+  @apply font-normal text-yellow-400;
+}
+
+.token.operator {
+  @apply font-normal text-green-500;
+}
+
+.token.special {
+  @apply font-normal text-cyan-500;
+}

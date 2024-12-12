@@ -5,147 +5,142 @@
     "guide": "安装指南",
     "about": "关于",
     "theme": {
-      "light": "浅色模式",
-      "dark": "深色模式"
+      "light": "明亮模式",
+      "dark": "黑暗模式"
     }
   },
   "hero": {
-    "title": "Sunshine-AIO",
-    "subtitle": "一站式游戏流媒体环境配置解决方案。一键安装 Sunshine 和所有必需组件。",
-    "downloadButton": "下载最新版本",
-    "guideButton": "查看安装指南"
+    "title": "阳光-AIO",
+    "subtitle": "配置您的游戏流媒体环境的全包解决方案。通过一键安装，无需任何手动设置。",
+    "guideButton": "查看安装指南",
+    "commandNote": "通过 PowerShell 进行快速安装"
   },
   "home": {
     "whyChoose": {
-      "title": "为什么选择 Sunshine-AIO？",
-      "subtitle": "通过一次简单的安装获得游戏流媒体设置所需的一切。"
+      "title": "为什么选择阳光-AIO？",
+      "subtitle": "选择 Sunshine-AIO 可以让您轻松配置游戏流媒体环境。"
     },
     "features": {
       "allInOne": {
-        "title": "一体化解决方案",
-        "description": "一键安装所有必需组件。无需手动设置。"
+        "title": "全部在一块",
+        "description": "通过一键安装，无需任何手动设置。您可以将所有必要的组件一次性安装完毕。"
       },
       "quickSetup": {
-        "title": "快速设置",
-        "description": "通过我们的自动化安装，几分钟内即可完成设置。"
+        "title": "快速安装",
+        "description": "通过 PowerShell 进行快速安装。您只需要几秒钟即可完成整个安装过程。"
       },
       "preConfigured": {
-        "title": "预配置",
-        "description": "一切都已预先配置，开箱即可获得最佳性能。"
+        "title": "预先配置",
+        "description": "所有设置都已预配置，以便在启动时获得最佳性能。"
       }
-    },
-    "downloadButton": "下载 Sunshine-AIO"
+    }
   },
   "tools": {
     "title": "安装工具",
     "serverInstall": "服务器安装",
     "clientInstall": "客户端安装",
     "recommended": "推荐",
-    "viewGithub": "在 GitHub 上查看",
+    "viewGithub": "查看 GitHub",
     "visitWebsite": "访问网站",
     "download": "下载",
     "windows10": "Windows 10",
     "windows11": "Windows 11",
     "sunshine": {
-      "name": "Sunshine-AIO",
-      "description": "一站式游戏流媒体环境配置解决方案。仅兼容 Windows 10 和 Windows 11。推荐大多数用户使用！"
+      "name": "阳光-AIO",
+      "description": "适用于 Windows 10 和 Windows 11 的全部在一块解决方案。它专为 Windows 用户设计，推荐使用。"
     },
     "moonlight": {
       "name": "Moonlight",
-      "description": "免费开源的游戏流媒体客户端，可从您的游戏 PC 串流游戏。支持 Windows、MacOS、Linux、Steam Link 设备、Raspberry Pi 4、ChromeOS 笔记本电脑、平板电脑、Android 设备、iPhone、iPad、iPod touch、AppleTV、单板计算机、Xbox One、Xbox Series S|X、支持自制固件的 PlayStation Vita、支持自制固件的 Nintendo Switch、支持自制固件的 Wii U 和 LG webOS 电视。"
+      "description": "一个免费的开源客户端，用于从 PC 游戏机上流媒体播放游戏。适用于 Windows、macOS、Linux、Steam Link 等平台。"
     },
     "sunshine_base": {
-      "name": "Sunshine",
-      "description": "Moonlight 的自托管游戏流媒体主机。"
+      "name": "阳光",
+      "description": "自托管游戏流媒体服务器，适合 Moonlight 使用。"
     },
     "virtual_display": {
-      "name": "Virtual Display Driver",
-      "description": "为远程游戏创建虚拟显示器。"
+      "name": "虚拟显示器驱动程序",
+      "description": "为远处的游戏创建虚拟显示。适用于 PC 游戏机、Raspberry Pi 4 和 Chrome OS 等平台。"
     },
     "playnite": {
       "name": "Playnite",
-      "description": "支持多平台的视频游戏库管理器。"
+      "description": "一个用于管理游戏库的免费客户端，支持多个平台。"
     },
     "playnite_watcher": {
-      "name": "Playnite Watcher",
-      "description": "根据 Playnite 库自动更新 Sunshine 游戏列表。"
+      "name": "Playnite 观察者",
+      "description": "自动检查 Playnite 中的游戏列表，并在 Sunshine 发现新游戏时更新。适用于 Windows、macOS 和 Linux 等平台。"
     }
   },
   "guide": {
     "title": "安装指南",
-    "downloadNow": "立即下载",
     "steps": {
       "download": {
-        "title": "下载 Sunshine-AIO",
-        "description": "从 GitHub 下载最新版本的 Sunshine-AIO。重要提示：Windows Defender 或您的防病毒软件可能会将该文件标记为可疑。这是误报。您可以通过点击\"更多信息\"然后\"仍要运行\"来安全地绕过此警告。如果文件仍被阻止，您需要在防病毒软件设置中为此文件添加例外，或在下载和安装过程中临时禁用防病毒软件。"
-      },
-      "run": {
-        "title": "运行应用程序",
-        "description": "右键点击 Sunshine-AIO.exe 并选择\"以管理员身份运行\"。这是一个独立的可执行文件，包含安装所需的一切内容 - 它不是安装程序，而是一个一体化工具。"
+        "title": "安装 Sunshine-AIO",
+        "description": "打开命令提示符（Windows）或 PowerShell 并输入以下命令来安装 Sunshine-AIO：",
+        "note": "下载完成后，Sunshine-AIO 文件将存储在您的桌面目录下。"
       },
       "install": {
         "title": "开始安装",
-        "description": "当应用程序启动时，输入\"1\"并按回车键开始完整安装过程。这将自动安装和配置游戏流媒体设置所需的所有组件。"
+        "description": "运行程序后，按 \"1\" 键并按下回车键以启动安装过程。这将自动安装和配置所需的组件。"
       }
     },
     "complete": {
       "title": "安装完成！",
-      "description": "完成这些步骤后，Sunshine-AIO 将在您的系统上完全安装和配置。现在您可以开始使用 Moonlight 串流游戏了！",
-      "ready": "准备就绪！"
+      "description": "安装完成后，Sunshine-AIO 将在系统中运行，并且您就可以开始流媒体播放游戏了。",
+      "ready": "就绪！"
     }
   },
   "about": {
     "title": "关于 Sunshine-AIO",
     "overview": {
       "title": "项目概述",
-      "description": "Sunshine-AIO 是一站式游戏流媒体环境配置解决方案。它简化了游戏流媒体所需的多个工具的安装和配置过程，使其对所有人都易于使用。"
+      "description": "阳光-AIO 是一个全面的解决方案，用于配置游戏流媒体环境。它简化了安装和配置过程，使您可以轻松使用各种工具。"
     },
     "collaboration": {
-      "title": "合作创建",
-      "description": "本网站由以下各方合作创建：",
+      "title": "创建团队",
+      "description": "这个网站是通过团队合作创建的：",
       "roles": {
-        "creator": "项目创建者",
-        "website": "网站开发"
+        "creator": "项目负责人",
+        "website": "网站开发人员"
       }
     }
   },
   "footer": {
-    "copyright": "© 2024 Sunshine-AIO。保留所有权利。"
+    "copyright": "© 2024 Sunshine-AIO。所有权利保留。"
   },
   "contact": {
     "helpButton": "需要帮助？",
     "title": "联系支持",
     "form": {
       "name": "您的姓名",
-      "email": "电子邮箱",
+      "email": "电子邮件地址",
       "category": "问题类别",
-      "selectCategory": "选择类别",
+      "selectCategory": "请选择一个类别",
       "categories": {
         "tool-issue": "工具问题",
         "installation": "安装问题",
-        "configuration": "配置帮助",
+        "configuration": "配置问题",
         "performance": "性能问题",
         "compatibility": "兼容性问题",
         "feature-request": "功能请求",
         "website": "网站问题",
         "other": "其他"
       },
-      "tool": "相关工具",
-      "selectTool": "选择工具",
+      "tool": "受影响的工具",
+      "selectTool": "请选择一个工具",
       "message": "您的消息",
-      "attachments": "附件（可选）",
-      "attachmentHelp": "您可以上传最多3个文件（图片或视频，每个最大5MB）",
-      "selectedFiles": "已选择 {{count}} 个文件",
+      "attachments": "附件（可选）：最多上传 3 个文件，每个文件不超过 5MB。",
+      "attachmentHelp": "您可以下载到您设备上的照片或视频，但文件大小不得超过 5MB。",
+      "selectedFiles": "{{count}} 个文件已选择",
       "submit": "发送消息",
       "errors": {
-        "tooManyFiles": "最多允许 {{max}} 个文件",
-        "fileTooBig": "文件必须小于 {{size}}",
-        "invalidType": "仅允许图片（JPEG、PNG、GIF）和视频（MP4、WebM）"
+        "tooManyFiles": "最多支持 {{max}} 个文件上传。",
+        "fileTooBig": "文件必须小于 {{size}} MB。",
+        "invalidType": "只支持 JPEG、PNG、GIF 和 MP4、WebM 等格式的图片或视频。"
       }
     },
     "thankYou": {
-      "title": "谢谢！",
-      "message": "我们已收到您的消息，将尽快回复。",
+      "title": "感谢！",
+      "message": "我们已经收到了您的消息，并将在最短时间内回复您。",
       "backHome": "返回首页"
     }
   }
