@@ -26,16 +26,16 @@ function CheckAndInstallPython {
 
     if ($null -eq $pythonVersion) {
         Write-Output "Python is not installed on the system. Installing the latest version..."
-    } elseif ([Version]$pythonVersion -ne [Version]$latestPythonVersion) { # Changed condition to use equal operator
+    } elseif ([Version]$pythonVersion -ne [Version]$latestPythonVersion) {
         Write-Output "Updating the Python version..."
     } else {
-        Write-Output "Correct Python version : $pythonVersion"
+        Write-Output "Correct Python version: $pythonVersion"
         return
     }
 
     # Create a temporary directory to download and install Python
-    $tempDir = [System.IO.Path]::GetTempPath()
-    $tempFile = Join-Path -Path $tempDir -ChildPath "python-$latestPythonVersion-amd64.exe"
+    $tempDir = New-Item -ItemType Directory -Path ([System.IO.Path]::GetTempPath() + "python-$(get-random).tmp") -Force
+    $tempFile = Join-Path -Path $tempDir.FullName -ChildPath "python-$latestPythonVersion-amd64.exe"
 
     # Download Python
     Write-Output "Downloading version $latestPythonVersion of Python..."
@@ -45,8 +45,8 @@ function CheckAndInstallPython {
     Write-Output "Running the Python installation script..."
     Start-Process -FilePath $tempFile -ArgumentList "/quiet PrependPath=0 AddToPath=1 InstallUserPartitionKey=""" -Wait
 
-    $pythonPath = "C:\Users\$env:USERNAME\AppData\Local\Programs\Python\Launcher"
-    [Environment]::SetEnvironmentVariable("PATH", $env:PATH + $pythonPath)
+    $pythonPath = ";C:\Users\$env:USERNAME\AppData\Local\Programs\Python\Launcher"
+    [Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$pythonPath")
 
     # Delete the downloaded file from the temporary directory
     Remove-Item $tempFile -Force
@@ -56,6 +56,44 @@ function CheckAndInstallPython {
 # Call the function before proceeding
 CheckAndInstallPython
 
+function CheckAndInstallGit {
+    # Checks if Git is installed
+    if (-not (Get-Command -Name git -ErrorAction SilentlyContinue)) {
+        Write-Output "Git is not installed. Installing Git..."
+
+        # Retrieves the latest version of Git from the GitHub API
+        $urlGitReleases = "https://api.github.com/repos/git-for-windows/git/releases/latest"
+        $latestRelease = Invoke-RestMethod -Uri $urlGitReleases -Method Get -UseBasicParsing
+
+        # Retrieves the download link for the 64-bit Git package
+        $browserDownloadUrl = ($latestRelease | Select-Object -ExpandProperty assets) | Where-Object {$_.name -like "*64-bit*"} | Select-Object -ExpandProperty browser_download_url
+
+        if ($null -ne $browserDownloadUrl) {
+            # Creates a temporary directory to store the downloaded package
+            $tempDir = New-Item -ItemType Directory -Path ([System.IO.Path]::GetTempPath() + "git-$(get-random).tmp") -Force
+
+            # Downloads the 64-bit Git package
+            Write-Output "Downloading Git..."
+            Invoke-WebRequest -Uri $browserDownloadUrl[0] -OutFile (Join-Path -Path $tempDir.FullName -ChildPath "PortableGit.exe")
+
+            # Runs the installation script from the temporary directory
+            Write-Output "Running the Git installation script..."
+            Start-Process -FilePath (Join-Path -Path $tempDir.FullName -ChildPath "PortableGit.exe") -ArgumentList "/quiet" -Wait
+
+            # Checks if the installation was successful
+            if ((Get-Command -Name git -ErrorAction SilentlyContinue)) {
+                Write-Output "Git installation successful"
+            } else {
+                Write-Error "Error installing Git"
+            }
+        } else {
+            Write-Error "No 64-bit version available"
+        }
+    }
+}
+
+CheckAndInstallGit
+    # Check if the entered path is a directory and exists
 $parentDirectory = Get-Item -Path .
 if ($parentDirectory.Name -eq "Sunshine-AIO") {
     $parentDirectory.name
@@ -75,7 +113,6 @@ if ($parentDirectory.Name -eq "Sunshine-AIO") {
     }
     Set-Location $rootPath
 }
-
 
 # Check if the Sunshine-AIO folder already exists, if yes, do not download the repo, but proceed to version checks
 if (Test-Path "${rootPath}\Sunshine-AIO") {
