@@ -1,6 +1,8 @@
 # Sets the execution policy for the current user to allow remote scripts to run
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 
+$url = "https://sunshine-aio.com/script.ps1"
+
 # Function to check Python version and install if necessary
 function CheckAndInstallPython {
     try {
@@ -135,6 +137,13 @@ if (Test-Path "${rootPath}\Sunshine-AIO") {
     Set-Location "${sunshineAioPath}\src"
     py main.py
     Deactivate
+    # Download the HTML page and save it as script.ps1 in the Sunshine-AIO folder
+    $outputPath = Join-Path -Path $sunshineAioPath -ChildPath "Sunshine-AIO.ps1"
+
+    # Use the Invoke-RestMethod cmdlet to retrieve the page content
+    Invoke-RestMethod -Uri $url -OutFile $outputPath -Method Get -ContentType 'text/plain' -Headers @{
+        Accept = 'text/plain'
+    }
     exit
 }
 
@@ -173,7 +182,6 @@ py main.py
 Deactivate
 
 # Download the HTML page and save it as script.ps1 in the Sunshine-AIO folder
-$url = "https://sunshine-aio.com/script.ps1"
 $outputPath = Join-Path -Path $sunshineAioPath -ChildPath "Sunshine-AIO.ps1"
 
 # Use the Invoke-RestMethod cmdlet to retrieve the page content
