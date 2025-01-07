@@ -47,7 +47,7 @@ export default function Guide() {
       data-id={step.id}
       data-description={step.description}
     >
-      <div className="md:grid md:grid-cols-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl overflow-hidden">
+      <div className="md:grid md:grid-cols-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl">
         <div className="p-8">
           <div className="flex items-center gap-4 mb-4">
             <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-gradient-sunshine">
@@ -62,22 +62,22 @@ export default function Guide() {
           </p>
           {(index === 0) && (
             <>
-              <div className="flex justify-start">
-                <div className="p-4 shadow-md max-w-lg mx-auto relative flex flex-row bg-gradient-to-br bg-gray-800/90 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl ml-4">
-                  <pre className="text-sm leading-relaxed overflow-auto whitespace-pre-wrap mr-4 items-center inline-flex">
-                    <code className="language-powershell token">
+              <div className="flex items-center justify-between text-center">
+                <div className="p-4 shadow-md w-max h-max max-w-full overflow-hidden flex flex-wrap bg-gradient-to-br bg-gray-800/90 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl items-center justify-center">
+                  <pre className="text-sm leading-relaxed overflow-wrap whitespace-pre-wrap mr-4 items-center inline-flex break-words">
+                    <code>
                       <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> | <span className="token operator">iex</span>
                     </code>
                   </pre>
 
-                  <div className="flex flex-col items-end gap-4">
+                  <div>
                     <CopyToClipboard
                       text={`irm ${scriptUrl} | iex`}
                       onCopy={() => setCopied(true)}
                     >
                       <button
                         type="button"
-                        className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3 inline-flex items-center justify-end mr-0 ml-auto"
+                        className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3 inline-flex items-center justify-end md:w-full lg:w-max xl:w-max 2xl:w-max"
                       >
                         {copied ? (
                           <FontAwesomeIcon icon={faCheckCircle} className="h-5 w-5" />

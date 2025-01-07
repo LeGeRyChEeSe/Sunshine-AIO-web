@@ -67,27 +67,25 @@ export default function Tools() {
           {t('tools.title')}
         </h1>
 
-        <div className="grid gap-6">
+        <div className="md:space-y-6 space-y-8 ">
           {tools.map((tool) => (
             <div
               key={tool.id}
-              className={`p-6 rounded-xl ${
-                tool.recommended
-                  ? tool.type === 'server'
-                    ? 'bg-gradient-to-r from-violet-500/90 to-violet-600/90 dark:from-violet-600/90 dark:to-violet-700/90 text-white'
-                    : 'bg-gradient-to-r from-blue-500/90 to-blue-600/90 dark:from-blue-600/90 dark:to-blue-700/90 text-white'
-                  : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm'
-              } ${tool.size === 'large' ? 'transform scale-105' : ''}`}
+              className={`p-6 rounded-xl ${tool.recommended
+                ? tool.type === 'server'
+                  ? 'bg-gradient-to-r from-violet-500/90 to-violet-600/90 dark:from-violet-600/90 dark:to-violet-700/90 text-white'
+                  : 'bg-gradient-to-r from-blue-500/90 to-blue-600/90 dark:from-blue-600/90 dark:to-blue-700/90 text-white'
+                : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm'
+                } ${tool.size === 'large' ? 'transform scale-105' : ''}`}
             >
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div className="flex flex-col md:flex-row gap-4 justify-between overflow-hidden">
                 <div>
-                  <div className="flex items-center gap-2 flex-wrap">
+                  <div className="flex flex-wrap items-center gap-2">
                     <h2
-                      className={`text-xl font-semibold ${
-                        tool.recommended
-                          ? 'text-gray-900 dark:text-white'
-                          : 'text-gray-900 dark:text-white'
-                      }`}
+                      className={`text-xl font-semibold ${tool.recommended
+                        ? 'text-gray-900 dark:text-white'
+                        : 'text-gray-900 dark:text-white'
+                        }`}
                     >
                       {t(`tools.${tool.translationKey}.name`)}
                     </h2>
@@ -98,11 +96,10 @@ export default function Tools() {
                     )}
                     {tool.type && (
                       <span
-                        className={`px-2 py-1 text-sm rounded-full ${
-                          tool.type === 'server'
-                            ? 'bg-violet-800/30 border border-violet-400/30 text-gray-900 dark:text-white'
-                            : 'bg-blue-800/30 border border-blue-400/30 text-gray-900 dark:text-white'
-                        }`}
+                        className={`px-2 py-1 text-sm rounded-full ${tool.type === 'server'
+                          ? 'bg-violet-800/30 border border-violet-400/30 text-gray-900 dark:text-white'
+                          : 'bg-blue-800/30 border border-blue-400/30 text-gray-900 dark:text-white'
+                          }`}
                       >
                         {t(
                           tool.type === 'server'
@@ -113,11 +110,10 @@ export default function Tools() {
                     )}
                   </div>
                   <p
-                    className={`mt-2 ${
-                      tool.recommended
-                        ? 'text-gray-900 dark:text-white/90'
-                        : 'text-gray-600 dark:text-gray-300'
-                    }`}
+                    className={`mt-2 ${tool.recommended
+                      ? 'text-gray-900 dark:text-white/90'
+                      : 'text-gray-600 dark:text-gray-300'
+                      }`}
                   >
                     {t(`tools.${tool.translationKey}.description`)}
                   </p>
@@ -127,11 +123,10 @@ export default function Tools() {
                         href={tool.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`inline-flex items-center ${
-                          tool.recommended
-                            ? 'text-white/90 hover:text-white'
-                            : 'text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
-                        }`}
+                        className={`inline-flex items-center ${tool.recommended
+                          ? 'text-white/90 hover:text-white'
+                          : 'text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300'
+                          }`}
                       >
                         <ExternalLink className="h-4 w-4 mr-1" />
                         {t('tools.viewGithub')}
@@ -139,7 +134,7 @@ export default function Tools() {
                     )}
                   </div>
                 </div>
-                <div className="flex-shrink-0">
+                <div className="flex flex-wrap items-center justify-center">
                   {tool.website ? (
                     <a
                       href={tool.website}
@@ -151,7 +146,7 @@ export default function Tools() {
                       {t('tools.visitWebsite')}
                     </a>
                   ) : tool.isDisplayDriver ? (
-                    <div className="flex gap-2">
+                    <div className="inline-flex flex-wrap items-center justify-center gap-2">
                       <a
                         href={tool.win10Url}
                         target="_blank"
@@ -172,28 +167,29 @@ export default function Tools() {
                       </a>
                     </div>
                   ) : tool.id === 'sunshine-aio' ? (
-                    <div className="text-white">
-                      <div className="text-center">
-                        <h2 className="md:text-xl text-black dark:text-white font-semibold mb-2">
+                    <div className="text-center flex flex-wrap mx-auto items-center justify-center">
+                      <div className="mb-6 font-bold text-white">
+                        <h2 className="text-2xl md:text-2xl text-white font-semibold mb-2">
                           {t('hero.commandNote')}
                         </h2>
                       </div>
-                      <div className="p-4 shadow-md max-w-lg mx-auto relative flex flex-row bg-gradient-to-br from-gray-800/90 to-gray-700/90 dark:from-gray-800/90 dark:to-gray-700/90 rounded-xl">
-                        <pre className="text-sm leading-relaxed overflow-auto whitespace-pre-wrap mr-4 items-center inline-flex">
-                          <code className="language-powershell token">
+
+                      <div className="flex flex-wrap max-w-max items-center justify-center p-4 shadow-md bg-gradient-to-br bg-gray-800/90 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl overflow-hidden">
+                        <pre className="text-sm leading-relaxed whitespace-pre-wrap mr-4">
+                          <code>
                             <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> | <span className="token operator">iex</span>
                           </code>
                         </pre>
-            
-                        <div className="flex flex-col items-end gap-4">
+
+                        <div>
                           <CopyToClipboard
                             text={`irm ${scriptUrl} | iex`}
                             onCopy={() => setCopied(true)}
-                            >
+                          >
                             <button
                               type="button"
-                                  className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3 inline-flex items-center justify-end mr-0"
-                              >
+                              className="inline-flex bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3"
+                            >
                               {copied ? (
                                 <FontAwesomeIcon icon={faCheckCircle} className="h-5 w-5" />
                               ) : (
