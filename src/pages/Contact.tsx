@@ -13,7 +13,7 @@ export default function Contact() {
     fetch('/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData as any).toString()
+      body: new URLSearchParams(formData as Record<string, string>).toString()
     })
     .then(() => {
       setIsSubmitted(true);

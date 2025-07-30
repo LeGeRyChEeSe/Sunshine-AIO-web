@@ -37,8 +37,8 @@ export default function Hero() {
             </h2>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="p-4 shadow-md w-max max-w-full h-max overflow-hidden mx-auto flex flex-wrap bg-gradient-to-br bg-gray-800/90 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl items-center justify-center">
+          <div className="flex items-center justify-center">
+            <div className="p-4 shadow-md w-max max-w-full h-max overflow-hidden flex flex-wrap bg-gradient-to-br from-gray-800/90 to-gray-700/50 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl items-center justify-center">
               <pre className="text-sm leading-relaxed overflow-wrap whitespace-pre-wrap mr-4 items-center inline-flex">
                 <code>
                   <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> | <span className="token operator">iex</span>
@@ -52,7 +52,7 @@ export default function Hero() {
                 >
                   <button
                     type="button"
-                    className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3 inline-flex items-center justify-end md:w-full lg:w-max xl:w-max 2xl:w-max"
+                    className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3 inline-flex items-center justify-center w-auto"
                   >
                     {copied ? (
                       <FontAwesomeIcon icon={faCheckCircle} className="h-5 w-5" />

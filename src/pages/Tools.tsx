@@ -1,6 +1,6 @@
 import { faCheckCircle, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Download, ExternalLink } from 'lucide-react';
+import { Download, ExternalLink, Server, Monitor, Gamepad2, Eye, Play } from 'lucide-react';
 import { useState } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,8 @@ const tools = [
     recommended: true,
     type: 'server',
     size: 'large',
+    iconUrl: '/icons/sunshine_aio.jpg',
+    fallbackIcon: Server,
   },
   {
     id: 'moonlight',
@@ -21,6 +23,8 @@ const tools = [
     recommended: true,
     type: 'client',
     size: 'large',
+    iconUrl: '/icons/moonlight.png',
+    fallbackIcon: Play,
   },
   {
     id: 'sunshine',
@@ -28,16 +32,16 @@ const tools = [
     github: 'https://github.com/LizardByte/Sunshine',
     downloadUrl:
       'https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-windows-installer.exe',
+    iconUrl: '/icons/sunshine.png',
+    fallbackIcon: Server,
   },
   {
     id: 'virtual-display',
     translationKey: 'virtual_display',
-    github: 'https://github.com/itsmikethetech/Virtual-Display-Driver',
-    isDisplayDriver: true,
-    win10Url:
-      'https://github.com/itsmikethetech/Virtual-Display-Driver/releases/tag/23.10.20.2',
-    win11Url:
-      'https://github.com/itsmikethetech/Virtual-Display-Driver/releases/tag/23.12.2HDR',
+    github: 'https://github.com/VirtualDrivers/Virtual-Display-Driver',
+    downloadUrl: 'https://github.com/VirtualDrivers/Virtual-Display-Driver/releases/latest',
+    iconUrl: '/icons/vdd.png',
+    fallbackIcon: Monitor,
   },
   {
     id: 'playnite',
@@ -45,6 +49,8 @@ const tools = [
     github: 'https://github.com/JosefNemec/Playnite',
     downloadUrl:
       'https://github.com/JosefNemec/Playnite/releases/latest/download/Playnite.exe',
+    iconUrl: '/icons/playnite.png',
+    fallbackIcon: Gamepad2,
   },
   {
     id: 'playnite-watcher',
@@ -52,8 +58,30 @@ const tools = [
     github: 'https://github.com/Nonary/PlayNiteWatcher',
     downloadUrl:
       'https://github.com/Nonary/PlayNiteWatcher/releases/latest/download/PlayNiteWatcher.zip',
+    iconUrl: '/icons/playnite-watcher.png',
+    fallbackIcon: Eye,
   },
 ];
+
+// Composant pour afficher les icônes avec fallback
+const ToolIcon = ({ tool, className }: { tool: any, className: string }) => {
+  const [imageError, setImageError] = useState(false);
+
+  if (tool.iconUrl && !imageError) {
+    return (
+      <img
+        src={tool.iconUrl}
+        alt={`${tool.translationKey} icon`}
+        className={`${className} rounded-full`}
+        onError={() => setImageError(true)}
+      />
+    );
+  } else if (tool.fallbackIcon) {
+    const FallbackIcon = tool.fallbackIcon;
+    return <FallbackIcon className={className} />;
+  }
+  return null;
+};
 
 export default function Tools() {
   const { t } = useTranslation();
@@ -81,11 +109,20 @@ export default function Tools() {
               <div className="flex flex-col md:flex-row gap-4 justify-between overflow-hidden">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
+                    <ToolIcon 
+                      tool={tool}
+                      className={`h-6 w-6 ${
+                        tool.recommended
+                          ? 'text-white'
+                          : 'text-gray-900 dark:text-white'
+                      }`}
+                    />
                     <h2
-                      className={`text-xl font-semibold ${tool.recommended
-                        ? 'text-gray-900 dark:text-white'
-                        : 'text-gray-900 dark:text-white'
-                        }`}
+                      className={`text-xl font-semibold ${
+                        tool.recommended
+                          ? 'text-white'
+                          : 'text-gray-900 dark:text-white'
+                      }`}
                     >
                       {t(`tools.${tool.translationKey}.name`)}
                     </h2>
@@ -145,27 +182,6 @@ export default function Tools() {
                       <ExternalLink className="h-5 w-5 mr-2" />
                       {t('tools.visitWebsite')}
                     </a>
-                  ) : tool.isDisplayDriver ? (
-                    <div className="inline-flex flex-wrap items-center justify-center gap-2">
-                      <a
-                        href={tool.win10Url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-6 py-2 bg-primary-600 text-white rounded-full font-semibold hover:bg-primary-700 transition"
-                      >
-                        <Download className="h-5 w-5 mr-2" />
-                        {t('tools.windows10')}
-                      </a>
-                      <a
-                        href={tool.win11Url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-6 py-2 bg-primary-600 text-white rounded-full font-semibold hover:bg-primary-700 transition"
-                      >
-                        <Download className="h-5 w-5 mr-2" />
-                        {t('tools.windows11')}
-                      </a>
-                    </div>
                   ) : tool.id === 'sunshine-aio' ? (
                     <div className="text-center flex flex-wrap mx-auto items-center justify-center">
                       <div className="mb-6 font-bold text-white">
@@ -174,7 +190,7 @@ export default function Tools() {
                         </h2>
                       </div>
 
-                      <div className="flex flex-wrap max-w-max items-center justify-center p-4 shadow-md bg-gradient-to-br bg-gray-800/90 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl overflow-hidden">
+                      <div className="flex flex-wrap max-w-max items-center justify-center p-4 shadow-md bg-gradient-to-br from-gray-800/90 to-gray-700/50 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl overflow-hidden">
                         <pre className="text-sm leading-relaxed whitespace-pre-wrap mr-4">
                           <code>
                             <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> | <span className="token operator">iex</span>

@@ -63,6 +63,18 @@ export default function About() {
                 {' - '}
                 {t('about.collaboration.roles.website')}
               </li>
+              <li>
+                <a
+                  href="https://claude.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline"
+                >
+                  Claude
+                </a>
+                {' - '}
+                Assistance développement et optimisation du code
+              </li>
             </ul>
           </div>
         </div>

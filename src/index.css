@@ -35,8 +35,8 @@ body {
 }
 
 .token {
-  @apply text-sm leading-relaxed overflow-hidden whitespace-pre-wrap;
-  white-space: nowrap;
+  @apply text-sm leading-relaxed overflow-hidden;
+  white-space: pre-wrap;
 }
 
 .token.keyword {

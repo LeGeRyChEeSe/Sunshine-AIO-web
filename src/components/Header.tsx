@@ -104,7 +104,7 @@ export default function Header() {
             >
               {t('header.about')}
             </Link>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center justify-start space-x-4 flex-wrap">
               <LanguageSelector />
               <button
                 onClick={toggleTheme}

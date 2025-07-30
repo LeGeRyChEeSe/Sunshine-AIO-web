@@ -62,8 +62,8 @@ export default function Guide() {
           </p>
           {(index === 0) && (
             <>
-              <div className="flex items-center justify-between text-center">
-                <div className="p-4 shadow-md w-max h-max max-w-full overflow-hidden flex flex-wrap bg-gradient-to-br bg-gray-800/90 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl items-center justify-center">
+              <div className="flex items-center justify-center">
+                <div className="p-4 shadow-md w-max h-max max-w-full overflow-hidden flex flex-wrap bg-gradient-to-br from-gray-800/90 to-gray-700/50 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl items-center justify-center">
                   <pre className="text-sm leading-relaxed overflow-wrap whitespace-pre-wrap mr-4 items-center inline-flex break-words">
                     <code>
                       <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> | <span className="token operator">iex</span>
@@ -77,7 +77,7 @@ export default function Guide() {
                     >
                       <button
                         type="button"
-                        className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3 inline-flex items-center justify-end md:w-full lg:w-max xl:w-max 2xl:w-max"
+                        className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3 inline-flex items-center justify-center w-auto"
                       >
                         {copied ? (
                           <FontAwesomeIcon icon={faCheckCircle} className="h-5 w-5" />
@@ -111,7 +111,7 @@ export default function Guide() {
   );
 
   return (
-    <div className="py-12 bg-gradient-to-br from-sunshine-pink/10 to-sunshine-blue/10 dark:from-gray-900 dark:to-gray-800 min-h-screen">
+    <div className="py-12 bg-gradient-to-br from-sunshine-violet/10 to-sunshine-blue/10 dark:from-gray-900 dark:to-gray-800 min-h-screen">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
           {t('guide.title')}
