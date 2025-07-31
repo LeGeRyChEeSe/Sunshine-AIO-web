@@ -346,19 +346,42 @@ function Start-SunshineAIOInPlace {
             Write-Log "Warning: Could not download script: $_" "WARN"
         }
         
-        # Create launcher batch file that calls the script from scripts folder
+        # Create launcher batch file in scripts folder
         $batContent = @"
 @echo off
-cd /d "%~dp0"
+cd /d "%~dp0\.."
 powershell -ExecutionPolicy Bypass -File "scripts\Sunshine-AIO.ps1"
-pause
 "@
         
         try {
-            $batContent | Out-File -FilePath "Sunshine-AIO.bat" -Encoding ASCII -Force
-            Write-Log "Launcher batch file created: Sunshine-AIO.bat" "SUCCESS"
+            $batPath = Join-Path -Path $scriptsDir -ChildPath "Sunshine-AIO.bat"
+            $batContent | Out-File -FilePath $batPath -Encoding ASCII -Force
+            Write-Log "Launcher batch file created: scripts/Sunshine-AIO.bat" "SUCCESS"
         } catch {
             Write-Log "Warning: Could not create batch file: $_" "WARN"
+        }
+        
+        # Create shortcut at project root pointing to scripts/Sunshine-AIO.bat
+        try {
+            $shortcutPath = "Sunshine-AIO.lnk"
+            $targetPath = "scripts\Sunshine-AIO.bat"
+            $iconPath = "ressources\sunshine_aio.ico"
+            
+            # Create WScript.Shell object
+            $WshShell = New-Object -comObject WScript.Shell
+            $Shortcut = $WshShell.CreateShortcut($shortcutPath)
+            $Shortcut.TargetPath = (Resolve-Path $targetPath).Path
+            $Shortcut.WorkingDirectory = (Get-Location).Path
+            
+            # Set icon if it exists
+            if (Test-Path $iconPath) {
+                $Shortcut.IconLocation = (Resolve-Path $iconPath).Path
+            }
+            
+            $Shortcut.Save()
+            Write-Log "Desktop shortcut created: Sunshine-AIO.lnk" "SUCCESS"
+        } catch {
+            Write-Log "Warning: Could not create shortcut: $_" "WARN"
         }
         
         Write-Log "Setup completed successfully!" "SUCCESS"
@@ -444,20 +467,42 @@ function Install-SunshineAIO {
             Write-Log "Warning: Could not download script: $_" "WARN"
         }
         
-        # Create launcher batch file that calls the script from scripts folder
+        # Create launcher batch file in scripts folder
         $batContent = @"
 @echo off
-cd /d "%~dp0"
+cd /d "%~dp0\.."
 powershell -ExecutionPolicy Bypass -File "scripts\Sunshine-AIO.ps1"
-pause
 "@
         
         try {
-            $batPath = Join-Path -Path $sunshineAioPath -ChildPath "Sunshine-AIO.bat"
+            $batPath = Join-Path -Path $scriptsDir -ChildPath "Sunshine-AIO.bat"
             $batContent | Out-File -FilePath $batPath -Encoding ASCII -Force
-            Write-Log "Launcher batch file created: Sunshine-AIO.bat" "SUCCESS"
+            Write-Log "Launcher batch file created: scripts/Sunshine-AIO.bat" "SUCCESS"
         } catch {
             Write-Log "Warning: Could not create batch file: $_" "WARN"
+        }
+        
+        # Create shortcut at project root pointing to scripts/Sunshine-AIO.bat
+        try {
+            $shortcutPath = Join-Path -Path $sunshineAioPath -ChildPath "Sunshine-AIO.lnk"
+            $targetPath = Join-Path -Path $sunshineAioPath -ChildPath "scripts\Sunshine-AIO.bat"
+            $iconPath = Join-Path -Path $sunshineAioPath -ChildPath "ressources\sunshine_aio.ico"
+            
+            # Create WScript.Shell object
+            $WshShell = New-Object -comObject WScript.Shell
+            $Shortcut = $WshShell.CreateShortcut($shortcutPath)
+            $Shortcut.TargetPath = $targetPath
+            $Shortcut.WorkingDirectory = $sunshineAioPath
+            
+            # Set icon if it exists
+            if (Test-Path $iconPath) {
+                $Shortcut.IconLocation = $iconPath
+            }
+            
+            $Shortcut.Save()
+            Write-Log "Desktop shortcut created: Sunshine-AIO.lnk" "SUCCESS"
+        } catch {
+            Write-Log "Warning: Could not create shortcut: $_" "WARN"
         }
         
         Write-Log "Installation completed successfully!" "SUCCESS"
