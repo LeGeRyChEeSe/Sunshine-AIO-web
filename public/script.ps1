@@ -349,8 +349,8 @@ function Start-SunshineAIOInPlace {
         # Create launcher batch file in scripts folder
         $batContent = @"
 @echo off
-cd /d "%~dp0\.."
-powershell -ExecutionPolicy Bypass -File "scripts\Sunshine-AIO.ps1"
+cd /d "%~dp0"
+powershell -ExecutionPolicy Bypass -File "%~dp0Sunshine-AIO.ps1"
 "@
         
         try {
@@ -361,16 +361,18 @@ powershell -ExecutionPolicy Bypass -File "scripts\Sunshine-AIO.ps1"
             Write-Log "Warning: Could not create batch file: $_" "WARN"
         }
         
-        # Create shortcut at project root pointing to scripts/Sunshine-AIO.bat
+        # Create shortcut at project root pointing directly to PowerShell script
         try {
             $shortcutPath = "Sunshine-AIO.lnk"
-            $targetPath = "scripts\Sunshine-AIO.bat"
+            $targetPath = "powershell.exe"
+            $arguments = "-ExecutionPolicy Bypass -File `"scripts\Sunshine-AIO.ps1`""
             $iconPath = "ressources\sunshine_aio.ico"
             
             # Create WScript.Shell object
             $WshShell = New-Object -comObject WScript.Shell
             $Shortcut = $WshShell.CreateShortcut($shortcutPath)
-            $Shortcut.TargetPath = (Resolve-Path $targetPath).Path
+            $Shortcut.TargetPath = $targetPath
+            $Shortcut.Arguments = $arguments
             $Shortcut.WorkingDirectory = (Get-Location).Path
             
             # Set icon if it exists
@@ -470,8 +472,8 @@ function Install-SunshineAIO {
         # Create launcher batch file in scripts folder
         $batContent = @"
 @echo off
-cd /d "%~dp0\.."
-powershell -ExecutionPolicy Bypass -File "scripts\Sunshine-AIO.ps1"
+cd /d "%~dp0"
+powershell -ExecutionPolicy Bypass -File "%~dp0Sunshine-AIO.ps1"
 "@
         
         try {
@@ -482,16 +484,18 @@ powershell -ExecutionPolicy Bypass -File "scripts\Sunshine-AIO.ps1"
             Write-Log "Warning: Could not create batch file: $_" "WARN"
         }
         
-        # Create shortcut at project root pointing to scripts/Sunshine-AIO.bat
+        # Create shortcut at project root pointing directly to PowerShell script
         try {
             $shortcutPath = Join-Path -Path $sunshineAioPath -ChildPath "Sunshine-AIO.lnk"
-            $targetPath = Join-Path -Path $sunshineAioPath -ChildPath "scripts\Sunshine-AIO.bat"
+            $targetPath = "powershell.exe"
+            $arguments = "-ExecutionPolicy Bypass -File `"scripts\Sunshine-AIO.ps1`""
             $iconPath = Join-Path -Path $sunshineAioPath -ChildPath "ressources\sunshine_aio.ico"
             
             # Create WScript.Shell object
             $WshShell = New-Object -comObject WScript.Shell
             $Shortcut = $WshShell.CreateShortcut($shortcutPath)
             $Shortcut.TargetPath = $targetPath
+            $Shortcut.Arguments = $arguments
             $Shortcut.WorkingDirectory = $sunshineAioPath
             
             # Set icon if it exists
