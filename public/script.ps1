@@ -275,6 +275,110 @@ function Install-Git {
     }
 }
 
+function Start-SunshineAIOInPlace {
+    try {
+        Write-Host "`nRunning from existing Sunshine-AIO directory" -ForegroundColor Green
+        
+        # Check and install Python if needed
+        $pythonCheck = Test-PythonInstallation
+        if (-not $pythonCheck.Installed) {
+            Write-Log "Python not found or incompatible version detected. Installing latest Python..."
+            $pythonCommand = Install-PythonLatest
+        } else {
+            Write-Log "Using existing Python installation: $($pythonCheck.Version)" "SUCCESS"
+            $pythonCommand = $pythonCheck.Command
+        }
+        
+        # Install Git if needed
+        Install-Git
+        
+        # Update repository
+        Write-Log "Updating Sunshine-AIO repository..."
+        Show-Progress "Updating repository..." 50
+        
+        try {
+            git fetch
+            git checkout main
+            git pull
+            Write-Log "Repository updated successfully" "SUCCESS"
+        } catch {
+            Write-Log "Warning: Could not update repository: $_" "WARN"
+        }
+        
+        # Create virtual environment if it doesn't exist
+        if (-not (Test-Path ".venv")) {
+            Write-Log "Creating Python virtual environment..."
+            Show-Progress "Creating virtual environment..." 70
+            & $pythonCommand -m venv .venv
+        }
+        
+        # Activate virtual environment and install packages
+        Write-Log "Installing Python packages..."
+        Show-Progress "Installing packages..." 80
+        
+        & ".\.venv\Scripts\Activate.ps1"
+        & $pythonCommand -m pip install --upgrade pip --quiet
+        & pip install -r requirements.txt --quiet
+        
+        # Create tools directory and symlink if needed
+        $toolsDir = "src\tools"
+        if (-not (Test-Path $toolsDir)) {
+            New-Item -ItemType Directory -Path $toolsDir -Force | Out-Null
+        }
+        
+        $toolsLink = "tools"
+        if (-not (Test-Path $toolsLink)) {
+            New-Item -ItemType Junction -Path $toolsLink -Target $toolsDir -Force | Out-Null
+        }
+        
+        # Create scripts directory and copy the current script
+        $scriptsDir = "scripts"
+        if (-not (Test-Path $scriptsDir)) {
+            New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
+        }
+        
+        # Download/copy the script to scripts folder
+        try {
+            $scriptPath = Join-Path -Path $scriptsDir -ChildPath "Sunshine-AIO.ps1"
+            Invoke-RestMethod -Uri $script:ScriptUrl -OutFile $scriptPath -Method Get
+            Write-Log "Script downloaded to scripts/Sunshine-AIO.ps1" "SUCCESS"
+        } catch {
+            Write-Log "Warning: Could not download script: $_" "WARN"
+        }
+        
+        # Create launcher batch file that calls the script from scripts folder
+        $batContent = @"
+@echo off
+cd /d "%~dp0"
+powershell -ExecutionPolicy Bypass -File "scripts\Sunshine-AIO.ps1"
+pause
+"@
+        
+        try {
+            $batContent | Out-File -FilePath "Sunshine-AIO.bat" -Encoding ASCII -Force
+            Write-Log "Launcher batch file created: Sunshine-AIO.bat" "SUCCESS"
+        } catch {
+            Write-Log "Warning: Could not create batch file: $_" "WARN"
+        }
+        
+        Write-Log "Setup completed successfully!" "SUCCESS"
+        
+        # Run the application
+        Write-Log "Starting Sunshine-AIO..."
+        Show-Progress "Starting application..." 100
+        
+        Set-Location "src"
+        & $pythonCommand main.py
+        
+        # Deactivate virtual environment
+        deactivate
+        
+    } catch {
+        Write-Log "Error during Sunshine-AIO setup: $_" "ERROR"
+        throw
+    }
+}
+
 function Install-SunshineAIO {
     param([string]$RootPath, [string]$PythonCommand)
     
@@ -325,9 +429,36 @@ function Install-SunshineAIO {
             New-Item -ItemType Junction -Path $toolsLink -Target $toolsDir -Force | Out-Null
         }
         
-        # Download updated script
-        $outputPath = Join-Path -Path $sunshineAioPath -ChildPath "Sunshine-AIO.ps1"
-        Invoke-RestMethod -Uri $script:ScriptUrl -OutFile $outputPath -Method Get
+        # Create scripts directory and copy the current script
+        $scriptsDir = Join-Path -Path $sunshineAioPath -ChildPath "scripts"
+        if (-not (Test-Path $scriptsDir)) {
+            New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
+        }
+        
+        # Download/copy the script to scripts folder
+        try {
+            $scriptPath = Join-Path -Path $scriptsDir -ChildPath "Sunshine-AIO.ps1"
+            Invoke-RestMethod -Uri $script:ScriptUrl -OutFile $scriptPath -Method Get
+            Write-Log "Script downloaded to scripts/Sunshine-AIO.ps1" "SUCCESS"
+        } catch {
+            Write-Log "Warning: Could not download script: $_" "WARN"
+        }
+        
+        # Create launcher batch file that calls the script from scripts folder
+        $batContent = @"
+@echo off
+cd /d "%~dp0"
+powershell -ExecutionPolicy Bypass -File "scripts\Sunshine-AIO.ps1"
+pause
+"@
+        
+        try {
+            $batPath = Join-Path -Path $sunshineAioPath -ChildPath "Sunshine-AIO.bat"
+            $batContent | Out-File -FilePath $batPath -Encoding ASCII -Force
+            Write-Log "Launcher batch file created: Sunshine-AIO.bat" "SUCCESS"
+        } catch {
+            Write-Log "Warning: Could not create batch file: $_" "WARN"
+        }
         
         Write-Log "Installation completed successfully!" "SUCCESS"
         Show-Progress "Installation completed" 95
@@ -354,6 +485,16 @@ function Start-Installation {
         Write-Host "Sunshine-AIO Installer" -ForegroundColor Yellow
         Write-Host "======================" -ForegroundColor Yellow
         Write-Log "Starting Sunshine-AIO installation process..."
+        
+        # Check if we're already in Sunshine-AIO directory
+        $currentDir = Get-Location
+        $currentDirName = Split-Path -Leaf $currentDir
+        
+        if ($currentDirName -eq "Sunshine-AIO") {
+            Write-Log "Already in Sunshine-AIO directory, updating and starting..." "SUCCESS"
+            Start-SunshineAIOInPlace
+            return
+        }
         
         # Check internet connection
         if (-not (Test-InternetConnection)) {
