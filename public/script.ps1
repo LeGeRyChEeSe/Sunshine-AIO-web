@@ -1,17 +1,24 @@
 # Sunshine-AIO Installation Script
 # Enhanced with better error handling, UI improvements, and robust Python detection
+# Added automatic update checking functionality
+# Version: 1.0.0
 
 param(
-    [string]$InstallPath = ""
+    [string]$InstallPath = "",
+    [switch]$SkipUpdateCheck = $false
 )
+
+# Script version
+$script:ScriptVersion = "1.0.0"
 
 # Set strict mode for better error detection
 Set-StrictMode -Version Latest
 
 # Initialize global variables
-$script:LogFile = Join-Path $env:TEMP "sunshine-aio-install.log"
+$script:LogFile = "logs\sunshine_aio_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 $script:ProgressActivity = "Installing Sunshine-AIO"
 $script:ScriptUrl = "https://sunshine-aio.com/script.ps1"
+$script:AllowGitUpdates = $true  # Controls whether git pull operations are allowed
 
 # Utility Functions
 function Write-Log {
@@ -38,6 +45,556 @@ function Test-InternetConnection {
         $null = Test-NetConnection -ComputerName "8.8.8.8" -Port 53 -InformationLevel Quiet -WarningAction SilentlyContinue
         return $true
     } catch {
+        return $false
+    }
+}
+
+function Get-CurrentVersion {
+    try {
+        if (Test-Path ".git") {
+            # First try to get the exact tag for current commit
+            $version = git describe --tags --exact-match HEAD 2>$null
+            if ($LASTEXITCODE -eq 0 -and $version) {
+                return $version.Trim()
+            }
+            
+            # If not on exact tag, get the latest published tag (not the commit-extended version)
+            $latestTag = git describe --tags --abbrev=0 HEAD 2>$null
+            if ($LASTEXITCODE -eq 0 -and $latestTag) {
+                return $latestTag.Trim()
+            }
+            
+            # Fallback to commit hash
+            $commit = git rev-parse --short HEAD 2>$null
+            if ($LASTEXITCODE -eq 0 -and $commit) {
+                return $commit.Trim()
+            }
+        }
+        return "unknown"
+    } catch {
+        Write-Log "Error getting current version: $_" "WARN"
+        return "unknown"
+    }
+}
+
+function Get-RemoteVersion {
+    try {
+        git fetch origin main --quiet 2>$null
+        git fetch origin --tags --quiet 2>$null
+        
+        if ($LASTEXITCODE -eq 0) {
+            # Try to get the latest tag from remote
+            $version = git describe --tags --exact-match origin/main 2>$null
+            if ($LASTEXITCODE -eq 0 -and $version) {
+                return $version.Trim()
+            }
+            
+            # If no exact tag, get the latest tag with commit info
+            $version = git describe --tags --always origin/main 2>$null
+            if ($LASTEXITCODE -eq 0 -and $version) {
+                return $version.Trim()
+            }
+            
+            # Fallback to commit hash
+            $remoteCommit = git rev-parse --short origin/main 2>$null
+            if ($LASTEXITCODE -eq 0 -and $remoteCommit) {
+                return $remoteCommit.Trim()
+            }
+        }
+        return "unknown"
+    } catch {
+        Write-Log "Error getting remote version: $_" "WARN"
+        return "unknown"
+    }
+}
+
+function Get-RemoteCommit {
+    try {
+        $remoteCommit = git rev-parse origin/main 2>$null
+        if ($LASTEXITCODE -eq 0 -and $remoteCommit) {
+            return $remoteCommit.Trim()
+        }
+        return "unknown"
+    } catch {
+        return "unknown"
+    }
+}
+
+function Get-LastPublishedTag {
+    try {
+        # Get the latest tag that exists locally (before any unpushed commits)
+        $localTag = git describe --tags --abbrev=0 HEAD 2>$null
+        if ($LASTEXITCODE -eq 0 -and $localTag) {
+            # Get the commit hash of this tag
+            $tagCommit = git rev-list -n 1 $localTag 2>$null
+            if ($LASTEXITCODE -eq 0 -and $tagCommit) {
+                return $tagCommit.Trim()
+            }
+        }
+        return "unknown"
+    } catch {
+        return "unknown"
+    }
+}
+
+function Get-CurrentCommit {
+    try {
+        $commit = git rev-parse HEAD 2>$null
+        if ($LASTEXITCODE -eq 0 -and $commit) {
+            return $commit.Trim()
+        }
+        return "unknown"
+    } catch {
+        return "unknown"
+    }
+}
+
+function Get-LatestCommitInfo {
+    param([string]$Commit)
+    
+    try {
+        $message = git log -1 --pretty=format:"%s" $Commit 2>$null
+        $date = git log -1 --pretty=format:"%ci" $Commit 2>$null
+        
+        if ($LASTEXITCODE -eq 0 -and $message -and $date) {
+            return @{
+                Message = $message.Trim()
+                Date = [DateTime]::Parse($date).ToString("MM/dd/yyyy HH:mm")
+            }
+        }
+        return @{
+            Message = "No details available"
+            Date = "Unknown date"
+        }
+    } catch {
+        return @{
+            Message = "Error retrieving commit info"
+            Date = "Unknown date"
+        }
+    }
+}
+
+
+function Get-CommitsSummary {
+    param([string]$FromCommit, [string]$ToCommit)
+    
+    try {
+        # Get the latest 3 commits with their messages
+        $commits = git log --oneline --max-count=3 "$FromCommit..$ToCommit" 2>$null
+        if ($LASTEXITCODE -eq 0 -and $commits) {
+            # $commits is already an array, no need to split
+            $summary = @()
+            
+            foreach ($line in $commits) {
+                if ($line -match "^([a-f0-9]{7,}) (.+)$") {
+                    $commitHash = $matches[1]
+                    $commitMsg = $matches[2].Trim()
+                    
+                    # Check if commit message contains a version tag
+                    $versionPrefix = ""
+                    if ($commitMsg -match "v?\d+\.\d+\.\d+") {
+                        $versionMatch = $matches[0]
+                        $versionPrefix = "[$versionMatch] "
+                        # Remove version from commit message to avoid duplication
+                        $commitMsg = $commitMsg -replace "v?\d+\.\d+\.\d+[^\w]*", ""
+                        $commitMsg = $commitMsg.Trim()
+                    }
+                    
+                    # Truncate very long commit messages
+                    if ($commitMsg.Length -gt 70) {
+                        $commitMsg = $commitMsg.Substring(0, 67) + "..."
+                    }
+                    
+                    $summary += "$versionPrefix$commitMsg"
+                }
+            }
+            
+            if ($summary.Count -gt 0) {
+                return $summary -join "`n"
+            }
+        }
+        return "Latest updates and improvements"
+    } catch {
+        return "Error retrieving update details"
+    }
+}
+
+function Show-UpdateDialog {
+    param(
+        [string]$CurrentVersion,
+        [string]$RemoteVersion,
+        [string]$Summary,
+        [string]$ChangelogUrl
+    )
+    
+    # Create a custom form with clickable link
+    Add-Type -AssemblyName System.Windows.Forms
+    Add-Type -AssemblyName System.Drawing
+    
+    $form = New-Object System.Windows.Forms.Form
+    $form.Text = "Update Available - Sunshine-AIO"
+    $form.StartPosition = "CenterScreen"
+    $form.FormBorderStyle = "FixedDialog"
+    $form.MaximizeBox = $false
+    $form.MinimizeBox = $false
+    $form.Icon = [System.Drawing.SystemIcons]::Information
+    $form.BackColor = [System.Drawing.Color]::White
+    $form.AutoSize = $true
+    $form.AutoSizeMode = [System.Windows.Forms.AutoSizeMode]::GrowAndShrink
+    
+    # Title label
+    $titleLabel = New-Object System.Windows.Forms.Label
+    $titleLabel.Text = "Update Available"
+    $titleLabel.Location = New-Object System.Drawing.Point(30, 20)
+    $titleLabel.Size = New-Object System.Drawing.Size(520, 35)
+    $titleLabel.Font = New-Object System.Drawing.Font("Segoe UI", 16, [System.Drawing.FontStyle]::Bold)
+    $titleLabel.ForeColor = [System.Drawing.Color]::FromArgb(0, 102, 204)
+    
+    # Subtitle
+    $subtitleLabel = New-Object System.Windows.Forms.Label
+    $subtitleLabel.Text = "A new version of Sunshine-AIO is available!"
+    $subtitleLabel.Location = New-Object System.Drawing.Point(30, 65)
+    $subtitleLabel.Size = New-Object System.Drawing.Size(520, 25)
+    $subtitleLabel.Font = New-Object System.Drawing.Font("Segoe UI", 11)
+    $subtitleLabel.ForeColor = [System.Drawing.Color]::FromArgb(64, 64, 64)
+    
+    # Version info section
+    $versionPanel = New-Object System.Windows.Forms.Panel
+    $versionPanel.Location = New-Object System.Drawing.Point(30, 110)
+    $versionPanel.Size = New-Object System.Drawing.Size(520, 80)
+    $versionPanel.BackColor = [System.Drawing.Color]::FromArgb(248, 249, 250)
+    $versionPanel.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
+    
+    $currentVersionLabel = New-Object System.Windows.Forms.Label
+    $currentVersionLabel.Text = "Current version:"
+    $currentVersionLabel.Location = New-Object System.Drawing.Point(15, 15)
+    $currentVersionLabel.Size = New-Object System.Drawing.Size(120, 20)
+    $currentVersionLabel.Font = New-Object System.Drawing.Font("Segoe UI", 9)
+    $currentVersionLabel.ForeColor = [System.Drawing.Color]::FromArgb(64, 64, 64)
+    
+    $currentVersionValue = New-Object System.Windows.Forms.Label
+    $currentVersionValue.Text = $CurrentVersion
+    $currentVersionValue.Location = New-Object System.Drawing.Point(140, 15)
+    $currentVersionValue.Size = New-Object System.Drawing.Size(150, 20)
+    $currentVersionValue.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
+    $currentVersionValue.ForeColor = [System.Drawing.Color]::FromArgb(108, 117, 125)
+    
+    $newVersionLabel = New-Object System.Windows.Forms.Label
+    $newVersionLabel.Text = "New version:"
+    $newVersionLabel.Location = New-Object System.Drawing.Point(15, 45)
+    $newVersionLabel.Size = New-Object System.Drawing.Size(120, 20)
+    $newVersionLabel.Font = New-Object System.Drawing.Font("Segoe UI", 9)
+    $newVersionLabel.ForeColor = [System.Drawing.Color]::FromArgb(64, 64, 64)
+    
+    $newVersionValue = New-Object System.Windows.Forms.Label
+    $newVersionValue.Text = $RemoteVersion
+    $newVersionValue.Location = New-Object System.Drawing.Point(140, 45)
+    $newVersionValue.Size = New-Object System.Drawing.Size(150, 20)
+    $newVersionValue.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
+    $newVersionValue.ForeColor = [System.Drawing.Color]::FromArgb(40, 167, 69)
+    
+    $versionPanel.Controls.Add($currentVersionLabel)
+    $versionPanel.Controls.Add($currentVersionValue)
+    $versionPanel.Controls.Add($newVersionLabel)
+    $versionPanel.Controls.Add($newVersionValue)
+    
+    # Updates section title
+    $updatesTitle = New-Object System.Windows.Forms.Label
+    $updatesTitle.Text = "Key Updates:"
+    $updatesTitle.Location = New-Object System.Drawing.Point(30, 210)
+    $updatesTitle.Size = New-Object System.Drawing.Size(520, 25)
+    $updatesTitle.Font = New-Object System.Drawing.Font("Segoe UI", 12, [System.Drawing.FontStyle]::Bold)
+    $updatesTitle.ForeColor = [System.Drawing.Color]::FromArgb(73, 80, 87)
+    
+    # Updates content as bulleted list
+    $updatesListBox = New-Object System.Windows.Forms.ListBox
+    $summaryLines = $Summary -split "`n" | Where-Object { $_.Trim() -ne "" }
+    foreach ($line in $summaryLines) {
+        $cleanLine = $line.Trim()
+        if ($cleanLine -ne "") {
+            # Simply add each commit with a bullet point - one line per commit
+            $null = $updatesListBox.Items.Add("- $cleanLine")
+        }
+    }
+    
+    # Calculate dynamic height based on items
+    $itemCount = $updatesListBox.Items.Count
+    $itemHeight = 16  # Approximate height per item
+    $minHeight = 80
+    $maxHeight = 160
+    $calculatedHeight = [Math]::Max($minHeight, [Math]::Min($maxHeight, $itemCount * $itemHeight + 20))
+    
+    $updatesListBox.Location = New-Object System.Drawing.Point(30, 245)
+    $updatesListBox.Size = New-Object System.Drawing.Size(520, $calculatedHeight)
+    $updatesListBox.Font = New-Object System.Drawing.Font("Segoe UI", 10)
+    $updatesListBox.BackColor = [System.Drawing.Color]::FromArgb(248, 249, 250)
+    $updatesListBox.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
+    $updatesListBox.SelectionMode = [System.Windows.Forms.SelectionMode]::None
+    $updatesListBox.ForeColor = [System.Drawing.Color]::FromArgb(73, 80, 87)
+    
+    # Calculate dynamic positions based on listbox height
+    $linkY = 245 + $calculatedHeight + 20
+    $questionY = $linkY + 35
+    $buttonY = $questionY + 35
+    
+    # Clickable link
+    $linkLabel = New-Object System.Windows.Forms.LinkLabel
+    $linkLabel.Text = "View full changelog on GitHub"
+    $linkLabel.Location = New-Object System.Drawing.Point(30, $linkY)
+    $linkLabel.Size = New-Object System.Drawing.Size(300, 25)
+    $linkLabel.Font = New-Object System.Drawing.Font("Segoe UI", 10)
+    $linkLabel.LinkColor = [System.Drawing.Color]::FromArgb(0, 102, 204)
+    $linkLabel.ActiveLinkColor = [System.Drawing.Color]::FromArgb(0, 82, 164)
+    $linkLabel.VisitedLinkColor = [System.Drawing.Color]::FromArgb(108, 117, 125)
+    $linkLabel.Tag = $ChangelogUrl
+    $linkLabel.Add_LinkClicked({
+        param($sender, $e)
+        try {
+            Start-Process $sender.Tag
+        } catch {
+            # Fallback if Start-Process fails
+            [System.Windows.Forms.Clipboard]::SetText($sender.Tag)
+            [System.Windows.Forms.MessageBox]::Show("Changelog URL copied to clipboard: $($sender.Tag)", "Information", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Information)
+        }
+    })
+    
+    # Question label
+    $questionLabel = New-Object System.Windows.Forms.Label
+    $questionLabel.Text = "Would you like to install the update now?"
+    $questionLabel.Location = New-Object System.Drawing.Point(30, $questionY)
+    $questionLabel.Size = New-Object System.Drawing.Size(350, 25)
+    $questionLabel.Font = New-Object System.Drawing.Font("Segoe UI", 11, [System.Drawing.FontStyle]::Bold)
+    $questionLabel.ForeColor = [System.Drawing.Color]::FromArgb(73, 80, 87)
+    
+    # Buttons with better positioning and styling
+    $buttonPanel = New-Object System.Windows.Forms.Panel
+    $buttonPanel.Location = New-Object System.Drawing.Point(30, $buttonY)
+    $buttonPanel.Size = New-Object System.Drawing.Size(520, 50)
+    
+    $yesButton = New-Object System.Windows.Forms.Button
+    $yesButton.Text = "Yes, Install Update"
+    $yesButton.Location = New-Object System.Drawing.Point(200, 5)
+    $yesButton.Size = New-Object System.Drawing.Size(150, 35)
+    $yesButton.Font = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Bold)
+    $yesButton.BackColor = [System.Drawing.Color]::FromArgb(40, 167, 69)
+    $yesButton.ForeColor = [System.Drawing.Color]::White
+    $yesButton.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $yesButton.FlatAppearance.BorderSize = 0
+    $yesButton.DialogResult = [System.Windows.Forms.DialogResult]::Yes
+    $yesButton.UseVisualStyleBackColor = $false
+    
+    $noButton = New-Object System.Windows.Forms.Button
+    $noButton.Text = "No, Maybe Later"
+    $noButton.Location = New-Object System.Drawing.Point(360, 5)
+    $noButton.Size = New-Object System.Drawing.Size(130, 35)
+    $noButton.Font = New-Object System.Drawing.Font("Segoe UI", 10)
+    $noButton.BackColor = [System.Drawing.Color]::FromArgb(108, 117, 125)
+    $noButton.ForeColor = [System.Drawing.Color]::White
+    $noButton.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $noButton.FlatAppearance.BorderSize = 0
+    $noButton.DialogResult = [System.Windows.Forms.DialogResult]::No
+    $noButton.UseVisualStyleBackColor = $false
+    
+    $buttonPanel.Controls.Add($yesButton)
+    $buttonPanel.Controls.Add($noButton)
+    
+    # Add all controls to form
+    $form.Controls.Add($titleLabel)
+    $form.Controls.Add($subtitleLabel)
+    $form.Controls.Add($versionPanel)
+    $form.Controls.Add($updatesTitle)
+    $form.Controls.Add($updatesListBox)
+    $form.Controls.Add($linkLabel)
+    $form.Controls.Add($questionLabel)
+    $form.Controls.Add($buttonPanel)
+    
+    # Set minimum form size based on content
+    $minFormHeight = $buttonY + 80  # Button panel + margin
+    $form.MinimumSize = New-Object System.Drawing.Size(580, $minFormHeight)
+    $form.Size = New-Object System.Drawing.Size(580, $minFormHeight)
+    
+    # Set default buttons
+    $form.AcceptButton = $yesButton
+    $form.CancelButton = $noButton
+    
+    # Show dialog and return result
+    $result = $form.ShowDialog()
+    $form.Dispose()
+    
+    return $result -eq [System.Windows.Forms.DialogResult]::Yes
+}
+
+function Get-GitStatus {
+    try {
+        $status = git status --porcelain 2>$null
+        $currentBranch = git branch --show-current 2>$null
+        
+        return @{
+            HasChanges = -not [string]::IsNullOrEmpty($status)
+            CurrentBranch = $currentBranch.Trim()
+            Changes = $status
+        }
+    } catch {
+        return @{
+            HasChanges = $false
+            CurrentBranch = "unknown"
+            Changes = ""
+        }
+    }
+}
+
+
+
+function Handle-GitChanges {
+    param(
+        [object]$GitStatus
+    )
+    
+    if (-not $GitStatus.HasChanges) {
+        return $true
+    }
+    
+    if ($GitStatus.CurrentBranch -ne "main") {
+        Write-Log "You are on branch '$($GitStatus.CurrentBranch)'. Update will be performed on main branch only." "INFO"
+        return $true
+    }
+    
+    try {
+        Write-Log "Local changes detected, preparing for merge..."
+        
+        # Add and commit current changes
+        git add . 2>$null
+        git commit -m "Auto-save before update - $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')" 2>$null
+        
+        Write-Log "Local changes committed successfully" "SUCCESS"
+        return $true
+    } catch {
+        Write-Log "Warning: Could not commit local changes, proceeding with merge" "WARN"
+        return $true
+    }
+}
+
+function Perform-Update {
+    try {
+        Write-Log "Starting update process..."
+        Show-Progress "Updating..." 10
+        
+        # Get current status
+        $gitStatus = Get-GitStatus
+        $originalBranch = $gitStatus.CurrentBranch
+        
+        # Handle changes if on main branch
+        Handle-GitChanges -GitStatus $gitStatus
+        
+        Show-Progress "Fetching updates..." 30
+        
+        # Switch to main if not already there
+        if ($originalBranch -ne "main") {
+            git checkout main
+        }
+        
+        # Fetch and merge with automatic conflict resolution
+        Write-Log "Fetching latest changes..."
+        git fetch origin main 2>$null
+        
+        if ($LASTEXITCODE -ne 0) {
+            throw "Error fetching updates"
+        }
+        
+        Write-Log "Merging updates with local changes..."
+        # Try to merge, preferring remote changes in case of conflicts
+        git merge origin/main --strategy-option=theirs --no-edit 2>$null
+        
+        if ($LASTEXITCODE -ne 0) {
+            Write-Log "Merge conflicts detected, resolving automatically..." "WARN"
+            # Force merge by resetting to remote version
+            git reset --hard origin/main 2>$null
+            Write-Log "Merged with remote version (local changes overridden)" "SUCCESS"
+        } else {
+            Write-Log "Merged successfully without conflicts" "SUCCESS"
+        }
+        
+        Show-Progress "Updating dependencies..." 60
+        
+        # Update Python packages if virtual environment exists
+        if (Test-Path ".venv") {
+            & ".\.venv\Scripts\Activate.ps1"
+            pip install -r requirements.txt --upgrade --quiet
+            deactivate
+        }
+        
+        Show-Progress "Update completed" 100
+        Write-Log "Update completed successfully!" "SUCCESS"
+        
+        # Switch back to original branch if it wasn't main
+        if ($originalBranch -ne "main" -and $originalBranch -ne "unknown") {
+            git checkout $originalBranch
+        }
+        
+        return $true
+        
+    } catch {
+        Write-Log "Error during update: $_" "ERROR"
+        return $false
+    }
+}
+
+function Check-ForUpdates {
+    if ($SkipUpdateCheck) {
+        Write-Log "Update check skipped" "INFO"
+        return $false
+    }
+    
+    try {
+        Write-Log "Checking for updates in background..."
+        
+        $currentVersion = Get-CurrentVersion
+        $remoteVersion = Get-RemoteVersion
+        $currentCommit = Get-CurrentCommit
+        $remoteCommit = Get-RemoteCommit
+        $lastPublishedCommit = Get-LastPublishedTag
+        
+        if ($remoteCommit -eq "unknown") {
+            Write-Log "Cannot check for updates (repository not initialized)" "WARN"
+            return $false
+        }
+        
+        Write-Log "Current version: $currentVersion"
+        Write-Log "Remote version: $remoteVersion"
+        Write-Log "Last published commit: $lastPublishedCommit"
+        Write-Log "Remote commit: $remoteCommit"
+        
+        # Use published tag for comparison, fallback to current commit if no tag found
+        $compareCommit = if ($lastPublishedCommit -ne "unknown") { $lastPublishedCommit } else { $currentCommit }
+        
+        # Compare with published tag instead of current commit
+        if ($compareCommit -ne $remoteCommit) {
+            Write-Log "Update available!" "INFO"
+            
+            # Use the same commit for changelog that we used for comparison
+            $fromCommit = $compareCommit
+            $summary = Get-CommitsSummary -FromCommit $fromCommit -ToCommit $remoteCommit
+            
+            # Create changelog URL using published tag
+            $changelogUrl = "https://github.com/LeGeRyChEeSe/Sunshine-AIO/compare/$($fromCommit.Substring(0, 7))...$($remoteCommit.Substring(0, 7))"
+            
+            $userWantsUpdate = Show-UpdateDialog -CurrentVersion $currentVersion -RemoteVersion $remoteVersion -Summary $summary -ChangelogUrl $changelogUrl
+            
+            if ($userWantsUpdate) {
+                Write-Log "User accepted the update"
+                return Perform-Update
+            } else {
+                Write-Log "User declined the update - disabling automatic git updates"
+                $script:AllowGitUpdates = $false
+                return $false
+            }
+        } else {
+            Write-Log "No updates available" "SUCCESS"
+            return $false
+        }
+        
+    } catch {
+        Write-Log "Error checking for updates: $_" "WARN"
         return $false
     }
 }
@@ -277,7 +834,17 @@ function Install-Git {
 
 function Start-SunshineAIOInPlace {
     try {
-        Write-Host "`nRunning from existing Sunshine-AIO directory" -ForegroundColor Green
+        Write-Host "`nSunshine-AIO Installer v$script:ScriptVersion" -ForegroundColor Yellow
+        Write-Host "Running from existing Sunshine-AIO directory" -ForegroundColor Green
+        
+        # Check for updates first (in background)
+        $updatePerformed = Check-ForUpdates
+        if ($updatePerformed) {
+            Write-Log "Update completed, restarting application..." "SUCCESS"
+            # Restart the script after update
+            & powershell -ExecutionPolicy Bypass -File $PSCommandPath @PSBoundParameters
+            return
+        }
         
         # Check and install Python if needed
         $pythonCheck = Test-PythonInstallation
@@ -299,8 +866,12 @@ function Start-SunshineAIOInPlace {
         try {
             git fetch
             git checkout main
-            git pull
-            Write-Log "Repository updated successfully" "SUCCESS"
+            if ($script:AllowGitUpdates) {
+                git pull
+                Write-Log "Repository updated successfully" "SUCCESS"
+            } else {
+                Write-Log "Git updates disabled by user - keeping current version" "INFO"
+            }
         } catch {
             Write-Log "Warning: Could not update repository: $_" "WARN"
         }
@@ -344,21 +915,6 @@ function Start-SunshineAIOInPlace {
             Write-Log "Script downloaded to scripts/Sunshine-AIO.ps1" "SUCCESS"
         } catch {
             Write-Log "Warning: Could not download script: $_" "WARN"
-        }
-        
-        # Create launcher batch file in scripts folder
-        $batContent = @"
-@echo off
-cd /d "%~dp0"
-powershell -ExecutionPolicy Bypass -File "%~dp0Sunshine-AIO.ps1"
-"@
-        
-        try {
-            $batPath = Join-Path -Path $scriptsDir -ChildPath "Sunshine-AIO.bat"
-            $batContent | Out-File -FilePath $batPath -Encoding ASCII -Force
-            Write-Log "Launcher batch file created: scripts/Sunshine-AIO.bat" "SUCCESS"
-        } catch {
-            Write-Log "Warning: Could not create batch file: $_" "WARN"
         }
         
         # Create shortcut at project root pointing directly to PowerShell script
@@ -418,7 +974,11 @@ function Install-SunshineAIO {
             Set-Location $sunshineAioPath
             git fetch
             git checkout main
-            git pull
+            if ($script:AllowGitUpdates) {
+                git pull
+            } else {
+                Write-Log "Git updates disabled by user - keeping current version" "INFO"
+            }
         } else {
             Write-Log "Cloning Sunshine-AIO repository..."
             Show-Progress "Cloning repository..." 75
@@ -469,21 +1029,6 @@ function Install-SunshineAIO {
             Write-Log "Warning: Could not download script: $_" "WARN"
         }
         
-        # Create launcher batch file in scripts folder
-        $batContent = @"
-@echo off
-cd /d "%~dp0"
-powershell -ExecutionPolicy Bypass -File "%~dp0Sunshine-AIO.ps1"
-"@
-        
-        try {
-            $batPath = Join-Path -Path $scriptsDir -ChildPath "Sunshine-AIO.bat"
-            $batContent | Out-File -FilePath $batPath -Encoding ASCII -Force
-            Write-Log "Launcher batch file created: scripts/Sunshine-AIO.bat" "SUCCESS"
-        } catch {
-            Write-Log "Warning: Could not create batch file: $_" "WARN"
-        }
-        
         # Create shortcut at project root pointing directly to PowerShell script
         try {
             $shortcutPath = Join-Path -Path $sunshineAioPath -ChildPath "Sunshine-AIO.lnk"
@@ -512,6 +1057,18 @@ powershell -ExecutionPolicy Bypass -File "%~dp0Sunshine-AIO.ps1"
         Write-Log "Installation completed successfully!" "SUCCESS"
         Show-Progress "Installation completed" 95
         
+        # Check for updates before running (if not a fresh installation)
+        Set-Location $sunshineAioPath
+        if (Test-Path ".git") {
+            $updatePerformed = Check-ForUpdates
+            if ($updatePerformed) {
+                Write-Log "Update completed, restarting application..." "SUCCESS"
+                # Restart the script after update
+                & powershell -ExecutionPolicy Bypass -File "scripts\Sunshine-AIO.ps1" @PSBoundParameters
+                return
+            }
+        }
+        
         # Run the application
         Write-Log "Starting Sunshine-AIO..."
         Show-Progress "Starting application..." 100
@@ -531,9 +1088,9 @@ powershell -ExecutionPolicy Bypass -File "%~dp0Sunshine-AIO.ps1"
 # Main installation process
 function Start-Installation {
     try {
-        Write-Host "Sunshine-AIO Installer" -ForegroundColor Yellow
-        Write-Host "======================" -ForegroundColor Yellow
-        Write-Log "Starting Sunshine-AIO installation process..."
+        Write-Host "Sunshine-AIO Installer v$script:ScriptVersion" -ForegroundColor Yellow
+        Write-Host "========================================" -ForegroundColor Yellow
+        Write-Log "Starting Sunshine-AIO installation process (Script v$script:ScriptVersion)..."
         
         # Check if we're already in Sunshine-AIO directory
         $currentDir = Get-Location
