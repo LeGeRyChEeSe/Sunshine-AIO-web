@@ -8,14 +8,23 @@ param(
     [switch]$SkipUpdateCheck = $false
 )
 
-# Script version
-$script:ScriptVersion = "1.0.0"
+# Script version - read from version.txt if available, fallback to hardcoded
+try {
+    $versionFile = Join-Path (Split-Path $PSScriptRoot -Parent) "version.txt"
+    if (Test-Path $versionFile) {
+        $script:ScriptVersion = (Get-Content $versionFile -Raw).Trim()
+    } else {
+        $script:ScriptVersion = "1.0.1"
+    }
+} catch {
+    $script:ScriptVersion = "1.0.1"
+}
 
 # Set strict mode for better error detection
 Set-StrictMode -Version Latest
 
 # Initialize global variables
-$script:LogFile = "logs\sunshine_aio_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
+$script:LogFile = Join-Path $env:TEMP "sunshine_aio_$(Get-Date -Format 'yyyyMMdd_HHmmss').log"
 $script:ProgressActivity = "Installing Sunshine-AIO"
 $script:ScriptUrl = "https://sunshine-aio.com/script.ps1"
 $script:AllowGitUpdates = $true  # Controls whether git pull operations are allowed
@@ -38,6 +47,27 @@ function Write-Log {
 function Show-Progress {
     param([string]$Status, [int]$PercentComplete = 0)
     Write-Progress -Activity $script:ProgressActivity -Status $Status -PercentComplete $PercentComplete
+}
+
+function Move-LogToInstallDirectory {
+    param([string]$InstallPath)
+    
+    try {
+        $logsDir = Join-Path $InstallPath "logs"
+        if (-not (Test-Path $logsDir)) {
+            New-Item -ItemType Directory -Path $logsDir -Force | Out-Null
+        }
+        
+        $finalLogPath = Join-Path $logsDir (Split-Path $script:LogFile -Leaf)
+        if (Test-Path $script:LogFile) {
+            Copy-Item $script:LogFile $finalLogPath -Force
+            Remove-Item $script:LogFile -Force -ErrorAction SilentlyContinue
+            $script:LogFile = $finalLogPath
+            Write-Log "Log file moved to installation directory: $finalLogPath" "SUCCESS"
+        }
+    } catch {
+        Write-Log "Warning: Could not move log file to installation directory: $_" "WARN"
+    }
 }
 
 function Test-InternetConnection {
@@ -944,6 +974,9 @@ function Start-SunshineAIOInPlace {
         
         Write-Log "Setup completed successfully!" "SUCCESS"
         
+        # Move log file to installation directory
+        Move-LogToInstallDirectory -InstallPath (Get-Location).Path
+        
         # Run the application
         Write-Log "Starting Sunshine-AIO..."
         Show-Progress "Starting application..." 100
@@ -1056,6 +1089,9 @@ function Install-SunshineAIO {
         
         Write-Log "Installation completed successfully!" "SUCCESS"
         Show-Progress "Installation completed" 95
+        
+        # Move log file to installation directory
+        Move-LogToInstallDirectory -InstallPath $sunshineAioPath
         
         # Check for updates before running (if not a fresh installation)
         Set-Location $sunshineAioPath
