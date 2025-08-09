@@ -27,6 +27,15 @@ export default function Hero() {
               {t('hero.guideButton')}
               <FontAwesomeIcon icon={faArrowRight} className="ml-2 h-5 w-5 fas fa-arrow-right" />
             </a>
+            <a
+              href="https://github.com/LeGeRyChEeSe/Sunshine-AIO/wiki"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-max max-w-full overflow-hidden sm:w-auto inline-flex items-center justify-center px-8 py-3 bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white rounded-full font-semibold hover:bg-white/30 transition shadow-lg"
+            >
+              {t('hero.wikiButton')}
+              <FontAwesomeIcon icon={faArrowRight} className="ml-2 h-5 w-5 fas fa-arrow-right" />
+            </a>
           </div>
         </div>
 
@@ -38,26 +47,32 @@ export default function Hero() {
           </div>
 
           <div className="flex items-center justify-center">
-            <div className="p-4 shadow-md w-max max-w-full h-max overflow-hidden flex flex-wrap bg-gradient-to-br from-gray-800/90 to-gray-700/50 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl items-center justify-center">
-              <pre className="text-sm leading-relaxed overflow-wrap whitespace-pre-wrap mr-4 items-center inline-flex">
-                <code>
-                  <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> | <span className="token operator">iex</span>
-                </code>
-              </pre>
+            <div className="p-6 shadow-xl w-full max-w-2xl bg-gradient-to-br from-gray-900/95 to-gray-800/95 dark:from-gray-900/90 dark:to-gray-800/90 rounded-2xl border border-gray-700/50">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <pre className="text-sm leading-relaxed flex-1 text-center">
+                  <code className="block break-all">
+                    <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> <span className="token operator">| iex</span>
+                  </code>
+                </pre>
 
-              <div className="flex flex-col items-end gap-4 flex-wrap">
                 <CopyToClipboard
                   text={`irm ${scriptUrl} | iex`}
                   onCopy={() => setCopied(true)}
                 >
                   <button
                     type="button"
-                    className="bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3 inline-flex items-center justify-center w-auto"
+                    className="bg-gradient-to-r from-sunshine-violet to-sunshine-blue hover:from-sunshine-violet/80 hover:to-sunshine-blue/80 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl px-6 py-3 inline-flex items-center justify-center gap-2 min-w-[120px] transform hover:-translate-y-0.5"
                   >
                     {copied ? (
-                      <FontAwesomeIcon icon={faCheckCircle} className="h-5 w-5" />
+                      <>
+                        <FontAwesomeIcon icon={faCheckCircle} className="h-5 w-5" />
+                        <span>{t('hero.copiedButton')}</span>
+                      </>
                     ) : (
-                      <FontAwesomeIcon icon={faCopy} className="h-5 w-5" />
+                      <>
+                        <FontAwesomeIcon icon={faCopy} className="h-5 w-5" />
+                        <span>{t('hero.copyButton')}</span>
+                      </>
                     )}
                   </button>
                 </CopyToClipboard>

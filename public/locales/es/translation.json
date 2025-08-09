@@ -11,32 +11,42 @@
   },
   "hero": {
     "title": "Sunshine-AIO",
-    "subtitle": "La solución todo-en-uno para configurar su entorno de transmisión de juegos. Instalación en un clic para Sunshine y todos los componentes necesarios.",
+    "subtitle": "La herramienta definitiva de configuración Sunshine para Windows 10/11. Instalación de una línea de infraestructura de streaming con configuración automatizada.",
     "guideButton": "Ver la guía de instalación",
-    "commandNote": "Instalación sencilla a través de PowerShell"
+    "commandNote": "Instalación PowerShell de una línea",
+    "wikiButton": "Explorar el Wiki",
+    "powershellNote": "Copie y pegue este comando en PowerShell (como Administrador) para instalar Sunshine-AIO",
+    "copyButton": "Copiar",
+    "copiedButton": "¡Copiado!"
   },
   "home": {
     "whyChoose": {
       "title": "¿Por qué elegir Sunshine-AIO?",
-      "subtitle": "Obtenga todo lo que necesita para configurar la transmisión de juegos en una sola instalación."
+      "subtitle": "Infraestructura completa de streaming con servidor Sunshine, Virtual Display Driver, launcher Playnite y soporte HDR."
     },
     "features": {
       "allInOne": {
-        "title": "Solución todo-en-uno",
-        "description": "Instale todos los componentes necesarios con un solo clic. No es necesario configurar manualmente nada."
+        "title": "Infraestructura completa",
+        "description": "Servidor de streaming Sunshine, Virtual Display Driver, launcher de juegos Playnite - todo en una configuración automatizada."
       },
       "quickSetup": {
-        "title": "Instalación rápida",
-        "description": "Esté funcionando en minutos en lugar de horas gracias a nuestra instalación automática."
+        "title": "Instalación de una línea",
+        "description": "Un solo comando PowerShell instala y configura todo. No se requiere experiencia técnica."
       },
       "preConfigured": {
-        "title": "Preconfigurado",
-        "description": "Todo está preconfigurado para una ejecución óptima desde el inicio."
+        "title": "Características avanzadas",
+        "description": "Soporte HDR, sistema de desinstalación automatizado y configuración de streaming optimizada lista para usar."
       }
+    },
+    "wiki": {
+      "title": "¿Necesita ayuda o quiere saber más?",
+      "subtitle": "Visite nuestro wiki completo para guías detalladas, solución de problemas y configuración avanzada.",
+      "button": "Explorar el Wiki"
     }
   },
   "tools": {
     "title": "Herramientas de instalación",
+    "subtitle": "Kit completo de herramientas para configuración de streaming de juegos - componentes de servidor y cliente",
     "serverInstall": "Instalación del servidor",
     "clientInstall": "Instalación del cliente",
     "recommended": "Recomendado",
@@ -72,6 +82,7 @@
   },
   "guide": {
     "title": "Guía de instalación",
+    "subtitle": "Guía de instalación paso a paso para la configuración de streaming Sunshine-AIO",
     "steps": {
       "download": {
         "title": "Instalar Sunshine-AIO",
@@ -91,6 +102,7 @@
   },
   "about": {
     "title": "Acerca de Sunshine-AIO",
+    "subtitle": "Aprende más sobre Sunshine-AIO y el equipo detrás de este proyecto",
     "overview": {
       "title": "Resumen del proyecto",
       "description": "Sunshine-AIO es una solución todo-en-uno para configurar su entorno de transmisión de juegos. Simplifica el proceso de instalación y configuración de varios herramientas necesarias para la transmisión de juegos, haciéndolo accesible a todos."
@@ -100,7 +112,8 @@
       "description": "Este sitio web ha sido creado en colaboración entre:",
       "roles": {
         "creator": "Creador del proyecto",
-        "website": "Desarrollo de sitio web"
+        "website": "Desarrollo de sitio web",
+        "development": "Asistencia en desarrollo y optimización de código"
       }
     }
   },
@@ -110,6 +123,7 @@
   "contact": {
     "helpButton": "¿Necesita ayuda?",
     "title": "Contactar con el soporte",
+    "subtitle": "¿Necesita ayuda con Sunshine-AIO? Contacte a nuestro equipo de soporte",
     "form": {
       "name": "Nombre",
       "email": "Correo electrónico",

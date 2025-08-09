@@ -11,32 +11,42 @@
   },
   "hero": {
     "title": "Sunshine-AIO",
-    "subtitle": "All-in-One Solution for Configuring Your Gaming Streaming Environment. One-Click Installation for Sunshine and All Required Components.",
+    "subtitle": "The Ultimate Sunshine Streaming Setup Tool for Windows 10/11. One-line installation of game streaming infrastructure with automated configuration.",
     "guideButton": "View the Installation Guide",
-    "commandNote": "Easy Installation via PowerShell"
+    "commandNote": "One-Line PowerShell Installation",
+    "powershellNote": "Copy and paste this command into PowerShell (as Administrator) to install Sunshine-AIO",
+    "wikiButton": "Explore the Wiki",
+    "copyButton": "Copy",
+    "copiedButton": "Copied!"
   },
   "home": {
     "whyChoose": {
       "title": "Why Choose Sunshine-AIO?",
-      "subtitle": "Get Everything You Need to Configure Your Gaming Streaming in One Installation."
+      "subtitle": "Complete game streaming infrastructure with Sunshine server, Virtual Display Driver, Playnite launcher, and HDR support."
     },
     "features": {
       "allInOne": {
-        "title": "All-in-One Solution",
-        "description": "Install All Required Components with a Single Click. No Manual Configuration Required."
+        "title": "Complete Infrastructure",
+        "description": "Sunshine streaming server, Virtual Display Driver, Playnite game launcher - everything in one automated setup."
       },
       "quickSetup": {
-        "title": "Fast Setup",
-        "description": "Be Up and Running in Minutes, Not Hours, Thanks to Our Automated Installation."
+        "title": "One-Line Installation",
+        "description": "Single PowerShell command installs and configures everything. No technical expertise required."
       },
       "preConfigured": {
-        "title": "Pre-Configured",
-        "description": "Everything is Pre-Configured for Optimal Performance from the Moment of Installation."
+        "title": "Advanced Features",
+        "description": "HDR support, automated uninstallation system, and optimized streaming configuration out of the box."
       }
+    },
+    "wiki": {
+      "title": "Need Help or Want to Learn More?",
+      "subtitle": "Visit our comprehensive wiki for detailed guides, troubleshooting, and advanced configuration.",
+      "button": "Browse the Wiki"
     }
   },
   "tools": {
     "title": "Installation Tools",
+    "subtitle": "Complete toolkit for game streaming setup - server and client components",
     "serverInstall": "Server Installation",
     "clientInstall": "Client Installation",
     "recommended": "Recommended",
@@ -72,6 +82,7 @@
   },
   "guide": {
     "title": "Installation Guide",
+    "subtitle": "Step-by-step installation guide for Sunshine-AIO streaming setup",
     "steps": {
       "download": {
         "title": "Install Sunshine-AIO",
@@ -91,6 +102,7 @@
   },
   "about": {
     "title": "About Sunshine-AIO",
+    "subtitle": "Learn more about Sunshine-AIO and the team behind this project",
     "overview": {
       "title": "Project Overview",
       "description": "Sunshine-AIO is an All-in-One Solution for Configuring Your Gaming Streaming Environment. It Simplifies the Installation and Configuration Process of Multiple Tools Required for Game Streaming, Making it Accessible to Everyone."
@@ -100,7 +112,8 @@
       "description": "This Website Was Created in Collaboration Between:",
       "roles": {
         "creator": "Project Creator",
-        "website": "Website Development"
+        "website": "Website Development",
+        "development": "Development assistance and code optimization"
       }
     }
   },
@@ -110,6 +123,7 @@
   "contact": {
     "helpButton": "Need Help?",
     "title": "Contact Support",
+    "subtitle": "Need help with Sunshine-AIO? Contact our support team",
     "form": {
       "name": "Your Name",
       "email": "Email Address",

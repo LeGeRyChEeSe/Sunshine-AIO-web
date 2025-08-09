@@ -3,7 +3,7 @@
     "home": "ホーム",
     "tools": "ツール",
     "guide": "ガイドのインストール",
-    "about": "关于",
+    "about": "について",
     "theme": {
       "light": "ライトモード",
       "dark": "ダークモード"
@@ -13,7 +13,11 @@
     "title": "ソーンスウェーダIO",
     "subtitle": "ゲームストリーミングの環境を設定するための一元的な解決法。シンプルなパワースhellコマンドでインストール。",
     "guideButton": "ガイドのインストールを見る",
-    "commandNote": "サーバーのインストールとクライアントのインストールを一発で実行できます。必要な設定手順は不要です。"
+    "commandNote": "1行のPowerShellインストール",
+    "wikiButton": "Wikiを探索",
+    "powershellNote": "このコマンドをPowerShell（管理者として）にコピーして貼り付けてSunshine-AIOをインストールしてください",
+    "copyButton": "コピー",
+    "copiedButton": "コピー済み！"
   },
   "home": {
     "whyChoose": {
@@ -37,6 +41,7 @@
   },
   "tools": {
     "title": "インストールツール",
+    "subtitle": "ゲームストリーミング設定用の完全なツールキット - サーバーとクライアントコンポーネント",
     "serverInstall": "サーバーインストール",
     "clientInstall": "クライアントインストール",
     "recommended": "推奨",
@@ -72,6 +77,7 @@
   },
   "guide": {
     "title": "インストールガイド",
+    "subtitle": "Sunshine-AIOストリーミング設定のステップバイステップインストールガイド",
     "steps": {
       "download": {
         "title": "ソーンスウェーダIOをインストールする",
@@ -90,7 +96,8 @@
     }
   },
   "about": {
-    "title": "ソーンスウェーダIOについて",
+    "title": "Sunshine-AIOについて",
+    "subtitle": "Sunshine-AIOとこのプロジェクトの背後にいるチームについて詳しく学ぶ",
     "overview": {
       "title": "プロジェクトの概要",
       "description": "ソーンスウェーダIOはゲームストリーミングの環境を設定するための一元的な解決法です。 MoonlightとSunshine-AIO、Virtual Display Driver、Playnite、Playnite Watcher、sunshine_base、moonlightのすべてがインストールできる状態になります。"
@@ -100,7 +107,8 @@
       "description": "このウェブサイトはソーンスウェーダIOプロジェクトを作成した人々と連携しています。",
       "roles": {
         "creator": "プロジェクトの作成者",
-        "website": "ウェブサイトの開発者"
+        "website": "ウェブサイトの開発者",
+        "development": "開発支援とコード最適化"
       }
     }
   },
@@ -110,6 +118,7 @@
   "contact": {
     "helpButton": "サポートが必要ですか?",
     "title": "連絡先",
+    "subtitle": "Sunshine-AIOのヘルプが必要ですか？私たちのサポートチームに連絡してください",
     "form": {
       "name": "お名前",
       "email": "メールアドレス",

@@ -15,7 +15,11 @@ export default function Header() {
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link to="/" className="flex items-center space-x-2">
-            <Sun className="h-8 w-8 text-white" />
+            <img 
+              src="/sunshine-aio-logo.png" 
+              alt="Sunshine-AIO Logo" 
+              className="h-8 w-8 object-contain"
+            />
             <span className="text-2xl font-bold text-white">Sunshine-AIO</span>
           </Link>
 

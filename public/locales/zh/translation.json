@@ -13,7 +13,11 @@
     "title": "阳光-AIO",
     "subtitle": "配置您的游戏流媒体环境的全包解决方案。通过一键安装，无需任何手动设置。",
     "guideButton": "查看安装指南",
-    "commandNote": "通过 PowerShell 进行快速安装"
+    "commandNote": "一行PowerShell安装",
+    "wikiButton": "探索Wiki",
+    "powershellNote": "将此命令复制并粘贴到PowerShell（以管理员身份）中以安装Sunshine-AIO",
+    "copyButton": "复制",
+    "copiedButton": "已复制！"
   },
   "home": {
     "whyChoose": {
@@ -37,6 +41,7 @@
   },
   "tools": {
     "title": "安装工具",
+    "subtitle": "游戏流媒体设置的完整工具包 - 服务器和客户端组件",
     "serverInstall": "服务器安装",
     "clientInstall": "客户端安装",
     "recommended": "推荐",
@@ -72,6 +77,7 @@
   },
   "guide": {
     "title": "安装指南",
+    "subtitle": "Sunshine-AIO流媒体设置的分步安装指南",
     "steps": {
       "download": {
         "title": "安装 Sunshine-AIO",
@@ -91,6 +97,7 @@
   },
   "about": {
     "title": "关于 Sunshine-AIO",
+    "subtitle": "了解更多关于Sunshine-AIO以及这个项目背后的团队",
     "overview": {
       "title": "项目概述",
       "description": "阳光-AIO 是一个全面的解决方案，用于配置游戏流媒体环境。它简化了安装和配置过程，使您可以轻松使用各种工具。"
@@ -100,7 +107,8 @@
       "description": "这个网站是通过团队合作创建的：",
       "roles": {
         "creator": "项目负责人",
-        "website": "网站开发人员"
+        "website": "网站开发人员",
+        "development": "开发支持和代码优化"
       }
     }
   },
@@ -110,6 +118,7 @@
   "contact": {
     "helpButton": "需要帮助？",
     "title": "联系支持",
+    "subtitle": "需要Sunshine-AIO的帮助？联系我们的支持团队",
     "form": {
       "name": "您的姓名",
       "email": "电子邮件地址",

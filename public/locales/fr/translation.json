@@ -11,32 +11,42 @@
   },
   "hero": {
     "title": "Sunshine-AIO",
-    "subtitle": "La solution tout-en-un pour configurer votre environnement de streaming de jeux. Installation en un clic pour Sunshine et tous les composants nécessaires.",
+    "subtitle": "L'outil ultime de configuration Sunshine pour Windows 10/11. Installation en une ligne de l'infrastructure de streaming avec configuration automatisée.",
     "guideButton": "Voir le guide d'installation",
-    "commandNote": "Installation simple via PowerShell"
+    "commandNote": "Installation PowerShell en une ligne",
+    "powershellNote": "Copiez et collez cette commande dans PowerShell (en tant qu'Administrateur) pour installer Sunshine-AIO",
+    "wikiButton": "Explorer le Wiki",
+    "copyButton": "Copier",
+    "copiedButton": "Copié !"
   },
   "home": {
     "whyChoose": {
       "title": "Pourquoi choisir Sunshine-AIO ?",
-      "subtitle": "Obtenez tout ce dont vous avez besoin pour configurer le streaming de jeux en une seule installation."
+      "subtitle": "Infrastructure complète de streaming avec serveur Sunshine, Virtual Display Driver, lanceur Playnite et support HDR."
     },
     "features": {
       "allInOne": {
-        "title": "Solution tout-en-un",
-        "description": "Installez tous les composants nécessaires en un seul clic. Aucune configuration manuelle requise."
+        "title": "Infrastructure complète",
+        "description": "Serveur Sunshine, Virtual Display Driver, lanceur Playnite - tout dans une configuration automatisée."
       },
       "quickSetup": {
-        "title": "Installation rapide",
-        "description": "Soyez opérationnel en quelques minutes au lieu d'heures grâce à notre installation automatisée."
+        "title": "Installation en une ligne",
+        "description": "Une seule commande PowerShell installe et configure tout. Aucune expertise technique requise."
       },
       "preConfigured": {
-        "title": "Pré-configuré",
-        "description": "Tout est pré-configuré pour des performances optimales dès l'installation."
+        "title": "Fonctionnalités avancées",
+        "description": "Support HDR, système de désinstallation automatisé et configuration de streaming optimisée prête à l'emploi."
       }
+    },
+    "wiki": {
+      "title": "Besoin d'aide ou envie d'en savoir plus ?",
+      "subtitle": "Visitez notre wiki complet pour des guides détaillés, dépannage et configuration avancée.",
+      "button": "Parcourir le Wiki"
     }
   },
   "tools": {
     "title": "Outils d'installation",
+    "subtitle": "Boîte à outils complète pour la configuration de streaming de jeux - composants serveur et client",
     "serverInstall": "Installation Serveur",
     "clientInstall": "Installation Client",
     "recommended": "Recommandé",
@@ -72,6 +82,7 @@
   },
   "guide": {
     "title": "Guide d'installation",
+    "subtitle": "Guide d'installation étape par étape pour la configuration de streaming Sunshine-AIO",
     "steps": {
       "download": {
         "title": "Installer Sunshine-AIO",
@@ -91,6 +102,7 @@
   },
   "about": {
     "title": "À propos de Sunshine-AIO",
+    "subtitle": "En savoir plus sur Sunshine-AIO et l'équipe derrière ce projet",
     "overview": {
       "title": "Aperçu du projet",
       "description": "Sunshine-AIO est une solution tout-en-un pour configurer votre environnement de streaming de jeux. Il simplifie le processus d'installation et de configuration de plusieurs outils nécessaires au streaming de jeux, le rendant accessible à tous."
@@ -100,7 +112,8 @@
       "description": "Ce site web a été créé en collaboration entre :",
       "roles": {
         "creator": "Créateur du projet",
-        "website": "Développement du site web"
+        "website": "Développement du site web",
+        "development": "Assistance au développement et optimisation du code"
       }
     }
   },
@@ -110,6 +123,7 @@
   "contact": {
     "helpButton": "Besoin d'aide ?",
     "title": "Contacter le support",
+    "subtitle": "Besoin d'aide avec Sunshine-AIO ? Contactez notre équipe de support",
     "form": {
       "name": "Votre nom",
       "email": "Adresse e-mail",

@@ -13,7 +13,7 @@ const tools = [
     recommended: true,
     type: 'server',
     size: 'large',
-    iconUrl: '/icons/sunshine_aio.jpg',
+    iconUrl: '/sunshine-aio-logo.png',
     fallbackIcon: Server,
   },
   {
@@ -91,20 +91,25 @@ export default function Tools() {
   return (
     <div className="py-12 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-gray-900 dark:to-gray-800 min-h-screen">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
-          {t('tools.title')}
-        </h1>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            {t('tools.title')}
+          </h1>
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            {t('tools.subtitle')}
+          </p>
+        </div>
 
         <div className="md:space-y-6 space-y-8 ">
           {tools.map((tool) => (
             <div
               key={tool.id}
-              className={`p-6 rounded-xl ${tool.recommended
+              className={`p-8 rounded-2xl shadow-xl transition-all duration-300 hover:-translate-y-1 ${tool.recommended
                 ? tool.type === 'server'
-                  ? 'bg-gradient-to-r from-violet-500/90 to-violet-600/90 dark:from-violet-600/90 dark:to-violet-700/90 text-white'
+                  ? 'bg-gradient-to-r from-sunshine-violet to-sunshine-blue text-white'
                   : 'bg-gradient-to-r from-blue-500/90 to-blue-600/90 dark:from-blue-600/90 dark:to-blue-700/90 text-white'
-                : 'bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm'
-                } ${tool.size === 'large' ? 'transform scale-105' : ''}`}
+                : 'bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm'
+                } ${tool.size === 'large' ? 'border-2 border-sunshine-violet/20' : ''}`}
             >
               <div className="flex flex-col md:flex-row gap-4 justify-between overflow-hidden">
                 <div>
@@ -177,39 +182,45 @@ export default function Tools() {
                       href={tool.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center px-6 py-2 bg-white text-blue-600 rounded-full font-semibold hover:bg-blue-50 transition"
+                      className="inline-flex items-center px-6 py-3 bg-white text-blue-600 rounded-xl font-semibold hover:bg-blue-50 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                     >
                       <ExternalLink className="h-5 w-5 mr-2" />
                       {t('tools.visitWebsite')}
                     </a>
                   ) : tool.id === 'sunshine-aio' ? (
-                    <div className="text-center flex flex-wrap mx-auto items-center justify-center">
-                      <div className="mb-6 font-bold text-white">
-                        <h2 className="text-2xl md:text-2xl text-white font-semibold mb-2">
+                    <div className="text-center flex flex-col items-center justify-center w-full max-w-lg">
+                      <div className="mb-4 text-white">
+                        <h3 className="text-lg font-semibold mb-2 text-center">
                           {t('hero.commandNote')}
-                        </h2>
+                        </h3>
                       </div>
 
-                      <div className="flex flex-wrap max-w-max items-center justify-center p-4 shadow-md bg-gradient-to-br from-gray-800/90 to-gray-700/50 dark:from-gray-800/50 dark:to-gray-700/50 rounded-xl overflow-hidden">
-                        <pre className="text-sm leading-relaxed whitespace-pre-wrap mr-4">
-                          <code>
-                            <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> | <span className="token operator">iex</span>
-                          </code>
-                        </pre>
+                      <div className="p-6 shadow-xl w-full max-w-2xl bg-gradient-to-br from-gray-900/95 to-gray-800/95 dark:from-gray-900/90 dark:to-gray-800/90 rounded-2xl border border-gray-700/50">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                          <pre className="text-sm leading-relaxed flex-1 text-center">
+                            <code className="block break-all">
+                              <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> <span className="token operator">| iex</span>
+                            </code>
+                          </pre>
 
-                        <div>
                           <CopyToClipboard
                             text={`irm ${scriptUrl} | iex`}
                             onCopy={() => setCopied(true)}
                           >
                             <button
                               type="button"
-                              className="inline-flex bg-white/10 backdrop-blur-sm border-2 border-white/20 text-white rounded-full font-semibold hover:bg-white/20 transition shadow-lg px-4 py-3"
+                              className="bg-gradient-to-r from-sunshine-violet to-sunshine-blue hover:from-sunshine-violet/80 hover:to-sunshine-blue/80 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl px-6 py-3 inline-flex items-center justify-center gap-2 min-w-[120px] transform hover:-translate-y-0.5"
                             >
                               {copied ? (
-                                <FontAwesomeIcon icon={faCheckCircle} className="h-5 w-5" />
+                                <>
+                                  <FontAwesomeIcon icon={faCheckCircle} className="h-5 w-5" />
+                                  <span>{t('hero.copiedButton')}</span>
+                                </>
                               ) : (
-                                <FontAwesomeIcon icon={faCopy} className="h-5 w-5" />
+                                <>
+                                  <FontAwesomeIcon icon={faCopy} className="h-5 w-5" />
+                                  <span>{t('hero.copyButton')}</span>
+                                </>
                               )}
                             </button>
                           </CopyToClipboard>
@@ -220,7 +231,7 @@ export default function Tools() {
                     tool.downloadUrl && (
                       <a
                         href={tool.downloadUrl}
-                        className={`inline-flex items-center px-6 py-2 rounded-full font-semibold transition bg-primary-600 text-white hover:bg-primary-700`}
+                        className="inline-flex items-center px-6 py-3 rounded-xl font-semibold transition-all duration-200 bg-gradient-to-r from-sunshine-violet to-sunshine-blue hover:from-sunshine-violet/80 hover:to-sunshine-blue/80 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                       >
                         <Download className="h-5 w-5 mr-2" />
                         {t('tools.download')}

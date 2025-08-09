@@ -13,7 +13,11 @@
     "title": "Sunshine-AIO",
     "subtitle": "게임 스트리밍 기기 설정을 위한 모든 항목을 하나로 합쳐주는 프로그램입니다. Windows 10/11에서만 사용 가능하고, 최적화된 성능을 제공합니다.",
     "guideButton": "설치 가이드 확인",
-    "commandNote": "PowerShell 명령어를 통해 설치"
+    "commandNote": "1행 PowerShell 설치",
+    "wikiButton": "Wiki 탐색",
+    "powershellNote": "이 명령어를 PowerShell(관리자로)에 복사하여 붙여넣어 Sunshine-AIO를 설치하세요",
+    "copyButton": "복사",
+    "copiedButton": "복사됨!"
   },
   "home": {
     "whyChoose": {
@@ -37,6 +41,7 @@
   },
   "tools": {
     "title": "설치 도구",
+    "subtitle": "게임 스트리밍 설정을 위한 완전한 도구 키트 - 서버 및 클라이언트 구성 요소",
     "serverInstall": "서버 설치",
     "clientInstall": "클라이언트 설치",
     "recommended": "추천",
@@ -72,6 +77,7 @@
   },
   "guide": {
     "title": "설치 가이드",
+    "subtitle": "Sunshine-AIO 스트리밍 설정을 위한 단계별 설치 가이드",
     "steps": {
       "download": {
         "title": "Sunshine-AIO 설치",
@@ -91,6 +97,7 @@
   },
   "about": {
     "title": "Sunshine-AIO 정보",
+    "subtitle": "Sunshine-AIO와 이 프로젝트의 배경에 있는 팀에 대해 자세히 알아보기",
     "overview": {
       "title": "프로젝트의 핵심적인 내용",
       "description": "Sunshine-AIO는 게임 스트리밍 기기 설정을 위한 모든 항목을 하나로 합쳐주는 프로그램입니다. Windows 10/11에서만 사용 가능하고, 최적화된 성능을 제공합니다."
@@ -100,7 +107,8 @@
       "description": "Sunshine-AIO 프로젝트는 다음과 같은 구성원으로 이루어져 있습니다:",
       "roles": {
         "creator": "생성자",
-        "website": "사이트 웹 개발자"
+        "website": "사이트 웹 개발자",
+        "development": "개발 지원 및 코드 최적화"
       }
     }
   },
@@ -108,8 +116,9 @@
     "copyright": "© 2024 Sunshine-AIO. 모든 권리가 보호됩니다."
   },
   "contact": {
-    "helpButton": "추가 문의 필요하시면",
+    "helpButton": "도움이 필요하세요?",
     "title": "지원 문의하기",
+    "subtitle": "Sunshine-AIO에 도움이 필요하세요? 저희 지원 팀에 연락하세요",
     "form": {
       "name": "이름",
       "email": "이메일 주소",

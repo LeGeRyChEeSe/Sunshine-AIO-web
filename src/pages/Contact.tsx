@@ -28,7 +28,7 @@ export default function Contact() {
       <div className="min-h-screen bg-gradient-to-br from-sunshine-violet/10 to-sunshine-blue/10 dark:from-gray-900 dark:to-gray-800 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto">
-            <div className="bg-gray-900 rounded-xl p-8 shadow-lg text-center">
+            <div className="bg-gray-900 rounded-2xl p-10 shadow-xl text-center">
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-white mb-4">
                 {t('contact.thankYou.title')}
@@ -38,7 +38,7 @@ export default function Contact() {
               </p>
               <Link
                 to="/"
-                className="inline-flex items-center px-6 py-3 bg-violet-600 text-white rounded-lg font-semibold hover:bg-violet-700 transition"
+                className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-sunshine-violet to-sunshine-blue text-white rounded-xl font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition duration-200"
               >
                 {t('contact.thankYou.backHome')}
               </Link>
@@ -53,12 +53,21 @@ export default function Contact() {
     <div className="min-h-screen bg-gradient-to-br from-sunshine-violet/10 to-sunshine-blue/10 dark:from-gray-900 dark:to-gray-800 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              {t('contact.title')}
+            </h1>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
+              {t('contact.subtitle')}
+            </p>
+          </div>
+          
           <form
             name="contact"
             method="POST"
             data-netlify="true"
             data-netlify-honeypot="bot-field"
-            className="bg-gray-900 rounded-xl p-8 shadow-lg"
+            className="bg-gray-900 rounded-2xl p-10 shadow-xl"
             onSubmit={handleSubmit}
           >
             <input type="hidden" name="form-name" value="contact" />
@@ -66,10 +75,6 @@ export default function Contact() {
             <div hidden>
               <input name="bot-field" />
             </div>
-
-            <h1 className="text-3xl font-bold text-white mb-8">
-              {t('contact.title')}
-            </h1>
 
             <div className="space-y-6">
               <div>
@@ -135,7 +140,7 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full px-6 py-3 bg-violet-600 text-white rounded-lg font-semibold hover:bg-violet-700 transition"
+                className="w-full px-6 py-3 bg-gradient-to-r from-sunshine-violet to-sunshine-blue text-white rounded-xl font-semibold hover:shadow-lg transform hover:-translate-y-0.5 transition duration-200"
               >
                 {t('contact.form.submit')}
               </button>
