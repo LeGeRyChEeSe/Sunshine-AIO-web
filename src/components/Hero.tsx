@@ -49,8 +49,8 @@ export default function Hero() {
           <div className="flex items-center justify-center">
             <div className="p-6 shadow-xl w-full max-w-2xl bg-gradient-to-br from-gray-900/95 to-gray-800/95 dark:from-gray-900/90 dark:to-gray-800/90 rounded-2xl border border-gray-700/50">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <pre className="text-sm leading-relaxed flex-1 text-center">
-                  <code className="block break-all">
+                <pre className="text-sm leading-relaxed flex-1 text-center overflow-hidden">
+                  <code className="block break-words hyphens-auto max-w-full whitespace-pre-wrap">
                     <span className="token keyword">irm</span> <span className="token string">{scriptUrl}</span> <span className="token operator">| iex</span>
                   </code>
                 </pre>
