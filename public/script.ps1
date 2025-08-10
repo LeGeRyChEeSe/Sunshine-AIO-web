@@ -8,17 +8,8 @@ param(
     [switch]$SkipUpdateCheck = $false
 )
 
-# Script version - read from version.txt if available, fallback to hardcoded
-try {
-    $versionFile = Join-Path (Split-Path $PSScriptRoot -Parent) "version.txt"
-    if (Test-Path $versionFile) {
-        $script:ScriptVersion = (Get-Content $versionFile -Raw).Trim()
-    } else {
-        $script:ScriptVersion = "1.0.1"
-    }
-} catch {
-    $script:ScriptVersion = "1.0.1"
-}
+# Script version - hardcoded for easy maintenance
+$script:ScriptVersion = "1.0.2"
 
 # Set strict mode for better error detection
 Set-StrictMode -Version Latest
