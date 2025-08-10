@@ -82,23 +82,14 @@ function Test-InternetConnection {
 function Get-CurrentVersion {
     try {
         if (Test-Path ".git") {
-            # First try to get the exact tag for current commit
-            $version = git describe --tags --exact-match HEAD 2>$null
-            if ($LASTEXITCODE -eq 0 -and $version) {
-                return $version.Trim()
-            }
-            
-            # If not on exact tag, get the latest published tag (not the commit-extended version)
+            # Get the latest tag reachable from current HEAD (where the user currently is)
             $latestTag = git describe --tags --abbrev=0 HEAD 2>$null
             if ($LASTEXITCODE -eq 0 -and $latestTag) {
                 return $latestTag.Trim()
             }
             
-            # Fallback to commit hash
-            $commit = git rev-parse --short HEAD 2>$null
-            if ($LASTEXITCODE -eq 0 -and $commit) {
-                return $commit.Trim()
-            }
+            # If no tags found, return "no-tag"
+            return "no-tag"
         }
         return "unknown"
     } catch {
@@ -109,26 +100,13 @@ function Get-CurrentVersion {
 
 function Get-RemoteVersion {
     try {
-        git fetch origin main --quiet 2>$null
         git fetch origin --tags --quiet 2>$null
         
         if ($LASTEXITCODE -eq 0) {
-            # Try to get the latest tag from remote
-            $version = git describe --tags --exact-match origin/main 2>$null
-            if ($LASTEXITCODE -eq 0 -and $version) {
-                return $version.Trim()
-            }
-            
-            # If no exact tag, get the latest tag with commit info
-            $version = git describe --tags --always origin/main 2>$null
-            if ($LASTEXITCODE -eq 0 -and $version) {
-                return $version.Trim()
-            }
-            
-            # Fallback to commit hash
-            $remoteCommit = git rev-parse --short origin/main 2>$null
-            if ($LASTEXITCODE -eq 0 -and $remoteCommit) {
-                return $remoteCommit.Trim()
+            # Get the latest tag from all remote tags, sorted by version
+            $latestTag = git tag -l --sort=-version:refname | Select-Object -First 1
+            if ($latestTag) {
+                return $latestTag.Trim()
             }
         }
         return "unknown"
@@ -518,30 +496,19 @@ function Perform-Update {
         
         Show-Progress "Fetching updates..." 30
         
-        # Switch to main if not already there
-        if ($originalBranch -ne "main") {
-            git checkout main
-        }
-        
-        # Fetch and merge with automatic conflict resolution
-        Write-Log "Fetching latest changes..."
-        git fetch origin main 2>$null
-        
-        if ($LASTEXITCODE -ne 0) {
-            throw "Error fetching updates"
-        }
-        
-        Write-Log "Merging updates with local changes..."
-        # Try to merge, preferring remote changes in case of conflicts
-        git merge origin/main --strategy-option=theirs --no-edit 2>$null
-        
-        if ($LASTEXITCODE -ne 0) {
-            Write-Log "Merge conflicts detected, resolving automatically..." "WARN"
-            # Force merge by resetting to remote version
-            git reset --hard origin/main 2>$null
-            Write-Log "Merged with remote version (local changes overridden)" "SUCCESS"
+        # Get the latest remote tag and checkout to it (user has accepted the update)
+        $latestTag = Get-RemoteVersion
+        if ($latestTag -ne "unknown") {
+            Write-Log "Checking out to latest tag: $latestTag"
+            git checkout $latestTag 2>$null
+            
+            if ($LASTEXITCODE -ne 0) {
+                throw "Error checking out to tag $latestTag"
+            }
+            
+            Write-Log "Successfully updated to version $latestTag" "SUCCESS"
         } else {
-            Write-Log "Merged successfully without conflicts" "SUCCESS"
+            throw "Cannot determine target version for update"
         }
         
         Show-Progress "Updating dependencies..." 60
@@ -553,13 +520,47 @@ function Perform-Update {
             deactivate
         }
         
+        # Recreate scripts directory and script after checkout
+        Show-Progress "Recreating scripts and shortcuts..." 80
+        $scriptsDir = "scripts"
+        if (-not (Test-Path $scriptsDir)) {
+            New-Item -ItemType Directory -Path $scriptsDir -Force | Out-Null
+        }
+        
+        # Download/copy the script to scripts folder
+        try {
+            $scriptPath = Join-Path -Path $scriptsDir -ChildPath "Sunshine-AIO.ps1"
+            Invoke-RestMethod -Uri $script:ScriptUrl -OutFile $scriptPath -Method Get
+            Write-Log "Script downloaded to scripts/Sunshine-AIO.ps1" "SUCCESS"
+        } catch {
+            Write-Log "Warning: Could not download script: $_" "WARN"
+        }
+        
+        # Create shortcut at project root pointing to PowerShell script
+        try {
+            $shortcutPath = "Sunshine-AIO.lnk"
+            $targetPath = "powershell.exe"
+            $arguments = "-ExecutionPolicy Bypass -File `"scripts\Sunshine-AIO.ps1`""
+            $iconPath = "ressources\sunshine-aio.ico"
+            
+            $WshShell = New-Object -comObject WScript.Shell
+            $Shortcut = $WshShell.CreateShortcut($shortcutPath)
+            $Shortcut.TargetPath = $targetPath
+            $Shortcut.Arguments = $arguments
+            $Shortcut.WorkingDirectory = (Get-Location).Path
+            
+            if (Test-Path $iconPath) {
+                $Shortcut.IconLocation = (Resolve-Path $iconPath).Path
+            }
+            
+            $Shortcut.Save()
+            Write-Log "Desktop shortcut recreated: Sunshine-AIO.lnk" "SUCCESS"
+        } catch {
+            Write-Log "Warning: Could not recreate shortcut: $_" "WARN"
+        }
+        
         Show-Progress "Update completed" 100
         Write-Log "Update completed successfully!" "SUCCESS"
-        
-        # Switch back to original branch if it wasn't main
-        if ($originalBranch -ne "main" -and $originalBranch -ne "unknown") {
-            git checkout $originalBranch
-        }
         
         return $true
         
@@ -575,6 +576,11 @@ function Check-ForUpdates {
         return $false
     }
     
+    if (-not $script:AllowGitUpdates) {
+        Write-Log "Git updates disabled by user - skipping update check" "INFO"
+        return $false
+    }
+    
     try {
         Write-Log "Checking for updates in background..."
         
@@ -582,40 +588,69 @@ function Check-ForUpdates {
         $remoteVersion = Get-RemoteVersion
         $currentCommit = Get-CurrentCommit
         $remoteCommit = Get-RemoteCommit
-        $lastPublishedCommit = Get-LastPublishedTag
         
-        if ($remoteCommit -eq "unknown") {
-            Write-Log "Cannot check for updates (repository not initialized)" "WARN"
+        if ($remoteVersion -eq "unknown") {
+            Write-Log "Cannot check for updates (no remote tags found)" "WARN"
             return $false
         }
         
         Write-Log "Current version: $currentVersion"
         Write-Log "Remote version: $remoteVersion"
-        Write-Log "Last published commit: $lastPublishedCommit"
+        Write-Log "Current commit: $currentCommit"
         Write-Log "Remote commit: $remoteCommit"
         
-        # Use published tag for comparison, fallback to current commit if no tag found
-        $compareCommit = if ($lastPublishedCommit -ne "unknown") { $lastPublishedCommit } else { $currentCommit }
+        # Check if we need an update based on tags ONLY
+        $needsUpdate = $false
         
-        # Compare with published tag instead of current commit
-        if ($compareCommit -ne $remoteCommit) {
+        if ($currentVersion -eq "no-tag" -or $currentVersion -eq "unknown") {
+            # If local has no tags, check if there are remote tags available
+            if ($remoteVersion -ne "unknown") {
+                $needsUpdate = $true
+                Write-Log "No local tags found, but remote tags available" "INFO"
+            }
+        } elseif ($currentVersion -ne $remoteVersion) {
+            # Compare tag versions - only update if tags are different
+            $needsUpdate = $true
+            Write-Log "Different tag versions detected ($currentVersion vs $remoteVersion)" "INFO"
+        } else {
+            # Same tag version - no update needed, regardless of commits
+            Write-Log "Tags are identical ($currentVersion) - no update needed" "SUCCESS"
+            $needsUpdate = $false
+        }
+        
+        if ($needsUpdate) {
             Write-Log "Update available!" "INFO"
             
-            # Use the same commit for changelog that we used for comparison
-            $fromCommit = $compareCommit
+            # Get commit hash of current tag for changelog
+            $fromCommit = if ($currentVersion -ne "no-tag" -and $currentVersion -ne "unknown") {
+                $tagCommit = git rev-list -n 1 $currentVersion 2>$null
+                if ($tagCommit) { $tagCommit.Trim() } else { $currentCommit }
+            } else {
+                $currentCommit
+            }
+            
             $summary = Get-CommitsSummary -FromCommit $fromCommit -ToCommit $remoteCommit
             
-            # Create changelog URL using published tag
+            # Create changelog URL
             $changelogUrl = "https://github.com/LeGeRyChEeSe/Sunshine-AIO/compare/$($fromCommit.Substring(0, 7))...$($remoteCommit.Substring(0, 7))"
             
-            $userWantsUpdate = Show-UpdateDialog -CurrentVersion $currentVersion -RemoteVersion $remoteVersion -Summary $summary -ChangelogUrl $changelogUrl
+            Write-Log "Showing update dialog to user..." "INFO"
             
-            if ($userWantsUpdate) {
-                Write-Log "User accepted the update"
-                return Perform-Update
-            } else {
-                Write-Log "User declined the update - disabling automatic git updates"
-                $script:AllowGitUpdates = $false
+            try {
+                $userWantsUpdate = Show-UpdateDialog -CurrentVersion $currentVersion -RemoteVersion $remoteVersion -Summary $summary -ChangelogUrl $changelogUrl
+                Write-Log "Update dialog returned: $userWantsUpdate" "INFO"
+                
+                if ($userWantsUpdate) {
+                    Write-Log "User accepted the update"
+                    return Perform-Update
+                } else {
+                    Write-Log "User declined the update - disabling automatic git updates"
+                    $script:AllowGitUpdates = $false
+                    return $false
+                }
+            } catch {
+                Write-Log "Error showing update dialog: $_" "ERROR"
+                Write-Log "Defaulting to no update" "INFO"
                 return $false
             }
         } else {
@@ -894,13 +929,12 @@ function Start-SunshineAIOInPlace {
         Show-Progress "Updating repository..." 50
         
         try {
-            git fetch
-            git checkout main
-            if ($script:AllowGitUpdates) {
-                git pull
-                Write-Log "Repository updated successfully" "SUCCESS"
-            } else {
-                Write-Log "Git updates disabled by user - keeping current version" "INFO"
+            git fetch --tags
+            # Just ensure we're on a proper state, don't force checkout
+            $currentBranch = git branch --show-current 2>$null
+            if (-not $currentBranch) {
+                # If in detached HEAD (on a tag), stay there
+                Write-Log "Currently on a tag/commit, keeping current position" "INFO"
             }
         } catch {
             Write-Log "Warning: Could not update repository: $_" "WARN"
@@ -952,7 +986,7 @@ function Start-SunshineAIOInPlace {
             $shortcutPath = "Sunshine-AIO.lnk"
             $targetPath = "powershell.exe"
             $arguments = "-ExecutionPolicy Bypass -File `"scripts\Sunshine-AIO.ps1`""
-            $iconPath = "ressources\sunshine_aio.ico"
+            $iconPath = "ressources\sunshine-aio.ico"
             
             # Create WScript.Shell object
             $WshShell = New-Object -comObject WScript.Shell
@@ -1005,13 +1039,9 @@ function Install-SunshineAIO {
             Show-Progress "Updating existing installation..." 80
             
             Set-Location $sunshineAioPath
-            git fetch
-            git checkout main
-            if ($script:AllowGitUpdates) {
-                git pull
-            } else {
-                Write-Log "Git updates disabled by user - keeping current version" "INFO"
-            }
+            git fetch --tags
+            # Don't automatically checkout - let Check-ForUpdates handle it
+            Write-Log "Repository fetched successfully" "SUCCESS"
         } else {
             Write-Log "Cloning Sunshine-AIO repository..."
             Show-Progress "Cloning repository..." 75
@@ -1067,7 +1097,7 @@ function Install-SunshineAIO {
             $shortcutPath = Join-Path -Path $sunshineAioPath -ChildPath "Sunshine-AIO.lnk"
             $targetPath = "powershell.exe"
             $arguments = "-ExecutionPolicy Bypass -File `"scripts\Sunshine-AIO.ps1`""
-            $iconPath = Join-Path -Path $sunshineAioPath -ChildPath "ressources\sunshine_aio.ico"
+            $iconPath = Join-Path -Path $sunshineAioPath -ChildPath "ressources\sunshine-aio.ico"
             
             # Create WScript.Shell object
             $WshShell = New-Object -comObject WScript.Shell
@@ -1078,7 +1108,7 @@ function Install-SunshineAIO {
             
             # Set icon if it exists
             if (Test-Path $iconPath) {
-                $Shortcut.IconLocation = $iconPath
+                $Shortcut.IconLocation = (Resolve-Path $iconPath).Path
             }
             
             $Shortcut.Save()
