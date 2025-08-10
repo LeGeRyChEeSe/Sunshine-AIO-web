@@ -897,8 +897,14 @@ function Start-SunshineAIOInPlace {
         $updatePerformed = Check-ForUpdates
         if ($updatePerformed) {
             Write-Log "Update completed, restarting application..." "SUCCESS"
-            # Restart the script after update
-            & powershell -ExecutionPolicy Bypass -File $PSCommandPath @PSBoundParameters
+            # Restart the script after update - handle both file execution and irm|iex
+            if ($PSCommandPath) {
+                & powershell -ExecutionPolicy Bypass -File $PSCommandPath @PSBoundParameters
+            } else {
+                # If executed via irm|iex, download and execute fresh script
+                Write-Log "Re-executing script from web..." "INFO"
+                Invoke-Expression (Invoke-RestMethod -Uri $script:ScriptUrl)
+            }
             return
         }
         
@@ -1120,8 +1126,15 @@ function Install-SunshineAIO {
             $updatePerformed = Check-ForUpdates
             if ($updatePerformed) {
                 Write-Log "Update completed, restarting application..." "SUCCESS"
-                # Restart the script after update
-                & powershell -ExecutionPolicy Bypass -File "scripts\Sunshine-AIO.ps1" @PSBoundParameters
+                # Restart the script after update - use local script file if available
+                $localScriptPath = "scripts\Sunshine-AIO.ps1"
+                if (Test-Path $localScriptPath) {
+                    & powershell -ExecutionPolicy Bypass -File $localScriptPath @PSBoundParameters
+                } else {
+                    # Fallback to web execution
+                    Write-Log "Local script not found, re-executing from web..." "INFO"
+                    Invoke-Expression (Invoke-RestMethod -Uri $script:ScriptUrl)
+                }
                 return
             }
         }
