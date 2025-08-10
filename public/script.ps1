@@ -1,7 +1,7 @@
 # Sunshine-AIO Installation Script
 # Enhanced with better error handling, UI improvements, and robust Python detection
 # Added automatic update checking functionality
-# Version: 1.0.0
+# Version: 1.0.3
 
 param(
     [string]$InstallPath = "",
@@ -9,7 +9,7 @@ param(
 )
 
 # Script version - hardcoded for easy maintenance
-$script:ScriptVersion = "1.0.2"
+$script:ScriptVersion = "1.0.3"
 
 # Set strict mode for better error detection
 Set-StrictMode -Version Latest
@@ -655,46 +655,371 @@ function Check-ForUpdates {
     }
 }
 
-function Get-UserInstallPath {
-    if ($InstallPath -ne "") {
-        $selectedPath = $InstallPath
-    } else {
-        Write-Host "`nInstallation Directory Selection" -ForegroundColor Magenta
-        Write-Host "By default, Sunshine-AIO will be installed in: $env:USERPROFILE\Sunshine-AIO"
-        $response = Read-Host "Would you like to use a different directory? (y/N)"
+function Show-FolderBrowserDialog {
+    param([string]$Description = "Select installation directory")
+    
+    try {
+        Add-Type -AssemblyName System.Windows.Forms
+        Add-Type -AssemblyName System.Drawing
         
-        if ($response -match '^[yY]') {
-            do {
-                $selectedPath = Read-Host "Enter the full path of the parent directory"
-                $selectedPath = $selectedPath.Trim('"').Trim()
-                
-                if (-not $selectedPath) {
-                    $selectedPath = $env:USERPROFILE
-                    break
-                }
-                
-                if (-not (Test-Path $selectedPath)) {
-                    Write-Log "The path '$selectedPath' does not exist." "WARN"
-                    $create = Read-Host "Would you like to create it? (y/N)"
-                    if ($create -match '^[yY]') {
-                        try {
-                            New-Item -ItemType Directory -Path $selectedPath -Force | Out-Null
-                            Write-Log "Directory created: $selectedPath" "SUCCESS"
-                            break
-                        } catch {
-                            Write-Log "Unable to create directory: $_" "ERROR"
-                        }
-                    }
+        # Create main form
+        $form = New-Object System.Windows.Forms.Form
+        $form.Text = "Select Installation Directory - Sunshine-AIO"
+        $form.Size = New-Object System.Drawing.Size(600, 450)
+        $form.StartPosition = "CenterScreen"
+        $form.FormBorderStyle = "FixedDialog"
+        $form.MaximizeBox = $false
+        $form.MinimizeBox = $false
+        $form.BackColor = [System.Drawing.Color]::White
+        
+        # Title label
+        $titleLabel = New-Object System.Windows.Forms.Label
+        $titleLabel.Text = $Description
+        $titleLabel.Location = New-Object System.Drawing.Point(20, 15)
+        $titleLabel.Size = New-Object System.Drawing.Size(560, 25)
+        $titleLabel.Font = New-Object System.Drawing.Font("Segoe UI", 12, [System.Drawing.FontStyle]::Bold)
+        $titleLabel.ForeColor = [System.Drawing.Color]::FromArgb(0, 102, 204)
+        
+        # Quick access panel
+        $quickAccessLabel = New-Object System.Windows.Forms.Label
+        $quickAccessLabel.Text = "Quick Access Locations:"
+        $quickAccessLabel.Location = New-Object System.Drawing.Point(20, 50)
+        $quickAccessLabel.Size = New-Object System.Drawing.Size(200, 20)
+        $quickAccessLabel.Font = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Bold)
+        
+        # Quick access buttons
+        $buttonY = 75
+        $buttonHeight = 35
+        $buttonWidth = 260
+        $spacing = 5
+        
+        $quickAccessFolders = @(
+            @{ Name = "[Desktop]"; Path = [Environment]::GetFolderPath([System.Environment+SpecialFolder]::Desktop) },
+            @{ Name = "[Documents]"; Path = [Environment]::GetFolderPath([System.Environment+SpecialFolder]::MyDocuments) },
+            @{ Name = "[Downloads]"; Path = (Join-Path $env:USERPROFILE "Downloads") },
+            @{ Name = "[User Profile]"; Path = $env:USERPROFILE },
+            @{ Name = "[C:\ Drive]"; Path = "C:\" }
+        )
+        
+        $selectedPath = ""
+        
+        foreach ($folder in $quickAccessFolders) {
+            $button = New-Object System.Windows.Forms.Button
+            $button.Text = $folder.Name
+            $button.Location = New-Object System.Drawing.Point(20, $buttonY)
+            $button.Size = New-Object System.Drawing.Size($buttonWidth, $buttonHeight)
+            $button.Font = New-Object System.Drawing.Font("Segoe UI", 10)
+            $button.BackColor = [System.Drawing.Color]::FromArgb(248, 249, 250)
+            $button.ForeColor = [System.Drawing.Color]::FromArgb(73, 80, 87)
+            $button.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+            $button.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(206, 212, 218)
+            $button.TextAlign = [System.Drawing.ContentAlignment]::MiddleLeft
+            $button.Padding = New-Object System.Windows.Forms.Padding(10, 0, 0, 0)
+            
+            # Store path in button tag
+            $button.Tag = $folder.Path
+            
+            # Add click event
+            $button.Add_Click({
+                param($sender, $e)
+                $path = $sender.Tag
+                if (Test-Path $path) {
+                    $script:selectedPath = $path
+                    $pathTextBox.Text = $path
+                    $confirmButton.Enabled = $true
                 } else {
-                    break
+                    [System.Windows.Forms.MessageBox]::Show("Path does not exist: $path", "Error", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Warning)
                 }
-            } while ($true)
-        } else {
-            $selectedPath = $env:USERPROFILE
+            })
+            
+            $form.Controls.Add($button)
+            $buttonY += $buttonHeight + $spacing
+        }
+        
+        # Browse button
+        $browseButtonY = $buttonY + 10
+        $browseButton = New-Object System.Windows.Forms.Button
+        $browseButton.Text = "Browse..."
+        $browseButton.Location = New-Object System.Drawing.Point(20, $browseButtonY)
+        $browseButton.Size = New-Object System.Drawing.Size($buttonWidth, $buttonHeight)
+        $browseButton.Font = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Bold)
+        $browseButton.BackColor = [System.Drawing.Color]::FromArgb(0, 123, 255)
+        $browseButton.ForeColor = [System.Drawing.Color]::White
+        $browseButton.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+        $browseButton.FlatAppearance.BorderSize = 0
+        
+        $browseButton.Add_Click({
+            $folderBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
+            $folderBrowser.Description = "Select installation directory"
+            $folderBrowser.RootFolder = [System.Environment+SpecialFolder]::MyComputer
+            $folderBrowser.ShowNewFolderButton = $true
+            
+            if ($pathTextBox.Text -and (Test-Path $pathTextBox.Text)) {
+                $folderBrowser.SelectedPath = $pathTextBox.Text
+            }
+            
+            $result = $folderBrowser.ShowDialog()
+            if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
+                $script:selectedPath = $folderBrowser.SelectedPath
+                $pathTextBox.Text = $folderBrowser.SelectedPath
+                $confirmButton.Enabled = $true
+            }
+        })
+        
+        # Selected path display
+        $pathLabel = New-Object System.Windows.Forms.Label
+        $pathLabel.Text = "Selected path:"
+        $pathLabel.Location = New-Object System.Drawing.Point(320, 50)
+        $pathLabel.Size = New-Object System.Drawing.Size(100, 20)
+        $pathLabel.Font = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Bold)
+        
+        $pathTextBox = New-Object System.Windows.Forms.TextBox
+        $pathTextBox.Location = New-Object System.Drawing.Point(320, 75)
+        $pathTextBox.Size = New-Object System.Drawing.Size(250, 25)
+        $pathTextBox.Font = New-Object System.Drawing.Font("Segoe UI", 10)
+        $pathTextBox.ReadOnly = $true
+        $pathTextBox.BackColor = [System.Drawing.Color]::FromArgb(248, 249, 250)
+        
+        # Buttons panel
+        $confirmButton = New-Object System.Windows.Forms.Button
+        $confirmButton.Text = "Select This Folder"
+        $confirmButton.Location = New-Object System.Drawing.Point(320, 350)
+        $confirmButton.Size = New-Object System.Drawing.Size(120, 35)
+        $confirmButton.Font = New-Object System.Drawing.Font("Segoe UI", 10, [System.Drawing.FontStyle]::Bold)
+        $confirmButton.BackColor = [System.Drawing.Color]::FromArgb(40, 167, 69)
+        $confirmButton.ForeColor = [System.Drawing.Color]::White
+        $confirmButton.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+        $confirmButton.FlatAppearance.BorderSize = 0
+        $confirmButton.Enabled = $false
+        
+        $cancelButton = New-Object System.Windows.Forms.Button
+        $cancelButton.Text = "Cancel"
+        $cancelButton.Location = New-Object System.Drawing.Point(450, 350)
+        $cancelButton.Size = New-Object System.Drawing.Size(100, 35)
+        $cancelButton.Font = New-Object System.Drawing.Font("Segoe UI", 10)
+        $cancelButton.BackColor = [System.Drawing.Color]::FromArgb(108, 117, 125)
+        $cancelButton.ForeColor = [System.Drawing.Color]::White
+        $cancelButton.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+        $cancelButton.FlatAppearance.BorderSize = 0
+        $cancelButton.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
+        
+        $confirmButton.Add_Click({
+            $form.DialogResult = [System.Windows.Forms.DialogResult]::OK
+            $form.Close()
+        })
+        
+        # Add all controls
+        $form.Controls.Add($titleLabel)
+        $form.Controls.Add($quickAccessLabel)
+        $form.Controls.Add($browseButton)
+        $form.Controls.Add($pathLabel)
+        $form.Controls.Add($pathTextBox)
+        $form.Controls.Add($confirmButton)
+        $form.Controls.Add($cancelButton)
+        
+        # Set default buttons
+        $form.AcceptButton = $confirmButton
+        $form.CancelButton = $cancelButton
+        
+        # Show dialog
+        $result = $form.ShowDialog()
+        $form.Dispose()
+        
+        if ($result -eq [System.Windows.Forms.DialogResult]::OK -and $script:selectedPath) {
+            return $script:selectedPath
+        }
+        
+        return $null
+    } catch {
+        Write-Log "Error showing folder browser: $_" "WARN"
+        return $null
+    }
+}
+
+function Test-AdminRequired {
+    param([string]$Path)
+    
+    # List of paths that typically require admin rights
+    $adminPaths = @(
+        $env:ProgramFiles,
+        ${env:ProgramFiles(x86)},
+        $env:windir,
+        "C:\Program Files",
+        "C:\Program Files (x86)",
+        "C:\Windows"
+    )
+    
+    # Check if path starts with any admin-required location
+    foreach ($adminPath in $adminPaths) {
+        if ($adminPath -and $Path.StartsWith($adminPath, [System.StringComparison]::OrdinalIgnoreCase)) {
+            return $true
         }
     }
     
-    return $selectedPath
+    # Test write access by trying to create a test file
+    try {
+        $testPath = Join-Path $Path "sunshine_test_$(Get-Random).tmp"
+        $null = New-Item -Path $testPath -ItemType File -Force -ErrorAction Stop
+        Remove-Item $testPath -Force -ErrorAction SilentlyContinue
+        return $false
+    } catch {
+        return $true
+    }
+}
+
+function Test-IsAdmin {
+    $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
+    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+function Request-AdminElevation {
+    param([string]$Path)
+    
+    Add-Type -AssemblyName System.Windows.Forms
+    
+    $result = [System.Windows.Forms.MessageBox]::Show(
+        "The selected directory requires administrator privileges:`n`n$Path`n`nDo you want to restart the installer with administrator rights to continue?",
+        "Administrator Rights Required - Sunshine-AIO",
+        [System.Windows.Forms.MessageBoxButtons]::YesNo,
+        [System.Windows.Forms.MessageBoxIcon]::Warning
+    )
+    
+    if ($result -eq [System.Windows.Forms.DialogResult]::Yes) {
+        try {
+            # Restart script as administrator
+            $arguments = ""
+            if ($InstallPath -ne "") {
+                $arguments += "-InstallPath `"$InstallPath`""
+            }
+            if ($SkipUpdateCheck) {
+                $arguments += " -SkipUpdateCheck"
+            }
+            
+            # If script has a path (not executed via irm|iex)
+            if ($PSCommandPath) {
+                Start-Process powershell -Verb RunAs -ArgumentList "-ExecutionPolicy Bypass -File `"$PSCommandPath`" $arguments"
+            } else {
+                # If executed via irm|iex, download and run as admin
+                $adminScript = "Invoke-Expression (Invoke-RestMethod -Uri '$script:ScriptUrl')"
+                Start-Process powershell -Verb RunAs -ArgumentList "-ExecutionPolicy Bypass -Command `"$adminScript`""
+            }
+            
+            Write-Log "Restarting with administrator privileges..." "INFO"
+            exit 0
+        } catch {
+            Write-Log "Failed to restart as administrator: $_" "ERROR"
+            return $false
+        }
+    }
+    
+    return $false
+}
+
+function Analyze-SelectedPath {
+    param([string]$SelectedPath)
+    
+    $folderName = Split-Path -Leaf $SelectedPath
+    $result = @{
+        Type = "Unknown"
+        FinalPath = ""
+        Action = ""
+    }
+    
+    if ($folderName -eq "Sunshine-AIO") {
+        # User selected a folder named "Sunshine-AIO"
+        if (Test-Path (Join-Path $SelectedPath ".git")) {
+            # Contains our git project
+            $result.Type = "ExistingProject"
+            $result.FinalPath = $SelectedPath
+            $result.Action = "Update existing project"
+        } else {
+            # Empty or different project with same name
+            $result.Type = "EmptyProjectFolder"
+            $result.FinalPath = $SelectedPath
+            $result.Action = "Clone into existing folder (no subfolder)"
+        }
+    } else {
+        # User selected a parent directory
+        $result.Type = "ParentDirectory"
+        $result.FinalPath = Join-Path $SelectedPath "Sunshine-AIO"
+        $result.Action = "Create Sunshine-AIO subfolder"
+    }
+    
+    return $result
+}
+
+function Get-UserInstallPath {
+    if ($InstallPath -ne "") {
+        # Use provided path directly
+        $selectedPath = $InstallPath
+        $pathAnalysis = Analyze-SelectedPath -SelectedPath $selectedPath
+        return @{
+            Type = $pathAnalysis.Type
+            FinalPath = $pathAnalysis.FinalPath
+            Action = $pathAnalysis.Action
+        }
+    } else {
+        Write-Host "`nInstallation Directory Selection" -ForegroundColor Magenta
+        $desktopPath = [Environment]::GetFolderPath([System.Environment+SpecialFolder]::Desktop)
+        $defaultPath = Join-Path $desktopPath "Sunshine-AIO"
+        Write-Host "By default, Sunshine-AIO will be installed in: $defaultPath" -ForegroundColor Cyan
+        
+        Write-Host "`nChoose installation method:" -ForegroundColor Yellow
+        Write-Host "1. Use default location ($defaultPath)" -ForegroundColor Gray
+        Write-Host "2. Browse and select custom directory" -ForegroundColor Gray
+        
+        do {
+            $choice = Read-Host "Enter your choice (1-2)"
+            
+            switch ($choice) {
+                "1" {
+                    $selectedPath = $desktopPath
+                    $pathAnalysis = Analyze-SelectedPath -SelectedPath $selectedPath
+                    return @{
+                        Type = "ParentDirectory"
+                        FinalPath = Join-Path $selectedPath "Sunshine-AIO"
+                        Action = "Create Sunshine-AIO on Desktop"
+                    }
+                }
+                "2" {
+                    $selectedPath = Show-FolderBrowserDialog -Description "Select directory for Sunshine-AIO installation"
+                    if ($selectedPath) {
+                        # Check if admin rights are required
+                        if (Test-AdminRequired -Path $selectedPath) {
+                            if (-not (Test-IsAdmin)) {
+                                Write-Host "`nWarning: The selected directory requires administrator privileges." -ForegroundColor Yellow
+                                Write-Host "Path: $selectedPath" -ForegroundColor Yellow
+                                
+                                if (Request-AdminElevation -Path $selectedPath) {
+                                    # This will exit and restart as admin
+                                    return
+                                } else {
+                                    Write-Host "Installation cancelled. Please select a different directory." -ForegroundColor Red
+                                    continue
+                                }
+                            }
+                        }
+                        
+                        $pathAnalysis = Analyze-SelectedPath -SelectedPath $selectedPath
+                        Write-Host "`nSelected: $selectedPath" -ForegroundColor Green
+                        Write-Host "Action: $($pathAnalysis.Action)" -ForegroundColor Cyan
+                        Write-Host "Final path: $($pathAnalysis.FinalPath)" -ForegroundColor Cyan
+                        
+                        $confirm = Read-Host "Confirm this selection? (Y/n)"
+                        if ($confirm -notmatch '^[nN]') {
+                            return $pathAnalysis
+                        }
+                    } else {
+                        Write-Host "No directory selected." -ForegroundColor Yellow
+                    }
+                }
+                default {
+                    Write-Host "Invalid choice. Please enter 1 or 2." -ForegroundColor Red
+                }
+            }
+        } while ($true)
+    }
 }
 
 # Enhanced Python detection and installation
@@ -1025,27 +1350,80 @@ function Start-SunshineAIOInPlace {
 }
 
 function Install-SunshineAIO {
-    param([string]$RootPath, [string]$PythonCommand)
+    param([object]$PathInfo, [string]$PythonCommand)
     
     try {
-        $sunshineAioPath = Join-Path -Path $RootPath -ChildPath "Sunshine-AIO"
+        $sunshineAioPath = $PathInfo.FinalPath
+        Write-Log "Installation type: $($PathInfo.Type)" "INFO"
+        Write-Log "Action: $($PathInfo.Action)" "INFO"
+        Write-Log "Target path: $sunshineAioPath" "INFO"
         
-        # Check if directory already exists
-        if (Test-Path $sunshineAioPath) {
-            Write-Log "Sunshine-AIO directory already exists. Updating..."
-            Show-Progress "Updating existing installation..." 80
+        switch ($PathInfo.Type) {
+            "ExistingProject" {
+                # Directory exists and contains our git project
+                Write-Log "Found existing Sunshine-AIO project. Updating..."
+                Show-Progress "Updating existing installation..." 80
+                
+                Set-Location $sunshineAioPath
+                git fetch --tags
+                Write-Log "Repository fetched successfully" "SUCCESS"
+            }
             
-            Set-Location $sunshineAioPath
-            git fetch --tags
-            # Don't automatically checkout - let Check-ForUpdates handle it
-            Write-Log "Repository fetched successfully" "SUCCESS"
-        } else {
-            Write-Log "Cloning Sunshine-AIO repository..."
-            Show-Progress "Cloning repository..." 75
+            "EmptyProjectFolder" {
+                # Directory named "Sunshine-AIO" exists but is empty/different project
+                Write-Log "Cloning into existing Sunshine-AIO folder..."
+                Show-Progress "Cloning repository..." 75
+                
+                # Clear the directory first
+                if (Test-Path $sunshineAioPath) {
+                    Get-ChildItem -Path $sunshineAioPath -Force | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+                }
+                
+                # Clone directly into the existing folder
+                $parentPath = Split-Path $sunshineAioPath -Parent
+                Set-Location $parentPath
+                git clone https://github.com/LeGeRyChEeSe/Sunshine-AIO.git (Split-Path $sunshineAioPath -Leaf)
+                Set-Location $sunshineAioPath
+                
+                # Checkout to latest tag
+                Write-Log "Checking out to latest version..."
+                git fetch --tags
+                $latestTag = git tag -l --sort=-version:refname | Select-Object -First 1
+                if ($latestTag) {
+                    Write-Log "Switching to latest version: $($latestTag.Trim())"
+                    git checkout $latestTag.Trim()
+                }
+            }
             
-            Set-Location $RootPath
-            git clone https://github.com/LeGeRyChEeSe/Sunshine-AIO.git
-            Set-Location $sunshineAioPath
+            "ParentDirectory" {
+                # Standard installation - create Sunshine-AIO subdirectory
+                # Check if Sunshine-AIO already exists in parent
+                if (Test-Path $sunshineAioPath) {
+                    Write-Log "Sunshine-AIO directory already exists. Updating..."
+                    Show-Progress "Updating existing installation..." 80
+                    
+                    Set-Location $sunshineAioPath
+                    git fetch --tags
+                    Write-Log "Repository fetched successfully" "SUCCESS"
+                } else {
+                    Write-Log "Cloning Sunshine-AIO repository..."
+                    Show-Progress "Cloning repository..." 75
+                    
+                    $parentPath = Split-Path $sunshineAioPath -Parent
+                    Set-Location $parentPath
+                    git clone https://github.com/LeGeRyChEeSe/Sunshine-AIO.git
+                    Set-Location $sunshineAioPath
+                    
+                    # Checkout to latest tag
+                    Write-Log "Checking out to latest version..."
+                    git fetch --tags
+                    $latestTag = git tag -l --sort=-version:refname | Select-Object -First 1
+                    if ($latestTag) {
+                        Write-Log "Switching to latest version: $($latestTag.Trim())"
+                        git checkout $latestTag.Trim()
+                    }
+                }
+            }
         }
         
         # Create virtual environment if it doesn't exist
@@ -1199,12 +1577,13 @@ function Start-Installation {
         Show-Progress "Installing Git..." 25
         Install-Git
         
-        # Get installation path
-        $installPath = Get-UserInstallPath
-        Write-Log "Installation directory: $installPath"
+        # Get installation path with intelligent path analysis
+        $pathInfo = Get-UserInstallPath
+        Write-Log "Installation directory: $($pathInfo.FinalPath)"
+        Write-Log "Installation strategy: $($pathInfo.Action)"
         
         # Install Sunshine-AIO
-        Install-SunshineAIO -RootPath $installPath -PythonCommand $pythonCommand
+        Install-SunshineAIO -PathInfo $pathInfo -PythonCommand $pythonCommand
         
         Write-Host "`nInstallation completed successfully!" -ForegroundColor Green
         Write-Host "Sunshine-AIO has been installed and started." -ForegroundColor Green
