@@ -1,7 +1,7 @@
 # Sunshine-AIO Installation Script
 # Enhanced with better error handling, UI improvements, and robust Python detection
 # Added automatic update checking functionality
-# Version: 1.0.3
+# Version: 1.0.4
 
 param(
     [string]$InstallPath = "",
@@ -9,7 +9,7 @@ param(
 )
 
 # Script version - hardcoded for easy maintenance
-$script:ScriptVersion = "1.0.3"
+$script:ScriptVersion = "1.0.4"
 
 # Set strict mode for better error detection
 Set-StrictMode -Version Latest
@@ -178,38 +178,74 @@ function Get-CommitsSummary {
     param([string]$FromCommit, [string]$ToCommit)
     
     try {
-        # Get the latest 3 commits with their messages
-        $commits = git log --oneline --max-count=3 "$FromCommit..$ToCommit" 2>$null
-        if ($LASTEXITCODE -eq 0 -and $commits) {
-            # $commits is already an array, no need to split
-            $summary = @()
+        # Get all tags sorted by version, newer first
+        $allTags = git tag -l --sort=-version:refname 2>$null
+        if ($LASTEXITCODE -ne 0 -or -not $allTags) {
+            return "Latest updates and improvements"
+        }
+        
+        # Get current and remote versions
+        $currentVersion = Get-CurrentVersion
+        $remoteVersion = Get-RemoteVersion
+        
+        # Find tags between current and remote version
+        $tagsToShow = @()
+        $foundRemote = $false
+        
+        foreach ($tag in $allTags) {
+            $tag = $tag.Trim()
             
-            foreach ($line in $commits) {
-                if ($line -match "^([a-f0-9]{7,}) (.+)$") {
-                    $commitMsg = $matches[2].Trim()
-                    
-                    # Check if commit message contains a version tag
-                    $versionPrefix = ""
-                    if ($commitMsg -match "v?\d+\.\d+\.\d+") {
-                        $versionMatch = $matches[0]
-                        $versionPrefix = "[$versionMatch] "
-                        # Remove version from commit message to avoid duplication
-                        $commitMsg = $commitMsg -replace "v?\d+\.\d+\.\d+[^\w]*", ""
-                        $commitMsg = $commitMsg.Trim()
-                    }
-                    
-                    # Truncate very long commit messages
-                    if ($commitMsg.Length -gt 70) {
-                        $commitMsg = $commitMsg.Substring(0, 67) + "..."
-                    }
-                    
-                    $summary += "$versionPrefix$commitMsg"
+            # Start collecting after finding remote version
+            if ($tag -eq $remoteVersion) {
+                $foundRemote = $true
+                $tagsToShow += $tag
+                continue
+            }
+            
+            # Collect intermediate tags
+            if ($foundRemote) {
+                if ($tag -eq $currentVersion) {
+                    break
                 }
+                $tagsToShow += $tag
             }
-            
-            if ($summary.Count -gt 0) {
-                return $summary -join "`n"
+        }
+        
+        if ($tagsToShow.Count -eq 0) {
+            return "Latest updates and improvements"
+        }
+        
+        $summary = @()
+        
+        # Get commit message for each tag
+        foreach ($tag in $tagsToShow) {
+            try {
+                # Get the short commit message for this tag
+                $commitMsg = git log -1 --pretty=format:"%s" $tag 2>$null
+                if ($LASTEXITCODE -eq 0 -and $commitMsg) {
+                    $commitMsg = $commitMsg.Trim()
+                    
+                    # Extract the short description after the version number
+                    if ($commitMsg -match "^v?\d+\.\d+\.\d+[^\w]*(.+)$") {
+                        $shortDescription = $matches[1].Trim()
+                        # Remove common prefixes like ": " or "- "
+                        $shortDescription = $shortDescription -replace "^[:\-\s]+", ""
+                        $summary += "[$tag] $shortDescription"
+                    } else {
+                        # If no version pattern, use the message as is (truncated)
+                        if ($commitMsg.Length -gt 60) {
+                            $commitMsg = $commitMsg.Substring(0, 57) + "..."
+                        }
+                        $summary += "[$tag] $commitMsg"
+                    }
+                }
+            } catch {
+                continue
             }
+        }
+        
+        if ($summary.Count -gt 0) {
+            return $summary -join "`n"
         }
         return "Latest updates and improvements"
     } catch {
@@ -496,6 +532,22 @@ function Invoke-Update {
             }
             
             Write-Log "Successfully updated to version $latestTag" "SUCCESS"
+            
+            # Verify we're on the correct tag after checkout
+            $currentBranch = git branch --show-current 2>$null
+            $currentTag = Get-CurrentVersion
+            
+            if ($currentBranch -eq "main") {
+                Write-Log "Warning: Still on main branch after checkout, switching to tag $latestTag" "WARN"
+                git checkout $latestTag 2>$null
+                if ($LASTEXITCODE -ne 0) {
+                    Write-Log "Failed to switch from main to tag $latestTag" "ERROR"
+                }
+            } elseif ($currentTag -ne $latestTag) {
+                Write-Log "Warning: Current version ($currentTag) differs from expected tag ($latestTag)" "WARN"
+            } else {
+                Write-Log "Branch verification successful: on tag $latestTag" "SUCCESS"
+            }
         } else {
             throw "Cannot determine target version for update"
         }
@@ -635,15 +687,69 @@ function Test-ForUpdates {
                 } else {
                     Write-Log "User declined the update - disabling automatic git updates"
                     $script:AllowGitUpdates = $false
+                    
+                    # Even if user declined update, check if we're on main branch and should be on a tag
+                    $gitStatus = Get-GitStatus
+                    if ($gitStatus.CurrentBranch -eq "main") {
+                        $currentTag = Get-CurrentVersion
+                        if ($currentTag -ne "no-tag" -and $currentTag -ne "unknown") {
+                            Write-Log "Currently on main branch but should be on tag $currentTag. Switching..." "INFO"
+                            git checkout $currentTag 2>$null
+                            if ($LASTEXITCODE -eq 0) {
+                                Write-Log "Successfully switched from main to tag $currentTag" "SUCCESS"
+                            } else {
+                                Write-Log "Failed to switch from main to tag $currentTag" "ERROR"
+                            }
+                        } else {
+                            Write-Log "On main branch with no available tags - staying on main" "INFO"
+                        }
+                    }
+                    
                     return $false
                 }
             } catch {
                 Write-Log "Error showing update dialog: $_" "ERROR"
                 Write-Log "Defaulting to no update" "INFO"
+                
+                # Even if dialog failed, check if we're on main branch and should be on a tag
+                $gitStatus = Get-GitStatus
+                if ($gitStatus.CurrentBranch -eq "main") {
+                    $currentTag = Get-CurrentVersion
+                    if ($currentTag -ne "no-tag" -and $currentTag -ne "unknown") {
+                        Write-Log "Currently on main branch but should be on tag $currentTag. Switching..." "INFO"
+                        git checkout $currentTag 2>$null
+                        if ($LASTEXITCODE -eq 0) {
+                            Write-Log "Successfully switched from main to tag $currentTag" "SUCCESS"
+                        } else {
+                            Write-Log "Failed to switch from main to tag $currentTag" "ERROR"
+                        }
+                    } else {
+                        Write-Log "On main branch with no available tags - staying on main" "INFO"
+                    }
+                }
+                
                 return $false
             }
         } else {
             Write-Log "No updates available" "SUCCESS"
+            
+            # Even if no update, check if we're on main branch and should be on a tag
+            $gitStatus = Get-GitStatus
+            if ($gitStatus.CurrentBranch -eq "main") {
+                $currentTag = Get-CurrentVersion
+                if ($currentTag -ne "no-tag" -and $currentTag -ne "unknown") {
+                    Write-Log "Currently on main branch but should be on tag $currentTag. Switching..." "INFO"
+                    git checkout $currentTag 2>$null
+                    if ($LASTEXITCODE -eq 0) {
+                        Write-Log "Successfully switched from main to tag $currentTag" "SUCCESS"
+                    } else {
+                        Write-Log "Failed to switch from main to tag $currentTag" "ERROR"
+                    }
+                } else {
+                    Write-Log "On main branch with no available tags - staying on main" "INFO"
+                }
+            }
+            
             return $false
         }
         
@@ -1390,6 +1496,18 @@ function Install-SunshineAIO {
                 if ($latestTag) {
                     Write-Log "Switching to latest version: $($latestTag.Trim())"
                     git checkout $latestTag.Trim()
+                    
+                    # Verify we're on the correct tag after checkout
+                    $currentBranch = git branch --show-current 2>$null
+                    if ($currentBranch -eq "main") {
+                        Write-Log "Warning: Still on main branch after checkout, switching to tag $($latestTag.Trim())" "WARN"
+                        git checkout $latestTag.Trim() 2>$null
+                        if ($LASTEXITCODE -ne 0) {
+                            Write-Log "Failed to switch from main to tag $($latestTag.Trim())" "ERROR"
+                        }
+                    } else {
+                        Write-Log "Branch verification successful: on tag $($latestTag.Trim())" "SUCCESS"
+                    }
                 }
             }
             
@@ -1419,6 +1537,18 @@ function Install-SunshineAIO {
                     if ($latestTag) {
                         Write-Log "Switching to latest version: $($latestTag.Trim())"
                         git checkout $latestTag.Trim()
+                        
+                        # Verify we're on the correct tag after checkout
+                        $currentBranch = git branch --show-current 2>$null
+                        if ($currentBranch -eq "main") {
+                            Write-Log "Warning: Still on main branch after checkout, switching to tag $($latestTag.Trim())" "WARN"
+                            git checkout $latestTag.Trim() 2>$null
+                            if ($LASTEXITCODE -ne 0) {
+                                Write-Log "Failed to switch from main to tag $($latestTag.Trim())" "ERROR"
+                            }
+                        } else {
+                            Write-Log "Branch verification successful: on tag $($latestTag.Trim())" "SUCCESS"
+                        }
                     }
                 }
             }
