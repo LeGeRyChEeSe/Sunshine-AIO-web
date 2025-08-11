@@ -186,7 +186,6 @@ function Get-CommitsSummary {
             
             foreach ($line in $commits) {
                 if ($line -match "^([a-f0-9]{7,}) (.+)$") {
-                    $commitHash = $matches[1]
                     $commitMsg = $matches[2].Trim()
                     
                     # Check if commit message contains a version tag
@@ -347,13 +346,13 @@ function Show-UpdateDialog {
     $linkLabel.VisitedLinkColor = [System.Drawing.Color]::FromArgb(108, 117, 125)
     $linkLabel.Tag = $ChangelogUrl
     $linkLabel.Add_LinkClicked({
-        param($sender, $e)
+        param($senderObj, $e)
         try {
-            Start-Process $sender.Tag
+            Start-Process $senderObj.Tag
         } catch {
             # Fallback if Start-Process fails
-            [System.Windows.Forms.Clipboard]::SetText($sender.Tag)
-            [System.Windows.Forms.MessageBox]::Show("Changelog URL copied to clipboard: $($sender.Tag)", "Information", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Information)
+            [System.Windows.Forms.Clipboard]::SetText($senderObj.Tag)
+            [System.Windows.Forms.MessageBox]::Show("Changelog URL copied to clipboard: $($senderObj.Tag)", "Information", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Information)
         }
     })
     
@@ -444,7 +443,7 @@ function Get-GitStatus {
 
 
 
-function Handle-GitChanges {
+function Invoke-GitChanges {
     param(
         [object]$GitStatus
     )
@@ -473,17 +472,16 @@ function Handle-GitChanges {
     }
 }
 
-function Perform-Update {
+function Invoke-Update {
     try {
         Write-Log "Starting update process..."
         Show-Progress "Updating..." 10
         
         # Get current status
         $gitStatus = Get-GitStatus
-        $originalBranch = $gitStatus.CurrentBranch
         
         # Handle changes if on main branch
-        Handle-GitChanges -GitStatus $gitStatus
+        Invoke-GitChanges -GitStatus $gitStatus
         
         Show-Progress "Fetching updates..." 30
         
@@ -561,7 +559,7 @@ function Perform-Update {
     }
 }
 
-function Check-ForUpdates {
+function Test-ForUpdates {
     if ($SkipUpdateCheck) {
         Write-Log "Update check skipped" "INFO"
         return $false
@@ -633,7 +631,7 @@ function Check-ForUpdates {
                 
                 if ($userWantsUpdate) {
                     Write-Log "User accepted the update"
-                    return Perform-Update
+                    return Invoke-Update
                 } else {
                     Write-Log "User declined the update - disabling automatic git updates"
                     $script:AllowGitUpdates = $false
@@ -721,8 +719,8 @@ function Show-FolderBrowserDialog {
             
             # Add click event
             $button.Add_Click({
-                param($sender, $e)
-                $path = $sender.Tag
+                param($senderObj, $e)
+                $path = $senderObj.Tag
                 if (Test-Path $path) {
                     $script:selectedPath = $path
                     $pathTextBox.Text = $path
@@ -916,7 +914,7 @@ function Request-AdminElevation {
     return $false
 }
 
-function Analyze-SelectedPath {
+function Get-SelectedPathAnalysis {
     param([string]$SelectedPath)
     
     $folderName = Split-Path -Leaf $SelectedPath
@@ -953,7 +951,7 @@ function Get-UserInstallPath {
     if ($InstallPath -ne "") {
         # Use provided path directly
         $selectedPath = $InstallPath
-        $pathAnalysis = Analyze-SelectedPath -SelectedPath $selectedPath
+        $pathAnalysis = Get-SelectedPathAnalysis -SelectedPath $selectedPath
         return @{
             Type = $pathAnalysis.Type
             FinalPath = $pathAnalysis.FinalPath
@@ -975,7 +973,7 @@ function Get-UserInstallPath {
             switch ($choice) {
                 "1" {
                     $selectedPath = $desktopPath
-                    $pathAnalysis = Analyze-SelectedPath -SelectedPath $selectedPath
+                    $pathAnalysis = Get-SelectedPathAnalysis -SelectedPath $selectedPath
                     return @{
                         Type = "ParentDirectory"
                         FinalPath = Join-Path $selectedPath "Sunshine-AIO"
@@ -1001,7 +999,7 @@ function Get-UserInstallPath {
                             }
                         }
                         
-                        $pathAnalysis = Analyze-SelectedPath -SelectedPath $selectedPath
+                        $pathAnalysis = Get-SelectedPathAnalysis -SelectedPath $selectedPath
                         Write-Host "`nSelected: $selectedPath" -ForegroundColor Green
                         Write-Host "Action: $($pathAnalysis.Action)" -ForegroundColor Cyan
                         Write-Host "Final path: $($pathAnalysis.FinalPath)" -ForegroundColor Cyan
@@ -1219,7 +1217,7 @@ function Start-SunshineAIOInPlace {
         Write-Host "Running from existing Sunshine-AIO directory" -ForegroundColor Green
         
         # Check for updates first (in background)
-        $updatePerformed = Check-ForUpdates
+        $updatePerformed = Test-ForUpdates
         if ($updatePerformed) {
             Write-Log "Update completed, restarting application..." "SUCCESS"
             # Restart the script after update - handle both file execution and irm|iex
@@ -1501,7 +1499,7 @@ function Install-SunshineAIO {
         # Check for updates before running (if not a fresh installation)
         Set-Location $sunshineAioPath
         if (Test-Path ".git") {
-            $updatePerformed = Check-ForUpdates
+            $updatePerformed = Test-ForUpdates
             if ($updatePerformed) {
                 Write-Log "Update completed, restarting application..." "SUCCESS"
                 # Restart the script after update - use local script file if available
