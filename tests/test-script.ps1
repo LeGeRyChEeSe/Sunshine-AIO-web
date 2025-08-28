@@ -1,6 +1,6 @@
 # TEST VERSION - Sunshine-AIO Installation Script with Auto-Update
 # This version is for testing purposes only - uses test repository
-# Version: 1.0.0-test
+# Version: 1.0.4-test
 
 param(
     [string]$InstallPath = "",
@@ -9,7 +9,7 @@ param(
 )
 
 # Script version
-$script:ScriptVersion = "1.0.0-test"
+$script:ScriptVersion = "1.0.4-test"
 
 # Set strict mode for better error detection
 Set-StrictMode -Version Latest
