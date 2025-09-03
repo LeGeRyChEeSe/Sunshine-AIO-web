@@ -63,7 +63,7 @@
       "description": "Moonlight 기기와 연동되는 자동 설정 기능이 있는 스 튰리밍 기기입니다. Moonlight를 통해 게임을 실행할 수 있습니다."
     },
     "virtual_display": {
-      "name": "Virtual Display Driver",
+      "name": "가상 디스플레이 드라이버",
       "description": "게임 스트리밍 기기에서 게임을 실행하는 데 필요한 도구입니다. 다른 플랫폼들과 호환됩니다."
     },
     "playnite": {
@@ -71,7 +71,7 @@
       "description": "게임 스트리밍 기기에 대한 자동 설정 기능이 있는 플랫폼으로써, 다양한 게임의 전문적 관리가 가능합니다."
     },
     "playnite_watcher": {
-      "name": "Playnite Watcher",
+      "name": "Playnite 감시자",
       "description": "Playnite와 호환되며, Sunshine 기기와의 연결을 자동으로 설정하고 관리합니다. 자동으로 모든 게임의 데이터를 업데이트할 수 있습니다."
     }
   },
@@ -152,5 +152,14 @@
       "message": "문의를 보내고 낸 뒤에 24시간 안에 답변을 드리겠습니다.",
       "backHome": "홈으로 돌아가기"
     }
+  },
+  "chat": {
+    "initialMessage": "👋 안녕하세요! Sunshine-AIO의 설치, 구성 및 문제 해결에 도움을 드릴 수 있습니다. 무엇을 도와드릴까요?",
+    "noResponse": "죄송합니다. 응답을 받지 못했습니다.",
+    "errorPrefix": "오류",
+    "unknownError": "알 수 없는 오류",
+    "ariaLabel": "AI 어시스턴트",
+    "header": "🤖 Sunshine-AIO 어시스턴트",
+    "inputPlaceholder": "질문을 입력하세요..."
   }
 }

@@ -152,5 +152,14 @@
       "message": "我们已经收到了您的消息，并将在最短时间内回复您。",
       "backHome": "返回首页"
     }
+  },
+  "chat": {
+    "initialMessage": "👋 你好！我可以帮助您安装、配置和解决 Sunshine-AIO 的问题。我能为您做些什么？",
+    "noResponse": "抱歉，未收到任何回复。",
+    "errorPrefix": "错误",
+    "unknownError": "未知错误",
+    "ariaLabel": "人工智能助手",
+    "header": "🤖 Sunshine-AIO 助手",
+    "inputPlaceholder": "请输入您的问题..."
   }
 }

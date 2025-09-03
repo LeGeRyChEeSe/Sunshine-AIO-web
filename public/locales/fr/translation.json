@@ -68,7 +68,7 @@
       "description": "Hôte de streaming de jeux auto-hébergé pour Moonlight."
     },
     "virtual_display": {
-      "name": "Virtual Display Driver",
+      "name": "Pilote d'affichage virtuel",
       "description": "Créer des affichages virtuels pour le jeu à distance."
     },
     "playnite": {
@@ -76,7 +76,7 @@
       "description": "Gestionnaire de bibliothèque de jeux vidéo avec support pour plusieurs plateformes."
     },
     "playnite_watcher": {
-      "name": "Playnite Watcher",
+      "name": "Observateur Playnite",
       "description": "Met à jour automatiquement la liste des jeux Sunshine en fonction de la bibliothèque Playnite."
     }
   },
@@ -157,5 +157,19 @@
       "message": "Nous avons bien reçu votre message et vous répondrons dans les plus brefs délais.",
       "backHome": "Retour à l'accueil"
     }
+  },
+  "chat": {
+    "initialMessage": "👋 Bonjour! Je peux vous aider avec l'installation, la configuration et le dépannage de Sunshine-AIO. Que puis-je faire pour vous?",
+    "noResponse": "Désolé, aucune réponse reçue.",
+    "errorPrefix": "Erreur",
+    "unknownError": "Erreur inconnue",
+    "ariaLabel": "Assistant IA",
+    "header": "🤖 Assistant Sunshine-AIO",
+    "inputPlaceholder": "Posez votre question...",
+    "maximizeWindow": "Agrandir la fenêtre",
+    "minimizeWindow": "Réduire la fenêtre",
+    "uploadImage": "Télécharger une image",
+    "imageUploaded": "Image téléchargée",
+    "analyzeImage": "Veuillez analyser cette image"
   }
 }

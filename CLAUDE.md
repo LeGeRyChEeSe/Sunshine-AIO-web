@@ -12,11 +12,90 @@ This is a React-based web application that serves as the installer and downloade
 
 ### Essential Commands
 - `make help` - Show all available commands
+- `make setup` - Complete project setup (install + build + info)
 - `make dev` - Start development server (usage: `make dev [PORT]`)
 - `make build` - Build for production
 - `make lint` - Run linting (must pass before commits)
+- `make lint-fix` - Run ESLint and automatically fix issues
 - `make typecheck` - Run TypeScript checking
 - `make test` - Run PowerShell tests
+
+### Development & Build Commands
+- `make install` - Install project dependencies
+- `make build-styles` - Build CSS styles with PostCSS
+- `make preview` - Preview the built application locally
+- `make watch-styles` - Watch and build styles on change
+- `make serve-public` - Serve public directory (for testing static files)
+
+### Testing Commands
+- `make test` - Run PowerShell test scripts
+- `make test-skip` - Run tests skipping update checks
+- `make test-custom` - Run tests with custom repository (usage: make test-custom REPO=your-repo)
+
+### Version Management
+- `make version` - Show current version
+- `make version-patch` - Bump patch version (bug fixes)
+- `make version-minor` - Bump minor version (new features) 
+- `make version-major` - Bump major version (breaking changes)
+- `make version-prerelease` - Bump prerelease version (alpha/beta)
+- `make version-init` - Initialize versioning system
+
+### Release Process
+- `make release-patch` - Complete patch release
+- `make release-minor` - Complete minor release
+- `make release-major` - Complete major release
+- `make release-hotfix` - Complete hotfix release for urgent fixes
+- `make release-prerelease` - Complete prerelease for development versions
+- `make ci` - Simulate full CI pipeline (lint, typecheck, build, test)
+
+### Git Operations
+- `make git-status` - Check repository status
+- `make git-log` - View recent commit history
+- `make git-branches` - Show all branches
+- `make git-clean` - Clean working directory (removes untracked files)
+- `make git-reset` - Reset to HEAD (discard unstaged changes)
+- `make git-sync` - Sync with remote repository
+- `make git-backup` - Create backup branch of current work
+- `make git-changelog` - Generate changelog from git commits
+
+### Netlify Commands
+- `make netlify-dev` - Start Netlify development environment (functions + frontend)
+- `make netlify-functions` - Start local function development server only
+- `make netlify-build` - Build project specifically for Netlify deployment
+- `make netlify-status` - Show Netlify site status (requires netlify-cli)
+- `make netlify-deploy` - Deploy to Netlify (production)
+- `make netlify-preview` - Deploy preview to Netlify
+- `make netlify-logs` - View Netlify function logs
+- `make netlify-env` - Show/manage Netlify environment variables
+- `make netlify-test-functions` - Test Netlify functions locally
+- `make netlify-validate` - Validate Netlify configuration
+- `make netlify-setup` - Setup Netlify CLI and authenticate
+- `make netlify-clean` - Clean Netlify cache and temp files
+
+### Deployment Commands
+- `make deploy` - Build and prepare for deployment
+- `make deploy-preview` - Test deployment locally
+
+### Documentation Commands
+- `make docs-version` - View version management documentation
+- `make docs-test` - View testing documentation
+- `make docs-main` - View main project documentation
+
+### Maintenance Commands
+- `make clean` - Clean build artifacts and node_modules
+- `make clean-install` - Clean everything and reinstall dependencies
+- `make update-deps` - Update all dependencies to latest versions
+- `make audit` - Run security audit on dependencies
+- `make audit-fix` - Automatically fix security vulnerabilities
+- `make check-updates` - Check for outdated dependencies
+
+### Project Information Commands
+- `make info` - Show project information
+- `make size` - Show build size information
+- `make analyze-bundle` - Analyze bundle size (requires build)
+
+### Emergency Commands
+- `make emergency-backup` - Create emergency backup of entire project
 
 ### Core Development (Fallback Commands)
 - `npm run dev` - Start Vite development server on port 5180
@@ -25,23 +104,6 @@ This is a React-based web application that serves as the installer and downloade
 - `npm run build` - Build for production (TypeScript compilation + Vite build)
 - `npm run lint` - Run ESLint on the codebase (ALWAYS run after code changes)
 - `npm run preview` - Preview production build locally
-
-### Version Management
-- `make version` - Show current version
-- `make version-patch` - Bump patch version (bug fixes)
-- `make version-minor` - Bump minor version (new features) 
-- `make version-major` - Bump major version (breaking changes)
-
-### Release Process
-- `make release-patch` - Complete patch release
-- `make release-minor` - Complete minor release
-- `make release-major` - Complete major release
-- `make ci` - Simulate full CI pipeline
-
-### Git Operations
-- `make git-status` - Check repository status
-- `make git-log` - View recent commits
-- `make git-sync` - Sync with remote repository
 
 ## Architecture
 
@@ -160,6 +222,7 @@ The project uses automated version management that synchronizes:
 ## Testing Strategy
 - Use `make test` for PowerShell script simulation
 - Use `make test-skip` to skip update checks during testing
+- Use `make test-custom REPO=your-repo` to test with custom repository
 - PowerShell tests simulate the installation process without real changes
 - Logs are saved to `%TEMP%\sunshine-aio-install-test.log`
 
@@ -167,11 +230,16 @@ The project uses automated version management that synchronizes:
 - Production builds via `make build`
 - Deployed automatically to Netlify on main branch pushes
 - Use `make deploy-preview` to test deployment locally
+- Use `make netlify-deploy` for direct production deployment
+- Use `make netlify-preview` for preview deployments
+- Use `make netlify-validate` to check configuration
 
 ## Emergency Procedures
 - `make emergency-backup` - Create full project backup
 - `make clean-install` - Clean rebuild from scratch
 - `make git-clean` - Clean working directory
+- `make git-reset` - Reset to HEAD (discard unstaged changes)
+- `make netlify-clean` - Clean Netlify cache and temp files
 
 ## Remember
 - **Use `make` commands instead of raw npm/git commands**

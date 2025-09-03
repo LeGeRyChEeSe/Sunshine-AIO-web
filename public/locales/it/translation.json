@@ -157,5 +157,14 @@
       "message": "Abbiamo ricevuto il tuo messaggio e ti risponderemo nel più breve tempo possibile.",
       "backHome": "Torna all'home"
     }
+  },
+  "chat": {
+    "initialMessage": "👋 Ciao! Posso aiutarti con l'installazione, la configurazione e la risoluzione dei problemi di Sunshine-AIO. Cosa posso fare per te?",
+    "noResponse": "Spiacente, nessuna risposta ricevuta.",
+    "errorPrefix": "Errore",
+    "unknownError": "Errore sconosciuto",
+    "ariaLabel": "Assistente AI",
+    "header": "🤖 Assistente Sunshine-AIO",
+    "inputPlaceholder": "Fai la tua domanda..."
   }
 }

@@ -76,7 +76,7 @@
       "description": "Gerenciador de biblioteca de jogos video com suporte para várias plataformas."
     },
     "playnite_watcher": {
-      "name": "Playnite Watcher",
+      "name": "Observador Playnite",
       "description": "Atualiza automaticamente a lista de jogos Sunshine em função da bibliotheca Playnite."
     }
   },
@@ -157,5 +157,14 @@
       "message": "Nos vimos! Nos enviem um arquivo (opcional), ou clique no botão 'Back Home' para retornar ao início.",
       "backHome": "Retornar ao Início"
     }
+  },
+  "chat": {
+    "initialMessage": "👋 Olá! Posso ajudá-lo com a instalação, configuração e solução de problemas do Sunshine-AIO. O que posso fazer por você?",
+    "noResponse": "Desculpe, nenhuma resposta recebida.",
+    "errorPrefix": "Erro",
+    "unknownError": "Erro desconhecido",
+    "ariaLabel": "Assistente de IA",
+    "header": "🤖 Assistente Sunshine-AIO",
+    "inputPlaceholder": "Faça sua pergunta..."
   }
 }

@@ -1,7 +1,7 @@
 # Sunshine-AIO Web Installer Makefile
 # Complete command reference for the project
 
-.PHONY: help install dev build clean lint test preview deploy version release docs
+.PHONY: help install dev build clean lint test preview deploy version release docs netlify-dev netlify-functions netlify-build netlify-status netlify-deploy netlify-preview netlify-logs netlify-env netlify-test-functions netlify-validate netlify-setup netlify-clean
 
 # Catch-all rule to prevent Make from trying to build port numbers as targets
 %:
@@ -105,6 +105,99 @@ git-clean: ## Clean working directory (removes untracked files)
 
 git-reset: ## Reset to HEAD (discard unstaged changes)
 	git reset --hard HEAD
+
+# Netlify Commands
+netlify-dev: ## Start Netlify development environment (functions + frontend)
+	npm run dev:netlify
+
+netlify-functions: ## Start local function development server only
+	npm run dev:functions
+
+netlify-build: ## Build project specifically for Netlify deployment
+	npm run build
+	@echo "Build completed for Netlify deployment."
+
+netlify-status: ## Show Netlify site status (requires netlify-cli)
+	@if command -v netlify >/dev/null 2>&1; then \
+		netlify status; \
+	else \
+		echo "Netlify CLI not installed. Run: npm install -g netlify-cli"; \
+	fi
+
+netlify-deploy: ## Deploy to Netlify (production)
+	@if command -v netlify >/dev/null 2>&1; then \
+		make netlify-build && netlify deploy --prod; \
+	else \
+		echo "Netlify CLI not installed. Run: npm install -g netlify-cli"; \
+	fi
+
+netlify-preview: ## Deploy preview to Netlify
+	@if command -v netlify >/dev/null 2>&1; then \
+		make netlify-build && netlify deploy; \
+	else \
+		echo "Netlify CLI not installed. Run: npm install -g netlify-cli"; \
+	fi
+
+netlify-logs: ## View Netlify function logs
+	@if command -v netlify >/dev/null 2>&1; then \
+		netlify logs; \
+	else \
+		echo "Netlify CLI not installed. Run: npm install -g netlify-cli"; \
+	fi
+
+netlify-env: ## Show/manage Netlify environment variables
+	@if command -v netlify >/dev/null 2>&1; then \
+		netlify env:list; \
+	else \
+		echo "Netlify CLI not installed. Run: npm install -g netlify-cli"; \
+	fi
+
+netlify-test-functions: ## Test Netlify functions locally
+	@echo "Testing Netlify functions locally..."
+	@if [ -d "netlify/functions" ]; then \
+		echo "Available functions:"; \
+		ls -la netlify/functions/; \
+		echo "Starting function dev server for testing..."; \
+		npm run dev:functions & \
+		sleep 3; \
+		echo "Functions server started. Test at http://localhost:8888/.netlify/functions/"; \
+		echo "Press Ctrl+C to stop the server."; \
+		wait; \
+	else \
+		echo "No netlify/functions directory found."; \
+	fi
+
+netlify-validate: ## Validate Netlify configuration
+	@echo "Validating Netlify configuration..."
+	@if [ -f "netlify.toml" ]; then \
+		echo "✓ netlify.toml found"; \
+		cat netlify.toml; \
+	else \
+		echo "✗ netlify.toml not found"; \
+	fi
+	@if [ -d "netlify/functions" ]; then \
+		echo "✓ Functions directory found"; \
+		echo "Functions:"; \
+		ls -la netlify/functions/; \
+	else \
+		echo "✗ Functions directory not found"; \
+	fi
+
+netlify-setup: ## Setup Netlify CLI and authenticate
+	@echo "Setting up Netlify CLI..."
+	@if ! command -v netlify >/dev/null 2>&1; then \
+		echo "Installing Netlify CLI globally..."; \
+		npm install -g netlify-cli; \
+	fi
+	@echo "Authenticate with Netlify (this will open your browser):"
+	@netlify login
+	@echo "Linking site to Netlify project:"
+	@netlify link
+
+netlify-clean: ## Clean Netlify cache and temp files
+	@echo "Cleaning Netlify cache..."
+	@rm -rf .netlify
+	@echo "Netlify cache cleared."
 
 # Deployment Commands
 deploy: ## Build and prepare for deployment

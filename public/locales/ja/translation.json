@@ -71,7 +71,7 @@
       "description": "ゲームのリスト管理とサブスクリプション管理ツールです。多くのプラットフォームがサポートされています。"
     },
     "playnite_watcher": {
-      "name": "Playnite Watcher",
+      "name": "Playniteウォッチャー",
       "description": "Sunshineを定期的に更新するためにMoonlightのリストを監視します。"
     }
   },
@@ -152,5 +152,14 @@
       "message": "あなたのメッセージを受けています。即時に対応します。",
       "backHome": "ホームに戻る"
     }
+  },
+  "chat": {
+    "initialMessage": "👋 こんにちは！Sunshine-AIOのインストール、設定、トラブルシューティングについてお手伝いできます。何かご用件はありますか？",
+    "noResponse": "申し訳ありませんが、応答がありませんでした。",
+    "errorPrefix": "エラー",
+    "unknownError": "不明なエラー",
+    "ariaLabel": "AIアシスタント",
+    "header": "🤖 Sunshine-AIOアシスタント",
+    "inputPlaceholder": "質問を入力してください..."
   }
 }

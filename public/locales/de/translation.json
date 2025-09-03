@@ -1,7 +1,7 @@
 {
   "header": {
     "home": "Startseite",
-    "tools": "Tools",
+    "tools": "Werkzeuge",
     "guide": "Installationsanleitung",
     "about": "Über uns",
     "theme": {
@@ -68,7 +68,7 @@
       "description": "Eigenständiges Streaming-Host für Moonlight"
     },
     "virtual_display": {
-      "name": "Virtual Display Driver",
+      "name": "Virtueller Display-Treiber",
       "description": "Erstellen Sie virtuelle Anzeigegeräte für das Fernspiel."
     },
     "playnite": {
@@ -76,7 +76,7 @@
       "description": "Gaming-Bibliothek-Manager mit Unterstützung mehrerer Plattformen"
     },
     "playnite_watcher": {
-      "name": "Playnite Watcher",
+      "name": "Playnite-Wächter",
       "description": "Aktualisiert automatisch die Liste der Spiele Sunshine nach der Bibliothek Playnite."
     }
   },
@@ -157,5 +157,14 @@
       "message": "Wir haben Ihre Nachricht erhalten und werden uns so schnell wie möglich bei Ihnen melden.",
       "backHome": "Zurück zur Startseite"
     }
+  },
+  "chat": {
+    "initialMessage": "👋 Hallo! Ich kann Ihnen bei der Installation, Konfiguration und Fehlerbehebung von Sunshine-AIO helfen. Was kann ich für Sie tun?",
+    "noResponse": "Entschuldigung, keine Antwort erhalten.",
+    "errorPrefix": "Fehler",
+    "unknownError": "Unbekannter Fehler",
+    "ariaLabel": "KI-Assistent",
+    "header": "🤖 Sunshine-AIO-Assistent",
+    "inputPlaceholder": "Stellen Sie Ihre Frage..."
   }
 }
