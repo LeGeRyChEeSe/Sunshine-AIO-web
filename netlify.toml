@@ -1,13 +1,28 @@
 [build]
   command = "npm run build"
   publish = "dist"
-type = "module"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 5180
+  port = 8890
+  autoLaunch = false
 
 [functions]
   directory = "netlify/functions"
 
 [[plugins]]
   package = "@netlify/plugin-emails"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
 
 [_headers]
   src = "_headers"

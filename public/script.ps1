@@ -11,7 +11,8 @@ param(
 # Script version - hardcoded for easy maintenance
 $script:ScriptVersion = "1.0.4"
 
-# Set strict mode for better error detection
+# Set strict mode for better error detection0
+
 Set-StrictMode -Version Latest
 
 # Initialize global variables

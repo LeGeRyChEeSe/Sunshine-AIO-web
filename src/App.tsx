@@ -6,7 +6,7 @@ import Tools from './pages/Tools';
 import Guide from './pages/Guide';
 import About from './pages/About';
 import Contact from './pages/Contact';
-import FloatingHelpButton from './components/FloatingHelpButton';
+import ChatAssistant from './components/ChatAssistant';
 
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
-      <FloatingHelpButton />
+      <ChatAssistant />
     </div>
   );
 }
