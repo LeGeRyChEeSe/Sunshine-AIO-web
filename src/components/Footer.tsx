@@ -1,8 +1,16 @@
 import { Github } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from 'react';
+import { getWebVersion, getSunshineAIOVersion } from '../utils/version';
 
 export default function Footer() {
   const { t } = useTranslation();
+  const [sunshineVersion, setSunshineVersion] = useState<string>('');
+  const webVersion = getWebVersion();
+
+  useEffect(() => {
+    getSunshineAIOVersion().then(setSunshineVersion);
+  }, []);
 
   return (
     <footer className="bg-gradient-sunshine">
@@ -14,7 +22,15 @@ export default function Footer() {
               alt="Sunshine-AIO Logo" 
               className="h-8 w-8 object-contain"
             />
-            <p className="text-white">{t('footer.copyright')}</p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
+              <p className="text-white">{t('footer.copyright')}</p>
+              <div className="flex items-center space-x-3 mt-1 sm:mt-0">
+                <span className="text-white/70 text-sm">Web v{webVersion}</span>
+                {sunshineVersion && (
+                  <span className="text-white/70 text-sm">Sunshine-AIO v{sunshineVersion}</span>
+                )}
+              </div>
+            </div>
           </div>
           <div className="flex items-center space-x-6">
             <a

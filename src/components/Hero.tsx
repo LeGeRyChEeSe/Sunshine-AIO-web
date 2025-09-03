@@ -1,13 +1,19 @@
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRight, faCopy, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
+import { getScriptVersion } from '../utils/version';
 
 export default function Hero() {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
+  const [scriptVersion, setScriptVersion] = useState<string>('');
   const scriptUrl = 'https://sunshine-aio.com/script.ps1';
+
+  useEffect(() => {
+    getScriptVersion().then(setScriptVersion);
+  }, []);
 
   return (
     <div className="relative overflow-hidden bg-gradient-sunshine backdrop-blur-sm">
@@ -77,6 +83,13 @@ export default function Hero() {
                   </button>
                 </CopyToClipboard>
               </div>
+              {scriptVersion && (
+                <div className="mt-3 text-center">
+                  <span className="text-gray-400 text-xs">
+                    Script v{scriptVersion}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>

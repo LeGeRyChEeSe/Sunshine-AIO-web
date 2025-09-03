@@ -1,9 +1,10 @@
 import { faCheckCircle, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Download, ExternalLink, Server, Monitor, Gamepad2, Eye, Play } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
+import { getScriptVersion } from '../utils/version';
 
 const tools = [
   {
@@ -64,7 +65,7 @@ const tools = [
 ];
 
 // Composant pour afficher les icônes avec fallback
-const ToolIcon = ({ tool, className }: { tool: any, className: string }) => {
+const ToolIcon = ({ tool, className }: { tool: typeof tools[0], className: string }) => {
   const [imageError, setImageError] = useState(false);
 
   if (tool.iconUrl && !imageError) {
@@ -86,7 +87,12 @@ const ToolIcon = ({ tool, className }: { tool: any, className: string }) => {
 export default function Tools() {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
+  const [scriptVersion, setScriptVersion] = useState<string>('');
   const scriptUrl = 'https://sunshine-aio.com/script.ps1';
+
+  useEffect(() => {
+    getScriptVersion().then(setScriptVersion);
+  }, []);
 
   return (
     <div className="py-12 bg-gradient-to-br from-primary-50/50 to-primary-100/50 dark:from-gray-900 dark:to-gray-800 min-h-screen">
@@ -225,6 +231,13 @@ export default function Tools() {
                             </button>
                           </CopyToClipboard>
                         </div>
+                        {scriptVersion && (
+                          <div className="mt-3 text-center">
+                            <span className="text-gray-400 text-xs">
+                              Script v{scriptVersion}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ) : (

@@ -1,7 +1,7 @@
 # Sunshine-AIO Installation Script
 # Enhanced with better error handling, UI improvements, and robust Python detection
 # Added automatic update checking functionality
-# Version: 1.0.4
+# Version: 1.0.5
 
 param(
     [string]$InstallPath = "",
@@ -9,7 +9,7 @@ param(
 )
 
 # Script version - hardcoded for easy maintenance
-$script:ScriptVersion = "1.0.4"
+$script:ScriptVersion = "1.0.5"
 
 # Set strict mode for better error detection0
 

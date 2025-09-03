@@ -2,14 +2,20 @@ import { faCheckCircle, faCopy } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Hero from '../components/Hero';
 import { Shield, Zap, Settings } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
+import { getScriptVersion } from '../utils/version';
 
 export default function Home() {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
+  const [scriptVersion, setScriptVersion] = useState<string>('');
   const scriptUrl = 'https://sunshine-aio.com/script.ps1';
+
+  useEffect(() => {
+    getScriptVersion().then(setScriptVersion);
+  }, []);
 
   return (
     <div>
@@ -99,6 +105,13 @@ export default function Home() {
                     </button>
                   </CopyToClipboard>
                 </div>
+                {scriptVersion && (
+                  <div className="mt-3 text-center">
+                    <span className="text-gray-400 text-xs">
+                      Script v{scriptVersion}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
