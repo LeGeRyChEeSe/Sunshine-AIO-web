@@ -1,8 +1,4 @@
-/updates/*
-  X-Robots-Tag: noindex
-  X-Frame-Options: DENY
-  X-Content-Type-Options: nosniff
-
+# Update Gateway Security Headers
 /updates/rookie/*
   X-Robots-Tag: noindex
   X-Frame-Options: DENY
