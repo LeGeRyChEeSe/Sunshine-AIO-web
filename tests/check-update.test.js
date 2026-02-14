@@ -130,7 +130,8 @@ async function runTests() {
     headers: {
       'x-rookie-signature': sig10,
       'x-rookie-date': date10
-    }
+    },
+    queryStringParameters: { purge: 'true' }
   }, mockContext);
 
   assert.strictEqual(res10.statusCode, 500, 'Should return 500 for checksum mismatch');
@@ -139,6 +140,7 @@ async function runTests() {
   console.log('✅ Passed');
 
   // Restore
+  process.env.CACHE_TTL_SECONDS = '60';
   await fs.writeFile(versionPath, originalVersionData, 'utf8');
 
   // Test 11: Missing APK Validation
@@ -154,7 +156,8 @@ async function runTests() {
     headers: {
       'x-rookie-signature': sig11,
       'x-rookie-date': date11
-    }
+    },
+    queryStringParameters: { purge: 'true' }
   }, mockContext);
 
   assert.strictEqual(res11.statusCode, 500, 'Should return 500 for missing APK');
@@ -173,6 +176,80 @@ async function runTests() {
   }, mockContext);
   assert.strictEqual(res12.headers['Access-Control-Allow-Origin'], 'https://deploy-preview-42--sunshine-aio.netlify.app', 'Should allow Netlify previews');
   console.log('✅ Passed');
+
+  // Test 13: Absolute URL Rejection
+  console.log('\nTest 13: Absolute URL Rejection');
+  const corruptedData3 = JSON.parse(originalVersionData);
+  corruptedData3.downloadUrl = 'https://evil.com/malware.apk';
+  await fs.writeFile(versionPath, JSON.stringify(corruptedData3), 'utf8');
+
+  const date13 = new Date().toISOString();
+  const sig13 = crypto.createHmac('sha256', SECRET).update(date13).digest('hex');
+  const res13 = await handler({
+    httpMethod: 'GET',
+    headers: {
+      'x-rookie-signature': sig13,
+      'x-rookie-date': date13
+    },
+    queryStringParameters: { purge: 'true' }
+  }, mockContext);
+
+  assert.strictEqual(res13.statusCode, 500, 'Should return 500 for absolute URL');
+  const body13 = JSON.parse(res13.body);
+  assert.ok(body13.error.includes('Secure download path required'), 'Error message should mention secure download path');
+  console.log('✅ Passed');
+
+  // Restore
+  await fs.writeFile(versionPath, originalVersionData, 'utf8');
+
+  // Test 14: Cache Purge
+  console.log('\nTest 14: Cache Purge');
+  // First request to populate cache
+  const date14a = new Date().toISOString();
+  const sig14a = crypto.createHmac('sha256', SECRET).update(date14a).digest('hex');
+  await handler({
+    httpMethod: 'GET',
+    headers: {
+      'x-rookie-signature': sig14a,
+      'x-rookie-date': date14a
+    }
+  }, mockContext);
+
+  // Modify file on disk
+  const changedData = JSON.parse(originalVersionData);
+  changedData.version = '2.6.0';
+  await fs.writeFile(versionPath, JSON.stringify(changedData), 'utf8');
+
+  // Request without purge (should get cached 2.5.0)
+  const date14b = new Date().toISOString();
+  const sig14b = crypto.createHmac('sha256', SECRET).update(date14b).digest('hex');
+  const res14b = await handler({
+    httpMethod: 'GET',
+    headers: {
+      'x-rookie-signature': sig14b,
+      'x-rookie-date': date14b
+    }
+  }, mockContext);
+  const body14b = JSON.parse(res14b.body);
+  assert.strictEqual(body14b.version, '2.5.0', 'Should return cached version');
+
+  // Request with purge (should get new 2.6.0)
+  const date14c = new Date().toISOString();
+  const sig14c = crypto.createHmac('sha256', SECRET).update(date14c).digest('hex');
+  const res14c = await handler({
+    httpMethod: 'GET',
+    headers: {
+      'x-rookie-signature': sig14c,
+      'x-rookie-date': date14c,
+      'x-purge': 'true'
+    }
+  }, mockContext);
+  const body14c = JSON.parse(res14c.body);
+  assert.strictEqual(body14c.version, '2.6.0', 'Should return new version after purge');
+  console.log('✅ Passed');
+
+  // Restore
+  await fs.writeFile(versionPath, originalVersionData, 'utf8');
 }
 
 runTests().catch(err => {

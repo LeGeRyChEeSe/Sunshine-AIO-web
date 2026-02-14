@@ -51,26 +51,27 @@ export const handler = async (event, context) => {
     'http://localhost:3000'
   ];
   const origin = event.headers.origin || event.headers.Origin || '';
-  
-  // Allow explicit list or any .netlify.app subdomain (previews, staging)
-  const isNetlifyPreview = origin.endsWith('.netlify.app');
+
+  // Allow explicit list or specific Netlify deploy previews
+  const isNetlifyPreview = origin.match(/^https:\/\/deploy-preview-\d+--sunshine-aio\.netlify\.app$/);
   const corsOrigin = (allowedOrigins.includes(origin) || isNetlifyPreview) ? origin : allowedOrigins[0];
 
   const headers = {
     'Access-Control-Allow-Origin': corsOrigin,
-    'Access-Control-Allow-Headers': 'Content-Type, X-Rookie-Signature, X-Rookie-Date',
+    'Access-Control-Allow-Headers': 'Content-Type, X-Rookie-Signature, X-Rookie-Date, X-Purge',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Vary': 'Origin',
     'X-Content-Type-Options': 'nosniff'
   };
+
   // 0. Rate Limiting
   const clientIp = event.headers['x-nf-client-connection-ip'] || event.headers['client-ip'] || 'unknown';
   const now = Date.now();
   const requestLog = ipRequests.get(clientIp) || [];
-  
+
   // Filter out expired requests
   const validRequests = requestLog.filter(time => now - time < RATE_LIMIT_WINDOW);
-  
+
   if (validRequests.length >= MAX_REQUESTS_PER_WINDOW) {
     log('Rate limit exceeded', { clientIp, count: validRequests.length });
     return {
@@ -79,7 +80,7 @@ export const handler = async (event, context) => {
       body: JSON.stringify({ error: 'Too Many Requests: Please try again later.' })
     };
   }
-  
+
   validRequests.push(now);
   ipRequests.set(clientIp, validRequests);
 
@@ -103,6 +104,7 @@ export const handler = async (event, context) => {
   // Security Validation
   const signature = event.headers['x-rookie-signature'];
   const rookieDate = event.headers['x-rookie-date'] || '';
+  const purgeRequested = event.headers['x-purge'] === 'true' || event.queryStringParameters?.purge === 'true';
   const secret = process.env.ROOKIE_UPDATE_SECRET;
 
   if (!signature) {
@@ -178,11 +180,12 @@ export const handler = async (event, context) => {
     let updateInfo;
     const now = Date.now();
 
-    // Use cache if available and not expired
-    if (cachedVersionData && (now - lastCacheUpdate < CACHE_TTL)) {
+    // Use cache if available and not expired, unless purge requested
+    if (!purgeRequested && cachedVersionData && (now - lastCacheUpdate < CACHE_TTL)) {
       updateInfo = { ...cachedVersionData };
       log('Serving from cache', { version: updateInfo.version });
     } else {
+      if (purgeRequested) log('Cache purge requested - reloading from disk');
       const baseDir = process.cwd().endsWith('Sunshine-AIO-web') ? process.cwd() : path.join(process.cwd(), 'Sunshine-AIO-web');
       const versionPath = path.join(baseDir, 'public', 'updates', 'rookie', 'version.json');
       const data = await fs.readFile(versionPath, 'utf8');
@@ -196,16 +199,18 @@ export const handler = async (event, context) => {
         }
       }
 
-      // Update cache
-      cachedVersionData = { ...updateInfo };
-      lastCacheUpdate = now;
-      log('Cache updated from disk');
-    }
+      // 4. Security Enforcement: Reject absolute URLs in version.json to ensure local verification
+      if (!updateInfo.downloadUrl.startsWith('/')) {
+        logError('Security violation: version.json contains absolute downloadUrl', { url: updateInfo.downloadUrl });
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({ error: 'Internal Server Error: Secure download path required' })
+        };
+      }
 
-    // Verify APK existence and Checksum (internal safety check)
-    if (updateInfo.downloadUrl.startsWith('/')) {
+      // Verify APK existence and Checksum (internal safety check)
       const apkFileName = path.basename(updateInfo.downloadUrl);
-      const baseDir = process.cwd().endsWith('Sunshine-AIO-web') ? process.cwd() : path.join(process.cwd(), 'Sunshine-AIO-web');
       const apkPath = path.join(baseDir, 'public', 'updates', 'rookie', apkFileName);
 
       try {
@@ -228,6 +233,11 @@ export const handler = async (event, context) => {
           body: JSON.stringify({ error: 'Internal Server Error: Update package inaccessible' })
         };
       }
+
+      // Update cache only after successful verification
+      cachedVersionData = { ...updateInfo };
+      lastCacheUpdate = now;
+      log('Cache updated with verified metadata');
     }
 
     // Prepare response metadata
@@ -235,10 +245,8 @@ export const handler = async (event, context) => {
     const host = event.headers.host || 'rookie.vrpirates.org';
     const protocol = event.headers['x-forwarded-proto'] || 'https';
 
-    if (updateInfo.downloadUrl.startsWith('/')) {
-      updateInfo.downloadUrl = `${protocol}://${host}${updateInfo.downloadUrl}`;
-    }
-
+    // Convert relative to absolute for the client
+    updateInfo.downloadUrl = `${protocol}://${host}${updateInfo.downloadUrl}`;
     log('Successfully served update metadata', { version: updateInfo.version });
 
     return {
@@ -259,6 +267,3 @@ export const handler = async (event, context) => {
     };
   }
 };
-
-
-
