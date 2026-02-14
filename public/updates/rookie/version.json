@@ -1,0 +1,6 @@
+{
+  "version": "2.5.0",
+  "changelog": "### Fixed\n- Minor bug fixes in queue management\n- Improved stability on Quest 3\n\n### Added\n- Shizuku integration (Preview)",
+  "downloadUrl": "/updates/rookie/RookieOnQuest_2.5.0.apk",
+  "checksum": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

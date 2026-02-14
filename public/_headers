@@ -1,0 +1,11 @@
+/updates/*
+  X-Robots-Tag: noindex
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+
+/updates/rookie/*
+  X-Robots-Tag: noindex
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Cache-Control: public, max-age=3600
+  Content-Security-Policy: default-src 'none'; frame-ancestors 'none';

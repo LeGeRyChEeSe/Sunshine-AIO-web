@@ -24,5 +24,7 @@
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
 
-[_headers]
-  src = "_headers"
+[[redirects]]
+  from = "/api/check-update"
+  to = "/.netlify/functions/check-update"
+  status = 200
