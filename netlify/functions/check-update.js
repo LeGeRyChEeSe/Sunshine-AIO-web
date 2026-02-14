@@ -6,7 +6,9 @@ import path from 'node:path';
 let cachedVersionData = null;
 let lastCacheUpdate = 0;
 
-// Simple in-memory rate limiting (best effort, resets on cold start)
+// Simple in-memory rate limiting (best effort)
+// WARNING: This resets on cold starts and is not shared across function instances.
+// For production, consider using a persistent store like Redis or Netlify Edge Functions.
 const ipRequests = new Map();
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 30; // 30 requests per minute
@@ -17,18 +19,8 @@ const MAX_REQUESTS_PER_WINDOW = 30; // 30 requests per minute
  * Validates requests using HMAC-SHA256 signature and timestamp.
  * 
  * @param {Object} event - Netlify Function event
- * @param {string} event.httpMethod - HTTP method (GET, POST, etc.)
- * @param {Object} event.headers - HTTP request headers
- * @param {string} [event.headers.origin] - Request origin for CORS
- * @param {string} [event.headers['x-rookie-signature']] - HMAC signature
- * @param {string} [event.headers['x-rookie-date']] - ISO 8601 timestamp
  * @param {Object} context - Netlify Function context
- * @param {string} [context.awsRequestId] - AWS Request ID for tracing
- * @returns {Promise<{
- *   statusCode: number,
- *   headers: Object,
- *   body: string
- * }>} - HTTP response object
+ * @returns {Promise<{statusCode: number, headers: Object, body: string}>}
  */
 export const handler = async (event, context) => {
   const requestId = context.awsRequestId || Math.random().toString(36).substring(7);
@@ -53,13 +45,16 @@ export const handler = async (event, context) => {
 
   // CORS Configuration
   const allowedOrigins = [
-    'https://rookie.vrpirates.org', 
+    'https://rookie.vrpirates.org',
     'https://sunshine-aio.netlify.app',
     'http://localhost:8888',
     'http://localhost:3000'
   ];
-  const origin = event.headers.origin || event.headers.Origin;
-  const corsOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  const origin = event.headers.origin || event.headers.Origin || '';
+  
+  // Allow explicit list or any .netlify.app subdomain (previews, staging)
+  const isNetlifyPreview = origin.endsWith('.netlify.app');
+  const corsOrigin = (allowedOrigins.includes(origin) || isNetlifyPreview) ? origin : allowedOrigins[0];
 
   const headers = {
     'Access-Control-Allow-Origin': corsOrigin,
@@ -68,7 +63,6 @@ export const handler = async (event, context) => {
     'Vary': 'Origin',
     'X-Content-Type-Options': 'nosniff'
   };
-
   // 0. Rate Limiting
   const clientIp = event.headers['x-nf-client-connection-ip'] || event.headers['client-ip'] || 'unknown';
   const now = Date.now();
@@ -187,8 +181,10 @@ export const handler = async (event, context) => {
     // Use cache if available and not expired
     if (cachedVersionData && (now - lastCacheUpdate < CACHE_TTL)) {
       updateInfo = { ...cachedVersionData };
+      log('Serving from cache', { version: updateInfo.version });
     } else {
-      const versionPath = path.join(process.cwd(), 'public', 'updates', 'rookie', 'version.json');
+      const baseDir = process.cwd().endsWith('Sunshine-AIO-web') ? process.cwd() : path.join(process.cwd(), 'Sunshine-AIO-web');
+      const versionPath = path.join(baseDir, 'public', 'updates', 'rookie', 'version.json');
       const data = await fs.readFile(versionPath, 'utf8');
       updateInfo = JSON.parse(data);
 
@@ -209,7 +205,8 @@ export const handler = async (event, context) => {
     // Verify APK existence and Checksum (internal safety check)
     if (updateInfo.downloadUrl.startsWith('/')) {
       const apkFileName = path.basename(updateInfo.downloadUrl);
-      const apkPath = path.join(process.cwd(), 'public', 'updates', 'rookie', apkFileName);
+      const baseDir = process.cwd().endsWith('Sunshine-AIO-web') ? process.cwd() : path.join(process.cwd(), 'Sunshine-AIO-web');
+      const apkPath = path.join(baseDir, 'public', 'updates', 'rookie', apkFileName);
 
       try {
         const apkBuffer = await fs.readFile(apkPath);
@@ -262,3 +259,6 @@ export const handler = async (event, context) => {
     };
   }
 };
+
+
+

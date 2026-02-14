@@ -1,7 +1,6 @@
-# Update Gateway Security Headers
 /updates/rookie/*
   X-Robots-Tag: noindex
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
-  Cache-Control: public, max-age=3600
+  Cache-Control: public, max-age=300
   Content-Security-Policy: default-src 'none'; frame-ancestors 'none';

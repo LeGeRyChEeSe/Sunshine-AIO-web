@@ -1,5 +1,7 @@
 import { handler } from '../netlify/functions/check-update.js';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 async function runTests() {
   const SECRET = 'test-secret';
@@ -51,7 +53,7 @@ async function runTests() {
         console.log('❌ Failed: unexpected body content', body);
     }
   } else {
-    console.log('❌ Failed');
+    console.log('❌ Failed', res3);
   }
 
   // Test 4: OPTIONS request
@@ -116,15 +118,82 @@ async function runTests() {
   if (res9.headers['Access-Control-Allow-Origin'] === 'http://localhost:8888') console.log('✅ Passed');
   else console.log('❌ Failed');
 
-  // Test 10: Checksum Validation
-  console.log('\nTest 10: Checksum Validation');
-  console.log('Note: Test 3 already verifies checksum as it now reads/hashes the APK.');
+  // Test 10: Checksum Validation (Mismatched)
+  console.log('\nTest 10: Checksum Validation (Mismatched)');
+  process.env.CACHE_TTL_SECONDS = '0'; // Force cache bypass
+  const baseDir = process.cwd().endsWith('Sunshine-AIO-web') ? process.cwd() : path.join(process.cwd(), 'Sunshine-AIO-web');
+  const versionPath = path.join(baseDir, 'public', 'updates', 'rookie', 'version.json');
+  
+  // Backup
+  const originalVersionData = await fs.readFile(versionPath, 'utf8');
+  const corruptedData = JSON.parse(originalVersionData);
+  corruptedData.checksum = 'mismatched-checksum';
+  
+  await fs.writeFile(versionPath, JSON.stringify(corruptedData), 'utf8');
+  
+  // Wait a bit for cache TTL or force cache bypass if we had one (here we don't because it's fresh process, but good practice)
+  
+  const date10 = new Date().toISOString();
+  const sig10 = crypto.createHmac('sha256', SECRET).update(date10).digest('hex');
+  const res10 = await handler({
+    httpMethod: 'GET',
+    headers: {
+      'x-rookie-signature': sig10,
+      'x-rookie-date': date10
+    }
+  }, mockContext);
+  
+  console.log('Status:', res10.statusCode);
+  if (res10.statusCode === 500) {
+      const body = JSON.parse(res10.body);
+      if (body.error.includes('Integrity check failed')) {
+          console.log('✅ Passed');
+      } else {
+          console.log('❌ Failed: unexpected error message', body);
+      }
+  } else {
+      console.log('❌ Failed');
+  }
+  
+  // Restore
+  await fs.writeFile(versionPath, originalVersionData, 'utf8');
 
-  // Test 11: Malformed JSON logic (Requires manual setup or mock)
-  console.log('\nTest 11: Malformed JSON Validation');
-  console.log('Note: Verified via code review - handler throws error on missing fields or invalid JSON.');
+  // Test 11: Missing APK
+  console.log('\nTest 11: Missing APK Validation');
+  const corruptedData2 = JSON.parse(originalVersionData);
+  corruptedData2.downloadUrl = '/non-existent.apk';
+  await fs.writeFile(versionPath, JSON.stringify(corruptedData2), 'utf8');
+  
+  const date11 = new Date().toISOString();
+  const sig11 = crypto.createHmac('sha256', SECRET).update(date11).digest('hex');
+  const res11 = await handler({
+    httpMethod: 'GET',
+    headers: {
+      'x-rookie-signature': sig11,
+      'x-rookie-date': date11
+    }
+  }, mockContext);
+  
+  console.log('Status:', res11.statusCode);
+  if (res11.statusCode === 500 && JSON.parse(res11.body).error.includes('Update package inaccessible')) {
+      console.log('✅ Passed');
+  } else {
+      console.log('❌ Failed');
+  }
+  
+  // Restore
+  await fs.writeFile(versionPath, originalVersionData, 'utf8');
+
+  // Test 12: CORS Netlify Preview
+  console.log('\nTest 12: CORS Netlify Preview');
+  const res12 = await handler({
+    httpMethod: 'OPTIONS',
+    headers: { 'origin': 'https://deploy-preview-42--sunshine-aio.netlify.app' }
+  }, mockContext);
+  console.log('CORS Origin:', res12.headers['Access-Control-Allow-Origin']);
+  if (res12.headers['Access-Control-Allow-Origin'] === 'https://deploy-preview-42--sunshine-aio.netlify.app') console.log('✅ Passed');
+  else console.log('❌ Failed');
 }
-
 
 runTests().catch(err => {
     console.error('Test suite failed:', err);
