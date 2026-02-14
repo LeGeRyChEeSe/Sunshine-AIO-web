@@ -22,7 +22,7 @@
   for = "/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
-    X-Content-Type-Options = "nosnifff"
+    X-Content-Type-Options = "nosniff"
 
 [[redirects]]
   from = "/api/check-update"

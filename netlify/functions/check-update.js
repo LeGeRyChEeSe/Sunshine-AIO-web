@@ -56,7 +56,7 @@ export const handler = async (event, context) => {
   // Allow explicit list or specific Netlify deploy previews
   // Note: This pattern is restricted to the sunshine-aio Netlify site.
   // While it allows previews from PRs, it prevents access from unauthorized domains.
-  const isNetlifyPreview = origin.match(/^https:\/\/deploy-preview-\d+--sunshine-aio\.netlify\.app$/);
+  const isNetlifyPreview = origin.match(new RegExp("^https://deploy-preview-\\d+--sunshine-aio\\.netlify\\.app$"));
   const corsOrigin = (allowedOrigins.includes(origin) || isNetlifyPreview) ? origin : allowedOrigins[0];
 
   const headers = {
