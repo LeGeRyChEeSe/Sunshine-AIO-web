@@ -8,7 +8,8 @@ let lastCacheUpdate = 0;
 
 // Simple in-memory rate limiting (best effort)
 // WARNING: This resets on cold starts and is not shared across function instances.
-// For production, consider using a persistent store like Redis or Netlify Edge Functions.
+// This is sufficient for low-traffic protection, but for high-traffic or strict enforcement,
+// use a persistent store like Redis (e.g., Upstash) or Netlify Edge Functions with a rate-limit provider.
 const ipRequests = new Map();
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 30; // 30 requests per minute
@@ -53,6 +54,8 @@ export const handler = async (event, context) => {
   const origin = event.headers.origin || event.headers.Origin || '';
 
   // Allow explicit list or specific Netlify deploy previews
+  // Note: This pattern is restricted to the sunshine-aio Netlify site.
+  // While it allows previews from PRs, it prevents access from unauthorized domains.
   const isNetlifyPreview = origin.match(/^https:\/\/deploy-preview-\d+--sunshine-aio\.netlify\.app$/);
   const corsOrigin = (allowedOrigins.includes(origin) || isNetlifyPreview) ? origin : allowedOrigins[0];
 
