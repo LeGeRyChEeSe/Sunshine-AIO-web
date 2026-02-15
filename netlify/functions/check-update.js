@@ -1,12 +1,8 @@
-import crypto from 'crypto';
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const crypto = require('crypto');
+const fs = require('fs').promises;
+const path = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-export const handler = async (event, context) => {
+exports.handler = async (event, context) => {
   const secret = process.env.ROOKIE_UPDATE_SECRET;
 
   const headers = {
@@ -18,11 +14,15 @@ export const handler = async (event, context) => {
 
   if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers };
 
-  const signature = event.headers['x-rookie-signature'];
-  const rookieDate = event.headers['x-rookie-date'] || '';
+  const signature = event.headers['x-rookie-signature'] || event.headers['X-Rookie-Signature'];
+  const rookieDate = event.headers['x-rookie-date'] || event.headers['X-Rookie-Date'] || '';
 
   if (!signature || !rookieDate) {
-    return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized: Missing headers' }) };
+    return { 
+      statusCode: 401, 
+      headers, 
+      body: JSON.stringify({ error: 'Unauthorized: Missing headers', receivedHeaders: Object.keys(event.headers) }) 
+    };
   }
 
   if (!secret) {
@@ -37,10 +37,8 @@ export const handler = async (event, context) => {
   }
 
   try {
-    // Dans Netlify, les fichiers inclus sont au même niveau que la fonction
+    // Dans Netlify CommonJS, __dirname fonctionne parfaitement
     const versionPath = path.join(__dirname, 'version.json');
-    console.log("Reading version from:", versionPath);
-    
     const data = await fs.readFile(versionPath, 'utf8');
     const updateInfo = JSON.parse(data);
 
