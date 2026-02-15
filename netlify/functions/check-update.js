@@ -1,8 +1,8 @@
-const crypto = require('crypto');
-const fs = require('fs').promises;
-const path = require('path');
+import crypto from 'crypto';
+import fs from 'fs/promises';
+import path from 'path';
 
-exports.handler = async (event, context) => {
+export const handler = async (event, context) => {
   const secret = process.env.ROOKIE_UPDATE_SECRET;
 
   const headers = {
@@ -18,11 +18,7 @@ exports.handler = async (event, context) => {
   const rookieDate = event.headers['x-rookie-date'] || event.headers['X-Rookie-Date'] || '';
 
   if (!signature || !rookieDate) {
-    return { 
-      statusCode: 401, 
-      headers, 
-      body: JSON.stringify({ error: 'Unauthorized: Missing headers', receivedHeaders: Object.keys(event.headers) }) 
-    };
+    return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized: Missing headers' }) };
   }
 
   if (!secret) {
@@ -32,13 +28,16 @@ exports.handler = async (event, context) => {
 
   const expectedSignature = crypto.createHmac('sha256', secret).update(rookieDate).digest('hex');
   if (signature !== expectedSignature) {
-    console.warn("Invalid signature", { received: signature, expected: expectedSignature });
     return { statusCode: 403, headers, body: JSON.stringify({ error: 'Forbidden: Invalid signature' }) };
   }
 
   try {
-    // Dans Netlify CommonJS, __dirname fonctionne parfaitement
-    const versionPath = path.join(__dirname, 'version.json');
+    // Dans Netlify, les fonctions sont exécutées depuis /var/task
+    // Les fichiers inclus sont copiés dans le même dossier que la fonction.
+    // Utiliser un chemin relatif direct est le plus sûr.
+    const versionPath = path.resolve('netlify/functions/version.json');
+    console.log("Attempting to read version from:", versionPath);
+    
     const data = await fs.readFile(versionPath, 'utf8');
     const updateInfo = JSON.parse(data);
 
@@ -53,6 +52,15 @@ exports.handler = async (event, context) => {
     return { statusCode: 200, headers, body: JSON.stringify(updateInfo) };
   } catch (err) {
     console.error("Error processing update metadata:", err.message);
-    return { statusCode: 500, headers, body: JSON.stringify({ error: `Internal Server Error: ${err.message}` }) };
+    
+    // Fallback : Essayer de lire dans le dossier courant si le chemin complet échoue
+    try {
+       const fallbackPath = path.resolve('version.json');
+       const data = await fs.readFile(fallbackPath, 'utf8');
+       const updateInfo = JSON.parse(data);
+       return { statusCode: 200, headers, body: JSON.stringify(updateInfo) };
+    } catch (e) {
+       return { statusCode: 500, headers, body: JSON.stringify({ error: `Internal Server Error: ${err.message}` }) };
+    }
   }
 };
