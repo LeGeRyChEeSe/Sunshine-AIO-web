@@ -1,7 +1,7 @@
-import crypto from 'node:crypto';
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import crypto from 'crypto';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,7 +22,7 @@ export const handler = async (event, context) => {
   const rookieDate = event.headers['x-rookie-date'] || '';
 
   if (!signature || !rookieDate) {
-    return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized' }) };
+    return { statusCode: 401, headers, body: JSON.stringify({ error: 'Unauthorized: Missing headers' }) };
   }
 
   if (!secret) {
@@ -33,12 +33,14 @@ export const handler = async (event, context) => {
   const expectedSignature = crypto.createHmac('sha256', secret).update(rookieDate).digest('hex');
   if (signature !== expectedSignature) {
     console.warn("Invalid signature", { received: signature, expected: expectedSignature });
-    return { statusCode: 403, headers, body: JSON.stringify({ error: 'Forbidden' }) };
+    return { statusCode: 403, headers, body: JSON.stringify({ error: 'Forbidden: Invalid signature' }) };
   }
 
   try {
-    // Chemin vers version.json (sera inclus dans le bundle via netlify.toml)
-    const versionPath = path.resolve(__dirname, 'version.json');
+    // Dans Netlify, les fichiers inclus sont au même niveau que la fonction
+    const versionPath = path.join(__dirname, 'version.json');
+    console.log("Reading version from:", versionPath);
+    
     const data = await fs.readFile(versionPath, 'utf8');
     const updateInfo = JSON.parse(data);
 
@@ -53,6 +55,6 @@ export const handler = async (event, context) => {
     return { statusCode: 200, headers, body: JSON.stringify(updateInfo) };
   } catch (err) {
     console.error("Error processing update metadata:", err.message);
-    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Internal Server Error' }) };
+    return { statusCode: 500, headers, body: JSON.stringify({ error: `Internal Server Error: ${err.message}` }) };
   }
 };
