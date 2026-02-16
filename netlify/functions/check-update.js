@@ -32,12 +32,11 @@ export const handler = async (event, context) => {
   }
 
   try {
-    // Dans Netlify, les fonctions sont exécutées depuis /var/task
-    // Les fichiers inclus sont copiés dans le même dossier que la fonction.
-    // Utiliser un chemin relatif direct est le plus sûr.
-    const versionPath = path.resolve('netlify/functions/version.json');
+    // Read version from public/updates/rookie/version.json (same location as APK)
+    // This ensures the check-update function returns the same version as the deployed APK
+    const versionPath = path.resolve('public/updates/rookie/version.json');
     console.log("Attempting to read version from:", versionPath);
-    
+
     const data = await fs.readFile(versionPath, 'utf8');
     const updateInfo = JSON.parse(data);
 
