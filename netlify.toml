@@ -29,3 +29,6 @@
   from = "/api/check-update"
   to = "/.netlify/functions/check-update"
   status = 200
+
+[build.environment]
+  SECRETS_SCAN_OMIT_PATHS = "public/updates"
