@@ -6,7 +6,7 @@ import assert from 'node:assert';
 
 async function runTests() {
   const SECRET = 'test-secret';
-  process.env.ROOKIE_UPDATE_SECRET = SECRET;
+  process.env.VRHUB_UPDATE_SECRET = SECRET;
 
   const mockContext = { awsRequestId: 'test-req-123' };
 
@@ -23,8 +23,8 @@ async function runTests() {
   const res2 = await handler({
     httpMethod: 'GET',
     headers: {
-      'x-rookie-signature': 'invalid',
-      'x-rookie-date': new Date().toISOString()
+      'x-vrhub-signature': 'invalid',
+      'x-vrhub-date': new Date().toISOString()
     }
   }, mockContext);
   assert.strictEqual(res2.statusCode, 403, 'Should return 403 for invalid signature');
@@ -37,13 +37,13 @@ async function runTests() {
   const res3 = await handler({
     httpMethod: 'GET',
     headers: {
-      'x-rookie-signature': sig3,
-      'x-rookie-date': date3,
+      'x-vrhub-signature': sig3,
+      'x-vrhub-date': date3,
       'host': 'localhost:8888',
       'x-forwarded-proto': 'http'
     }
   }, mockContext);
-  
+
   assert.strictEqual(res3.statusCode, 200, 'Should return 200 for valid request');
   const body3 = JSON.parse(res3.body);
   assert.strictEqual(body3.version, '2.5.0', 'Version should be 2.5.0');
@@ -52,12 +52,12 @@ async function runTests() {
 
   // Test 4: OPTIONS request
   console.log('\nTest 4: OPTIONS request');
-  const res4 = await handler({ 
-    httpMethod: 'OPTIONS', 
-    headers: { 'origin': 'https://rookie.vrpirates.org' } 
+  const res4 = await handler({
+    httpMethod: 'OPTIONS',
+    headers: { 'origin': 'https://vrhub.vrpirates.org' }
   }, mockContext);
   assert.strictEqual(res4.statusCode, 200, 'OPTIONS should return 200');
-  assert.strictEqual(res4.headers['Access-Control-Allow-Origin'], 'https://rookie.vrpirates.org', 'CORS origin mismatch');
+  assert.strictEqual(res4.headers['Access-Control-Allow-Origin'], 'https://vrhub.vrpirates.org', 'CORS origin mismatch');
   console.log('✅ Passed');
 
   // Test 5: Expired timestamp (Replay Attack Prevention)
@@ -67,8 +67,8 @@ async function runTests() {
   const res5 = await handler({
     httpMethod: 'GET',
     headers: {
-      'x-rookie-signature': oldSig,
-      'x-rookie-date': oldDate
+      'x-vrhub-signature': oldSig,
+      'x-vrhub-date': oldDate
     }
   }, mockContext);
   assert.strictEqual(res5.statusCode, 403, 'Should return 403 for expired timestamp');
@@ -79,8 +79,8 @@ async function runTests() {
   const res6 = await handler({
     httpMethod: 'GET',
     headers: {
-      'x-rookie-signature': 'somesig',
-      'x-rookie-date': 'not-a-date'
+      'x-vrhub-signature': 'somesig',
+      'x-vrhub-date': 'not-a-date'
     }
   }, mockContext);
   assert.strictEqual(res6.statusCode, 403, 'Should return 403 for invalid date format');
@@ -98,7 +98,7 @@ async function runTests() {
     httpMethod: 'OPTIONS',
     headers: { 'origin': 'https://malicious-site.com' }
   }, mockContext);
-  assert.strictEqual(res8.headers['Access-Control-Allow-Origin'], 'https://rookie.vrpirates.org', 'Should default to safe origin');
+  assert.strictEqual(res8.headers['Access-Control-Allow-Origin'], 'https://vrhub.vrpirates.org', 'Should default to safe origin');
   console.log('✅ Passed');
 
   // Test 9: CORS Localhost
@@ -114,7 +114,7 @@ async function runTests() {
   console.log('\nTest 10: Checksum Validation (Mismatched)');
   process.env.CACHE_TTL_SECONDS = '0'; // Force cache bypass
   const baseDir = process.cwd().endsWith('Sunshine-AIO-web') ? process.cwd() : path.join(process.cwd(), 'Sunshine-AIO-web');
-  const versionPath = path.join(baseDir, 'public', 'updates', 'rookie', 'version.json');
+  const versionPath = path.join(baseDir, 'public', 'updates', 'vrhub', 'version.json');
 
   // Backup
   const originalVersionData = await fs.readFile(versionPath, 'utf8');
@@ -128,8 +128,8 @@ async function runTests() {
   const res10 = await handler({
     httpMethod: 'GET',
     headers: {
-      'x-rookie-signature': sig10,
-      'x-rookie-date': date10
+      'x-vrhub-signature': sig10,
+      'x-vrhub-date': date10
     },
     queryStringParameters: { purge: 'true' }
   }, mockContext);
@@ -154,8 +154,8 @@ async function runTests() {
   const res11 = await handler({
     httpMethod: 'GET',
     headers: {
-      'x-rookie-signature': sig11,
-      'x-rookie-date': date11
+      'x-vrhub-signature': sig11,
+      'x-vrhub-date': date11
     },
     queryStringParameters: { purge: 'true' }
   }, mockContext);
@@ -188,8 +188,8 @@ async function runTests() {
   const res13 = await handler({
     httpMethod: 'GET',
     headers: {
-      'x-rookie-signature': sig13,
-      'x-rookie-date': date13
+      'x-vrhub-signature': sig13,
+      'x-vrhub-date': date13
     },
     queryStringParameters: { purge: 'true' }
   }, mockContext);
@@ -210,8 +210,8 @@ async function runTests() {
   await handler({
     httpMethod: 'GET',
     headers: {
-      'x-rookie-signature': sig14a,
-      'x-rookie-date': date14a
+      'x-vrhub-signature': sig14a,
+      'x-vrhub-date': date14a
     }
   }, mockContext);
 
@@ -226,8 +226,8 @@ async function runTests() {
   const res14b = await handler({
     httpMethod: 'GET',
     headers: {
-      'x-rookie-signature': sig14b,
-      'x-rookie-date': date14b
+      'x-vrhub-signature': sig14b,
+      'x-vrhub-date': date14b
     }
   }, mockContext);
   const body14b = JSON.parse(res14b.body);
@@ -239,8 +239,8 @@ async function runTests() {
   const res14c = await handler({
     httpMethod: 'GET',
     headers: {
-      'x-rookie-signature': sig14c,
-      'x-rookie-date': date14c,
+      'x-vrhub-signature': sig14c,
+      'x-vrhub-date': date14c,
       'x-purge': 'true'
     }
   }, mockContext);
