@@ -1,5 +1,7 @@
 {
-    "version": "3.0.0",
-    "changelog": "Release 3.0.0 - See GitHub release for details",
-    "timestamp": "2026-03-19T18:30:51Z"
+    "version": "4.0.0",
+    "changelog": "Release 4.0.0 - See GitHub release for details",
+    "downloadUrl": "/updates/vrhub/VRHub_4.0.0.apk",
+    "checksum": "8578b484d95209233ae1e3a919f47fab44921de38d14bf14220bf9f77fb39492",
+    "timestamp": "2026-04-28T10:32:38Z"
 }
